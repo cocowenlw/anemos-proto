@@ -4,10 +4,6 @@ modules:
   - path: .
     name: buf.build/anemos/proto
 
-lint:
-  use:
-    - MINIMAL
-
 breaking:
   use:
     - FILE

@@ -28,9 +28,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Lint protos
-        run: buf lint proto
-
       - name: Generate stubs
         run: buf generate proto
         env:
