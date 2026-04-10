@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.23'
+          cache-dependency-path: gen/go/go.sum
 
       - name: Install buf
         uses: bufbuild/buf-setup-action@v1
@@ -32,6 +33,8 @@ jobs:
 
       - name: Generate stubs
         run: buf generate proto
+        env:
+          BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
 
       - name: Tidy go module
         working-directory: gen/go

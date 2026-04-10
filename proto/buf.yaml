@@ -6,9 +6,7 @@ modules:
 
 lint:
   use:
-    - STANDARD
-  except:
-    - PACKAGE_VERSION_SUFFIX
+    - MINIMAL
 
 breaking:
   use:
