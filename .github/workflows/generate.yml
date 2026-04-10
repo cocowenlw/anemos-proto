@@ -1,0 +1,72 @@
+name: Generate Protobuf Stubs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'proto/**'
+      - 'buf.gen.yaml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Install buf
+        uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint protos
+        run: buf lint proto
+
+      - name: Generate stubs
+        run: buf generate proto
+
+      - name: Tidy go module
+        working-directory: gen/go
+        run: go mod tidy
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet gen/ && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push generated code
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gen/
+          git commit -m "chore: regenerate protobuf stubs"
+          git push
+
+      - name: Create version tag
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          # Auto-increment patch version based on latest tag
+          LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1)
+          if [ -z "$LATEST_TAG" ]; then
+            NEW_TAG="v0.1.0"
+          else
+            # Increment patch version
+            MAJOR=$(echo "$LATEST_TAG" | cut -d. -f1)
+            MINOR=$(echo "$LATEST_TAG" | cut -d. -f2)
+            PATCH=$(echo "$LATEST_TAG" | cut -d. -f3)
+            NEW_TAG="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          fi
+          git tag "$NEW_TAG"
+          # Tag the gen/go submodule path for Go module versioning
+          git tag "gen/go/$NEW_TAG"
+          git push origin "$NEW_TAG" "gen/go/$NEW_TAG"
+          echo "Tagged $NEW_TAG and gen/go/$NEW_TAG"

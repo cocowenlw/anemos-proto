@@ -1,0 +1,384 @@
+syntax = "proto3";
+
+package anemos.platform.v1;
+
+option go_package = "github.com/cocowenlw/anemos-proto/gen/go/platform/v1;platformv1";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/common.proto";
+
+// ============================================================
+// 平台基础服务 — 认证鉴权、用户角色、告警、报告导出
+// ============================================================
+
+service PlatformService {
+  // ----- 认证鉴权 -----
+  rpc Authenticate(Authenticatereq) returns (Authenticatersp);                      // 用户认证，签发访问令牌与刷新令牌
+  rpc RefreshToken(RefreshTokenreq) returns (RefreshTokenrsp);                      // 刷新访问令牌
+  rpc IntrospectToken(IntrospectTokenreq) returns (IntrospectTokenrsp);             // 高敏操作回源校验令牌
+
+  // ----- 用户与角色管理 -----
+  rpc ListUsers(ListUsersreq) returns (ListUsersrsp);
+  rpc UpsertUserRole(UpsertUserRolereq) returns (UpsertUserRolersp);
+
+  // ----- 告警管理 -----
+  rpc ListAlerts(ListAlertsreq) returns (ListAlertsrsp);
+  rpc AckAlert(AckAlertreq) returns (AckAlertrsp);
+
+  // ----- 告警规则管理 -----
+  rpc ListAlertRules(ListAlertRulesreq) returns (ListAlertRulesrsp);
+  rpc UpsertAlertRule(UpsertAlertRulereq) returns (UpsertAlertRulersp);
+
+  // ----- 区域管理 -----
+  rpc CreateRegion(CreateRegionreq) returns (CreateRegionrsp);                      // 创建受管区域
+  rpc GetRegion(GetRegionreq) returns (GetRegionrsp);                               // 获取区域详情
+  rpc ListRegions(ListRegionsreq) returns (ListRegionsrsp);                         // 列出区域（支持分页）
+  rpc UpdateRegion(UpdateRegionreq) returns (UpdateRegionrsp);                      // 更新区域信息
+  rpc DeleteRegion(DeleteRegionreq) returns (DeleteRegionrsp);                      // 删除区域（需无关联数据）
+
+  // ----- 区域权限管理 -----
+  rpc BindUserRegion(BindUserRegionreq) returns (BindUserRegionrsp);                // 绑定用户到区域（授予区域角色）
+  rpc UnbindUserRegion(UnbindUserRegionreq) returns (UnbindUserRegionrsp);          // 解除用户区域绑定
+  rpc ListUserRegionBindings(ListUserRegionBindingsreq) returns (ListUserRegionBindingsrsp); // 查询用户区域绑定列表
+
+  // ----- 报告导出 -----
+  rpc ExportReport(ExportReportreq) returns (ExportReportrsp);                      // 编排报告导出任务并登记产物
+  rpc GetExportJob(GetExportJobreq) returns (GetExportJobrsp);                      // 查询导出任务状态与产物信息
+}
+
+// ===========================
+// 认证鉴权
+// ===========================
+
+message Authenticatereq {
+  string username = 1;
+  string password = 2;
+}
+message Authenticatersp {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_in = 3;                                // access_token 过期时间（秒）
+  UserInfo user = 4;
+}
+
+message RefreshTokenreq {
+  string refresh_token = 1;
+}
+message RefreshTokenrsp {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_in = 3;
+}
+
+message IntrospectTokenreq {
+  string token = 1;
+  string target_resource = 2;                          // 目标资源标识
+  string operation_type = 3;                           // 操作类型
+}
+message IntrospectTokenrsp {
+  bool active = 1;                                     // 令牌是否有效
+  bool permitted = 2;                                  // 是否有权执行指定操作
+  UserInfo user = 3;
+  bool revoked = 4;                                    // 是否已吊销
+}
+
+// ===========================
+// 用户与角色管理
+// ===========================
+
+// 角色枚举
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_VIEWER = 1;                                     // 普通用户（查看）
+  ROLE_OPERATOR = 2;                                   // 操作员
+  ROLE_ADMIN = 3;                                      // 管理员
+}
+
+message UserInfo {
+  string user_id = 1;
+  string username = 2;
+  string display_name = 3;
+  repeated Role roles = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp last_login_at = 6;
+  repeated UserRegionBinding region_bindings = 7;  // 用户的区域绑定列表
+}
+
+// 用户-区域绑定关系
+message UserRegionBinding {
+  string binding_id = 1;                           // 绑定关系唯一标识（UUID）
+  string user_id = 2;                              // 用户 ID
+  string region_id = 3;                            // 区域 ID
+  Role role = 4;                                   // 用户在该区域的角色
+  google.protobuf.Timestamp created_at = 5;        // 绑定时间
+}
+
+message ListUsersreq {
+  string search = 1;                                   // 用户名/显示名模糊搜索
+  Role role_filter = 2;                                // 角色过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListUsersrsp {
+  repeated UserInfo users = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message UpsertUserRolereq {
+  string user_id = 1;
+  repeated Role roles = 2;
+  string reason = 3;                                   // 变更原因
+}
+message UpsertUserRolersp {
+  bool success = 1;
+  UserInfo user = 2;
+}
+
+// ===========================
+// 告警管理
+// ===========================
+
+// 告警级别
+enum AlertSeverity {
+  ALERT_SEVERITY_UNSPECIFIED = 0;
+  ALERT_SEVERITY_INFO = 1;
+  ALERT_SEVERITY_WARNING = 2;
+  ALERT_SEVERITY_CRITICAL = 3;
+}
+
+// 告警确认状态
+enum AckStatus {
+  ACK_STATUS_UNSPECIFIED = 0;
+  ACK_STATUS_UNACKED = 1;
+  ACK_STATUS_ACKED = 2;
+}
+
+message Alert {
+  string alert_id = 1;
+  string rule_id = 2;
+  AlertSeverity severity = 3;
+  string title = 4;
+  string message = 5;
+  string source_subject = 6;                           // 触发告警的 NATS Subject
+  AckStatus ack_status = 7;
+  string acked_by = 8;
+  string ack_note = 9;
+  google.protobuf.Timestamp triggered_at = 10;
+  google.protobuf.Timestamp acked_at = 11;
+  anemos.common.v1.Coordinate location = 12;           // 告警关联空间位置（可选，用于前端地图标注）
+  string region_id = 13;                               // 关联受管区域 ID（可选，用于前端空间定位与过滤）
+}
+
+message ListAlertsreq {
+  AlertSeverity severity = 1;                          // 告警级别过滤（为 UNSPECIFIED 则不过滤）
+  google.protobuf.Timestamp time_from = 2;
+  google.protobuf.Timestamp time_to = 3;
+  AckStatus ack_status = 4;                            // 确认状态过滤（为 UNSPECIFIED 则不过滤）
+  int32 page_size = 5;
+  string page_token = 6;
+}
+message ListAlertsrsp {
+  repeated Alert alerts = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message AckAlertreq {
+  string alert_id = 1;
+  string ack_note = 2;                                 // 确认备注
+}
+
+message AlertAckResult {
+  string alert_id = 1;
+  AckStatus ack_status = 2;                            // 确认后的状态
+  string acked_by = 3;                                 // 确认人
+  google.protobuf.Timestamp acked_at = 4;              // 确认时间
+}
+
+message AckAlertrsp {
+  bool success = 1;
+  AlertAckResult ack_result = 2;                       // 确认操作结果
+}
+
+// ===========================
+// 告警规则管理
+// ===========================
+
+message AlertRule {
+  string rule_id = 1;
+  string name = 2;
+  string description = 3;
+  string event_pattern = 4;                            // 匹配的 NATS Subject 模式
+  AlertSeverity severity = 5;
+  string condition_expr = 6;                           // 条件表达式
+  bool enabled = 7;
+  NotificationConfig notification = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message NotificationConfig {
+  bool push_sse = 1;                                   // 是否推送 SSE
+  bool send_email = 2;                                 // 是否发送邮件
+  repeated string email_recipients = 3;                // 邮件接收人列表
+}
+
+message ListAlertRulesreq {
+  string type_filter = 1;                              // 规则类型过滤
+  bool enabled_only = 2;                               // 是否只查启用的
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListAlertRulesrsp {
+  repeated AlertRule rules = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message UpsertAlertRulereq {
+  AlertRule rule = 1;                                  // rule_id 为空则创建，非空则更新
+}
+message UpsertAlertRulersp {
+  string rule_id = 1;
+  bool success = 2;
+}
+
+// ===========================
+// 报告导出
+// ===========================
+
+// 导出格式
+enum ExportFormat {
+  EXPORT_FORMAT_UNSPECIFIED = 0;
+  EXPORT_FORMAT_PDF = 1;
+  EXPORT_FORMAT_DOCX = 2;
+  EXPORT_FORMAT_PNG = 3;                               // 3D 截图
+}
+
+message ExportReportreq {
+  string report_type = 1;                              // route_assessment / route_optimization / regional_risk
+  string related_entity_id = 2;                        // 关联实体 ID（航线/评估/优化）
+  anemos.common.v1.TimeRange time_range = 3;           // 时间范围（可选）
+  ExportFormat format = 4;
+}
+
+message ExportJob {
+  string export_job_id = 1;
+  string report_type = 2;                              // route_assessment / route_optimization / regional_risk
+  string status = 3;                                   // queued / running / succeeded / failed / cancelled
+  ContentSource content_source = 4;
+  ExportArtifact artifact = 5;                         // 产物信息（succeeded 状态有值）
+  google.protobuf.Timestamp generated_at = 6;          // 导出完成时间
+}
+
+message ExportReportrsp {
+  string export_job_id = 1;
+  string status = 2;                                   // queued / running / succeeded / failed / cancelled
+  ContentSource content_source = 3;
+  ExportArtifact artifact = 4;                         // 产物信息（succeeded 状态有值）
+  google.protobuf.Timestamp generated_at = 5;          // 导出完成时间
+  string report_type = 6;                              // route_assessment / route_optimization / regional_risk
+}
+
+message GetExportJobreq {
+  string export_job_id = 1;
+}
+
+message GetExportJobrsp {
+  ExportJob job = 1;
+}
+
+// 报告内容来源
+message ContentSource {
+  string service = 1;                                  // 内容来源服务（如 flight-service）
+  string report_id = 2;                                // 来源报告 ID
+}
+
+// 导出产物
+message ExportArtifact {
+  string file_name = 1;
+  string download_url = 2;                             // 下载地址
+  string content_type = 3;                             // MIME 类型
+  int64 file_size_bytes = 4;
+}
+
+// ===========================
+// 区域管理
+// ===========================
+
+message CreateRegionreq {
+  string name = 1;                                     // 区域名称
+  string description = 2;                              // 区域描述
+  anemos.common.v1.AreaOfInterest boundary = 3;        // 区域边界
+  double min_altitude = 4;                             // 最低管控高度 (米 AGL)
+  double max_altitude = 5;                             // 最高管控高度 (米 AGL)
+}
+message CreateRegionrsp {
+  anemos.common.v1.Region region = 1;                  // 创建后的区域信息
+}
+
+message GetRegionreq {
+  string region_id = 1;
+}
+message GetRegionrsp {
+  anemos.common.v1.Region region = 1;
+}
+
+message ListRegionsreq {
+  string search = 1;                                   // 名称模糊搜索（可选）
+  anemos.common.v1.RegionStatus status_filter = 2;     // 状态过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListRegionsrsp {
+  repeated anemos.common.v1.Region regions = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message UpdateRegionreq {
+  string region_id = 1;                                // 目标区域 ID
+  string name = 2;                                     // 区域名称（可选更新）
+  string description = 3;                              // 区域描述（可选更新）
+  anemos.common.v1.AreaOfInterest boundary = 4;        // 区域边界（可选更新）
+  double min_altitude = 5;                             // 最低管控高度（可选更新）
+  double max_altitude = 6;                             // 最高管控高度（可选更新）
+  anemos.common.v1.RegionStatus status = 7;            // 区域状态（可选更新）
+}
+message UpdateRegionrsp {
+  anemos.common.v1.Region region = 1;                  // 更新后的区域信息
+}
+
+message DeleteRegionreq {
+  string region_id = 1;
+}
+message DeleteRegionrsp {
+  bool success = 1;
+}
+
+// ===========================
+// 区域权限管理
+// ===========================
+
+message BindUserRegionreq {
+  string user_id = 1;                                  // 目标用户 ID
+  string region_id = 2;                                // 目标区域 ID
+  Role role = 3;                                       // 用户在该区域的角色
+}
+message BindUserRegionrsp {
+  UserRegionBinding binding = 1;                       // 创建的绑定关系
+}
+
+message UnbindUserRegionreq {
+  string binding_id = 1;                               // 绑定关系 ID（也可按 user_id + region_id 解绑）
+  string user_id = 2;                                  // 用户 ID（与 region_id 配合使用，binding_id 优先）
+  string region_id = 3;                                // 区域 ID
+}
+message UnbindUserRegionrsp {
+  bool success = 1;
+}
+
+message ListUserRegionBindingsreq {
+  string user_id = 1;                                  // 按用户过滤（可选）
+  string region_id = 2;                                // 按区域过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListUserRegionBindingsrsp {
+  repeated UserRegionBinding bindings = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}

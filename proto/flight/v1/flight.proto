@@ -1,0 +1,500 @@
+syntax = "proto3";
+
+package anemos.flight.v1;
+
+option go_package = "github.com/cocowenlw/anemos-proto/gen/go/flight/v1;flightv1";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/common.proto";
+
+// ============================================================
+// 航线与风险服务 — 航线管理、风险评估、航路优化、热力图、报告
+// ============================================================
+
+service FlightService {
+  // ----- 航线管理 -----
+  rpc CreateRoute(CreateRoutereq) returns (CreateRoutersp);
+  rpc GetRoute(GetRoutereq) returns (GetRoutersp);
+  rpc ListRoutes(ListRoutesreq) returns (ListRoutesrsp);
+  rpc UpdateRoute(UpdateRoutereq) returns (UpdateRoutersp);
+  rpc ArchiveRoute(ArchiveRoutereq) returns (ArchiveRoutersp);
+  rpc DeleteRoute(DeleteRoutereq) returns (DeleteRoutersp);                         // 删除航线（级联删除评估、优化记录）
+
+  // ----- 航线评估与优化 -----
+  rpc AssessRoute(AssessRoutereq) returns (AssessRoutersp);                         // 单航线评估（内部调用风险引擎，返回逐航段风险详情）
+  rpc BatchAssess(BatchAssessreq) returns (BatchAssessrsp);                         // 多航线批量评估
+  rpc OptimizeRoute(OptimizeRoutereq) returns (OptimizeRoutersp);                   // 航路优化
+  rpc ListOptimizations(ListOptimizationsreq) returns (ListOptimizationsrsp);      // 查询航线优化历史
+  rpc GetOptimization(GetOptimizationreq) returns (OptimizeRoutersp);              // 获取单条优化详情
+  rpc DeleteOptimization(DeleteOptimizationreq) returns (DeleteOptimizationrsp);   // 删除单条优化
+  rpc GetAssessment(GetAssessmentreq) returns (AssessRoutersp);                     // 获取单条评估详情
+  rpc DeleteAssessment(DeleteAssessmentreq) returns (DeleteAssessmentrsp);          // 删除单条评估
+  rpc ListAssessments(ListAssessmentsreq) returns (ListAssessmentsrsp);             // 查询评估历史
+
+  // ----- 报告与热力图 -----
+  rpc GenerateFlightReport(GenerateFlightReportreq) returns (GenerateFlightReportrsp); // 生成飞行业务报告内容
+  rpc GenerateRiskHeatmap(RiskHeatmapreq) returns (RiskHeatmaprsp);                   // 生成区域风险热力图
+
+  // ----- 风险阈值模板 -----
+  rpc ListRiskTemplates(ListRiskTemplatesreq) returns (ListRiskTemplatesrsp);
+  rpc UpsertRiskTemplate(UpsertRiskTemplatereq) returns (UpsertRiskTemplatersp);
+}
+
+// ===========================
+// 航线管理
+// ===========================
+
+// 航点
+message Waypoint {
+  int32 seq = 1;                                       // 航点序号
+  double lon = 2;                                      // 经度
+  double lat = 3;                                      // 纬度
+  double alt = 4;                                      // 高度（米）
+}
+
+// 航线
+message Route {
+  string route_id = 1;
+  string region_id = 2;                                // 所属受管区域 ID
+  string name = 3;
+  string aircraft_type = 4;                            // 飞行器类型（如 quadrotor / fixed_wing）
+  repeated Waypoint waypoints = 5;
+  string status = 6;                                   // active / archived
+  string created_by = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message CreateRoutereq {
+  string region_id = 1;                                // 所属受管区域 ID
+  string name = 2;
+  string aircraft_type = 3;
+  repeated Waypoint waypoints = 4;
+}
+message CreateRoutersp {
+  Route route = 1;
+}
+
+message GetRoutereq {
+  string route_id = 1;
+}
+message GetRoutersp {
+  Route route = 1;
+}
+
+message ListRoutesreq {
+  string region_id = 1;                                // 受管区域 ID（可选）
+  string status = 2;                                   // 状态过滤（可选）
+  string aircraft_type = 3;                            // 飞行器类型过滤（可选）
+  string search = 4;                                   // 名称搜索（可选）
+  anemos.common.v1.Paginationreq pagination = 5;
+}
+message ListRoutesrsp {
+  repeated Route routes = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message UpdateRoutereq {
+  string route_id = 1;
+  string name = 2;                                     // 航线名称（可选更新）
+  repeated Waypoint waypoints = 3;                     // 更新后的航点列表（可选）
+  string aircraft_type = 4;                            // 飞行器类型（可选更新）
+}
+message UpdateRoutersp {
+  Route route = 1;                                     // 更新后的航线信息
+}
+
+message ArchiveRoutereq {
+  string route_id = 1;
+  string reason = 2;                                   // 归档原因
+}
+message ArchiveRoutersp {
+  bool success = 1;
+}
+
+message DeleteRoutereq {
+  string route_id = 1;
+}
+message DeleteRoutersp {
+  bool success = 1;
+}
+
+// ===========================
+// 航线评估
+// ===========================
+
+// 风险类型
+enum RiskType {
+  RISK_TYPE_UNSPECIFIED = 0;
+  RISK_TYPE_CROSSWIND = 1;                             // 侧风
+  RISK_TYPE_TURBULENCE = 2;                            // 湍流
+  RISK_TYPE_WINDSHEAR = 3;                             // 风切变（综合水平+垂直）
+  RISK_TYPE_COMPOSITE = 4;                             // 综合风险
+  RISK_TYPE_WIND_SPEED = 5;                            // 风速风险（热力图专用）
+  RISK_TYPE_VERTICAL_SHEAR = 6;                        // 垂直风切变（预留，待高度层数据就绪）
+  RISK_TYPE_HORIZONTAL_SHEAR = 7;                      // 水平风切变
+  RISK_TYPE_HEADWIND = 8;                              // 顺逆风
+  RISK_TYPE_VERTICAL_WIND = 9;                         // 垂直风 W
+}
+
+// 飞行阶段
+enum FlightPhase {
+  FLIGHT_PHASE_UNSPECIFIED = 0;
+  FLIGHT_PHASE_TAKEOFF = 1;
+  FLIGHT_PHASE_CRUISE = 2;
+  FLIGHT_PHASE_LANDING = 3;
+}
+
+// 飞行决策
+enum FlightDecision {
+  FLIGHT_DECISION_UNSPECIFIED = 0;
+  FLIGHT_DECISION_GO = 1;
+  FLIGHT_DECISION_CONDITIONAL = 2;
+  FLIGHT_DECISION_NO_GO = 3;
+}
+
+// 单维度评分
+message DimensionScore {
+  double score = 1;                                    // 0-1 风险分值
+  double max_value_ms = 2;                             // 侧风/顺逆风最大值 (m/s)
+  double max_downdraft_ms = 3;                         // 最大下沉气流 (m/s)，仅垂直风
+  double max_updraft_ms = 4;                           // 最大上升气流 (m/s)，仅垂直风
+  double max_shear_s1 = 5;                             // 最大切变值 (s⁻¹)，仅切变维度
+}
+
+// 五维度评分
+message DimensionScores {
+  DimensionScore crosswind = 1;
+  DimensionScore headwind = 2;
+  DimensionScore vertical_wind = 3;
+  DimensionScore vertical_shear = 4;
+  DimensionScore horizontal_shear = 5;
+}
+
+// 风险等级
+enum RiskLevel {
+  RISK_LEVEL_UNSPECIFIED = 0;
+  RISK_LEVEL_LOW = 1;
+  RISK_LEVEL_MEDIUM = 2;
+  RISK_LEVEL_HIGH = 3;
+  RISK_LEVEL_CRITICAL = 4;
+}
+
+// 评估参数
+message AssessmentParams {
+  repeated RiskType metrics = 1;                       // 需计算的风险类型（为空则全部计算）
+  double sample_interval_m = 2;                        // 沿航线采样间隔（米），默认 100
+  string threshold_template_id = 3;                    // 风险阈值模板 ID（可选）
+}
+
+// 逐航段风险结果
+message SegmentRisk {
+  int32 segment_index = 1;                             // 航段序号（从 0 开始）
+  Waypoint from_waypoint = 2;
+  Waypoint to_waypoint = 3;
+  double crosswind_score = 4;                          // 侧风风险分值（0-1）
+  double turbulence_score = 5;                         // 湍流风险分值（0-1）
+  double windshear_score = 6;                          // 风切变风险分值（0-1）
+  double composite_score = 7;                          // 综合风险分值（0-1）
+  RiskLevel risk_level = 8;                            // 综合风险等级
+  double max_crosswind_ms = 9;                         // 该航段最大侧风 (m/s)
+  double max_tke = 10;                                 // 该航段最大湍动能 (m²/s²)
+  double distance_m = 11;                              // 航段距离（米）
+  FlightPhase phase = 12;                              // 飞行阶段
+  double headwind_score = 13;                          // 顺逆风风险分值（0-1）
+  double vertical_wind_score = 14;                     // 垂直风风险分值（0-1）
+  double vertical_shear_score = 15;                    // 垂直切变风险分值（0-1）
+  double horizontal_shear_score = 16;                  // 水平切变风险分值（0-1）
+  double max_headwind_ms = 17;                         // 最大逆风 (m/s)
+  double max_downdraft_ms = 18;                        // 最大下沉气流 (m/s)
+  double max_updraft_ms = 19;                          // 最大上升气流 (m/s)
+  double max_vertical_shear_s1 = 20;                   // 最大垂直切变 (s⁻¹)
+  double max_horizontal_shear_s1 = 21;                 // 最大水平切变 (s⁻¹)
+  repeated string trigger_dimensions = 22;             // 触发维度列表
+}
+
+// 评估摘要
+message AssessmentSummary {
+  int32 total_segments = 1;
+  int32 high_risk_segment_count = 2;                   // 高风险航段数（含 CRITICAL）
+  repeated string advice = 3;                          // 风险建议列表
+  int32 critical_segment_count = 4;                    // CRITICAL 航段数
+  repeated int32 takeoff_segments = 5;                 // 起飞航段索引
+  repeated int32 landing_segments = 6;                 // 降落航段索引
+  repeated int32 cruise_segments = 7;                  // 巡航航段索引
+}
+
+message AssessRoutereq {
+  string route_id = 1;
+  string wind_field_result_id = 2;
+  AssessmentParams params = 3;
+}
+message AssessRoutersp {
+  string assessment_id = 1;
+  string route_id = 2;
+  string wind_field_result_id = 3;
+  double overall_score = 4;                            // 综合风险分值（0-1）
+  RiskLevel overall_level = 5;                         // 综合风险等级
+  repeated SegmentRisk segment_results = 6;            // 逐航段风险结果
+  AssessmentSummary summary = 7;
+  google.protobuf.Timestamp generated_at = 8;
+  FlightDecision decision = 9;                         // GO / CONDITIONAL / NO_GO 决策
+  DimensionScores dimension_scores = 10;               // 五维度综合评分
+}
+
+message GetAssessmentreq {
+  string assessment_id = 1;
+}
+
+message DeleteAssessmentreq {
+  string assessment_id = 1;
+}
+message DeleteAssessmentrsp {
+  bool success = 1;
+}
+
+// ===========================
+// 批量评估
+// ===========================
+
+message BatchAssessreq {
+  repeated string route_ids = 1;                       // 待评估的航线 ID 列表
+  string wind_field_result_id = 2;
+  AssessmentParams params = 3;
+}
+message BatchAssessrsp {
+  repeated AssessRoutersp results = 1;            // 各航线评估结果列表
+}
+
+// ===========================
+// 航路优化
+// ===========================
+
+// 优化目标
+enum OptimizationObjective {
+  OPTIMIZATION_OBJECTIVE_UNSPECIFIED = 0;
+  OPTIMIZATION_OBJECTIVE_SAFEST = 1;                   // 最安全
+  OPTIMIZATION_OBJECTIVE_SHORTEST = 2;                 // 最短路径
+  OPTIMIZATION_OBJECTIVE_BALANCED = 3;                 // 平衡（安全+效率）
+}
+
+// 优化约束
+message OptimizationConstraints {
+  bool avoid_no_fly_zones = 1;                         // 是否规避禁飞区（默认 true）
+  double max_detour_ratio = 2;                         // 最大绕行比率（0-1，默认 0.15）
+  double max_alt = 3;                                  // 最大飞行高度（米，可选）
+  double min_alt = 4;                                  // 最小飞行高度（米，可选）
+}
+
+message OptimizeRoutereq {
+  string route_id = 1;                                 // 原始航线 ID
+  string wind_field_result_id = 2;
+  OptimizationObjective objective = 3;                 // 优化目标
+  OptimizationConstraints constraints = 4;             // 约束条件（可选）
+}
+
+message OptimizeRoutersp {
+  string optimization_id = 1;
+  string route_id = 2;
+  Route recommended_route = 3;                         // 推荐航线方案
+  RiskComparison comparison = 4;                       // 优化前后对比
+  google.protobuf.Timestamp generated_at = 5;          // 优化生成时间
+}
+
+// 风险对比
+message RiskComparison {
+  double original_risk_score = 1;                      // 原始航线综合风险评分
+  double optimized_risk_score = 2;                     // 优化航线综合风险评分
+  double original_eta_sec = 3;                         // 原航线预计耗时（秒）
+  double optimized_eta_sec = 4;                        // 优化后预计耗时（秒）
+  double original_energy_cost = 5;                     // 原相对能耗（基准 1.0）
+  double optimized_energy_cost = 6;                    // 优化后相对能耗
+  repeated SegmentRiskDiff segment_diffs = 7;          // 逐航段风险差异
+}
+
+// 逐航段风险差异
+message SegmentRiskDiff {
+  int32 segment_index = 1;
+  double original_risk = 2;
+  double optimized_risk = 3;
+}
+
+// ===========================
+// 优化历史查询
+// ===========================
+
+message GetOptimizationreq {
+  string optimization_id = 1;                            // 优化记录 ID
+}
+
+message DeleteOptimizationreq {
+  string optimization_id = 1;                            // 优化记录 ID
+}
+
+message DeleteOptimizationrsp {
+  bool success = 1;
+}
+
+message ListOptimizationsreq {
+  string route_id = 1;                                   // 航线 ID
+}
+
+message ListOptimizationsrsp {
+  repeated OptimizationRecord optimizations = 1;
+}
+
+message OptimizationRecord {
+  string optimization_id = 1;
+  string route_id = 2;
+  string wind_field_result_id = 3;
+  string objective = 4;                                  // SAFEST / SHORTEST / BALANCED
+  RiskComparison comparison = 5;
+  google.protobuf.Timestamp generated_at = 6;
+}
+
+// ===========================
+// 评估历史查询（游标分页）
+// ===========================
+
+message AssessmentRecord {
+  string assessment_id = 1;
+  string route_id = 2;
+  string wind_field_result_id = 3;
+  double overall_risk_score = 4;
+  string status = 5;                                   // COMPLETED / FAILED
+  google.protobuf.Timestamp assessed_at = 6;
+}
+
+message ListAssessmentsreq {
+  string region_id = 1;                                // 受管区域 ID（可选）
+  string route_id = 2;                                 // 航线 ID（可选，为空则查所有）
+  google.protobuf.Timestamp start_time = 3;            // 时间范围起始
+  google.protobuf.Timestamp end_time = 4;              // 时间范围截止
+  int32 page_size = 5;
+  string page_token = 6;
+}
+message ListAssessmentsrsp {
+  repeated AssessmentRecord records = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// ===========================
+// 风险热力图
+// ===========================
+
+message RiskHeatmapCell {
+  anemos.common.v1.Coordinate center = 1;              // 网格中心点
+  double risk_score = 2;                               // 风险分值（0-1）
+  RiskLevel risk_level = 3;
+  RiskType main_factor = 4;                            // 该网格的主要风险因子（crosswind / turbulence / windshear / composite）
+  double horizontal_shear_value = 5;                   // 水平切变值 (s⁻¹)，仅 WINDSHEAR/HORIZONTAL_SHEAR 模式返回
+  double vertical_shear_value = 6;                     // 垂直切变值 (s⁻¹)，预留
+}
+
+message RiskHeatmapLegend {
+  RiskLevel level = 1;
+  string label = 2;                                    // 标签（如 "低风险"）
+  string color = 3;                                    // 颜色编码（如 "#00FF00"）
+  double min_score = 4;                                // 该等级风险分值下限
+  double max_score = 5;                                // 该等级风险分值上限
+}
+
+message RiskHeatmapreq {
+  string region_id = 1;                                // 受管区域 ID
+  string wind_field_result_id = 2;
+  double height = 3;                                   // 目标高度层（米）
+  RiskType risk_type = 4;                              // 风险类型
+  int32 grid_resolution = 5;                           // 展示分辨率（米），默认 100，最小 20
+  string threshold_template_id = 6;                    // 阈值模板（可选）
+  double vertical_offset = 7;                          // 垂直采样偏移（米），预留，默认 50
+}
+message RiskHeatmaprsp {
+  string heatmap_id = 1;
+  string wind_field_result_id = 2;
+  RiskType risk_type = 3;
+  double height = 4;
+  repeated RiskHeatmapLegend legend = 5;
+  repeated RiskHeatmapCell cells = 6;
+  google.protobuf.Timestamp generated_at = 7;
+}
+
+// ===========================
+// 飞行业务报告生成
+// ===========================
+
+// 报告类型
+enum FlightReportType {
+  FLIGHT_REPORT_TYPE_UNSPECIFIED = 0;
+  FLIGHT_REPORT_TYPE_ROUTE_ASSESSMENT = 1;             // 航线评估报告
+  FLIGHT_REPORT_TYPE_ROUTE_OPTIMIZATION = 2;           // 航路优化报告
+  FLIGHT_REPORT_TYPE_REGIONAL_RISK = 3;                // 区域风险报告
+}
+
+message GenerateFlightReportreq {
+  FlightReportType report_type = 1;
+  string route_id = 2;                                 // 关联航线 ID（可选）
+  string assessment_id = 3;                            // 关联评估 ID（可选）
+  string optimization_id = 4;                          // 关联优化 ID（可选）
+  anemos.common.v1.TimeRange time_range = 5;           // 时间范围（可选）
+}
+message GenerateFlightReportrsp {
+  string report_id = 1;
+  FlightReportType report_type = 2;
+  repeated ReportSection sections = 3;                 // 报告章节
+  ReportConclusion conclusion = 4;                     // 摘要结论
+}
+
+// 报告章节
+message ReportSection {
+  string title = 1;
+  string content = 2;                                  // Markdown 格式内容
+  int32 order = 3;
+}
+
+// 报告结论
+message ReportConclusion {
+  string summary = 1;                                  // 总结
+  repeated string key_findings = 2;                    // 关键发现
+  repeated string recommendations = 3;                 // 建议项
+}
+
+// ===========================
+// 风险阈值模板
+// ===========================
+
+message RiskThresholdTemplate {
+  string template_id = 1;
+  string name = 2;
+  string aircraft_type = 3;                            // 适用机型（可选）
+  string description = 4;
+  repeated RiskThresholdConfig thresholds = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// 单项风险阈值配置
+message RiskThresholdConfig {
+  RiskType risk_type = 1;
+  double low_max = 2;                                  // 低风险上限
+  double medium_max = 3;                               // 中风险上限
+  double high_max = 4;                                 // 高风险上限
+  // > high_max 为 CRITICAL
+}
+
+message ListRiskTemplatesreq {
+  string aircraft_type = 1;                            // 机型过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 2;
+}
+message ListRiskTemplatesrsp {
+  repeated RiskThresholdTemplate templates = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message UpsertRiskTemplatereq {
+  RiskThresholdTemplate template = 1;                  // 模板 ID 为空则创建，非空则更新
+}
+message UpsertRiskTemplatersp {
+  string template_id = 1;
+  bool success = 2;
+}

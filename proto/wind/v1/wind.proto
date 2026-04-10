@@ -1,0 +1,421 @@
+syntax = "proto3";
+
+package anemos.wind.v1;
+
+option go_package = "github.com/cocowenlw/anemos-proto/gen/go/wind/v1;windv1";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/common.proto";
+
+// ============================================================
+// 风场服务 — 风场查询、切片采样、作业管理、模型版本、Worker 回调
+// ============================================================
+
+service WindService {
+  // ----- 风场数据查询（面向 BFF / 其他业务服务） -----
+  rpc GetLatestWindField(GetLatestWindFieldreq) returns (GetLatestWindFieldrsp);     // 获取指定区域最新可用风场
+  rpc ListWindFields(ListWindFieldsreq) returns (ListWindFieldsrsp);                 // 按区域和时间范围查询历史风场列表
+  rpc GetWindField(GetWindFieldreq) returns (GetWindFieldrsp);                       // 按结果 ID 查询风场详情
+  rpc GetWindFieldSlice(Slicereq) returns (Slicersp);                                // 查询指定风场的水平/垂直切片
+  rpc SampleWindField(SampleWindFieldreq) returns (SampleWindFieldrsp);              // 统一采样（点/航线/剖面，request 中使用 oneof）
+  rpc GetWindFieldGrid(GetWindFieldGridreq) returns (GetWindFieldGridrsp);           // 获取完整网格数据（U/V/W 数组），用于风切变等全分辨率计算
+  rpc GetWindFieldSubGrid(GetWindFieldSubGridreq) returns (GetWindFieldSubGridrsp); // 获取区域裁剪后的子网格数据，用于航线优化等局部计算
+
+  // ----- 管理端任务中心（仅 BFF 管理端 / 运维入口） -----
+  rpc ListWindJobs(ListWindJobsreq) returns (ListWindJobsrsp);                      // 查询风场作业列表
+  rpc GetWindJob(GetWindJobreq) returns (GetWindJobrsp);                             // 查询单个风场作业详情
+  rpc CreateGenerationJob(CreateGenerationJobreq) returns (CreateGenerationJobrsp);  // 创建受控风场生成/补算作业
+  rpc CancelWindJob(CancelWindJobreq) returns (CancelWindJobrsp);                    // 取消尚未完成的作业
+  rpc RetryWindJob(RetryWindJobreq) returns (RetryWindJobrsp);                       // 重试失败作业
+
+  // ----- 模型版本管理（仅 BFF 管理端） -----
+  rpc GetActiveModelVersion(GetActiveModelVersionreq) returns (GetActiveModelVersionrsp); // 获取当前活动模型版本
+  rpc ActivateModelVersion(ActivateModelVersionreq) returns (ActivateModelVersionrsp);   // 激活指定模型版本
+  rpc ListModelVersions(ListModelVersionsreq) returns (ListModelVersionsrsp);             // 查询模型版本列表
+
+  // ----- Worker 回调（仅服务间调用，不对 BFF 暴露） -----
+  rpc ReportGenerationResult(ReportGenerationResultreq) returns (ReportGenerationResultrsp); // GPU Worker 上报风场生成结果
+  rpc ReportAssimilationResult(ReportAssimilationResultreq) returns (ReportAssimilationResultrsp); // 同化 Worker 上报同化结果
+}
+
+// ===========================
+// 风场结果
+// ===========================
+
+// 风场结果元数据
+message WindFieldResult {
+  string result_id = 1;                                // 风场结果唯一标识
+  string region_id = 2;                                // 所属受管区域 ID
+  string status = 3;                                   // ready / generating / failed
+  anemos.common.v1.BoundingBox coverage = 4;           // 覆盖范围
+  repeated double height_levels = 5;                   // 可用高度层列表（米）
+  double resolution_m = 6;                             // 空间分辨率（米）
+  google.protobuf.Timestamp valid_time = 7;            // 风场有效时间 / 查询时间点
+  google.protobuf.Timestamp generated_at = 8;          // 生成时间
+  string source = 9;                                   // forecast / recompute
+  bool is_assimilated = 10;                            // 是否经过同化修正
+  string model_version = 11;                           // 使用的模型版本
+  string object_path = 12;                             // 风场数据对象存储路径
+  string job_id = 13;                                  // 关联的生成作业 ID
+}
+
+message WindFieldTimelineEntry {
+  string result_id = 1;                                // 历史结果 ID
+  google.protobuf.Timestamp query_time = 2;            // 对应查询时间点
+  google.protobuf.Timestamp generated_at = 3;          // 对应生成时间
+}
+
+// ===========================
+// 风场查询
+// ===========================
+
+message GetLatestWindFieldreq {
+  string region_id = 1;                                // 受管区域 ID
+  repeated double height_levels = 2;                   // 感兴趣高度层（可选）
+  google.protobuf.Timestamp query_time = 3;            // 指定时间点查询（可选）
+}
+message GetLatestWindFieldrsp {
+  WindFieldResult result = 1;
+  repeated WindFieldTimelineEntry timeline = 2;        // 历史结果时间轴（可选）
+}
+
+message ListWindFieldsreq {
+  string region_id = 1;                                // 受管区域 ID
+  anemos.common.v1.TimeRange time_range = 2;
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListWindFieldsrsp {
+  repeated WindFieldResult results = 1;                // 按有效时间倒序
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message GetWindFieldreq {
+  string result_id = 1;
+}
+message GetWindFieldrsp {
+  WindFieldResult result = 1;
+  WindFieldGrid grid = 2;                              // 风场网格元数据与对象地址
+  GenerationSummary generation_summary = 3;            // 生成链路摘要
+  repeated WindFieldTimelineEntry timeline = 4;        // 历史结果时间轴（可选）
+}
+
+// 风场网格元数据
+// data_url 指向 Zarr（或 NetCDF）根路径，内部包含 u / v / w 三个子数组。
+// 前端通过 zarr.js 按 data_url + "/u"、"/v"、"/w" 子路径分别加载各分量。
+message WindFieldGrid {
+  int32 nx = 1;                                        // X 方向网格数
+  int32 ny = 2;                                        // Y 方向网格数
+  int32 nz = 3;                                        // Z 方向网格数
+  double dx = 4;                                       // X 方向网格间距（米）
+  double dy = 5;                                       // Y 方向网格间距（米）
+  repeated double z_levels = 6;                        // 垂直层高度列表
+  string data_url = 7;                                 // 网格数据 Zarr/NetCDF 根路径（签名 URL），内含 u/v/w 子数组
+  string format = 8;                                   // 数据格式（NetCDF / Zarr）
+}
+
+// 生成链路摘要
+message GenerationSummary {
+  string job_id = 1;
+  string model_version = 2;
+  double inference_time_sec = 3;                       // 推理耗时（秒）
+  string meteo_source = 4;                             // 使用的气象数据源
+  google.protobuf.Timestamp meteo_time = 5;            // 气象数据时间
+}
+
+// ===========================
+// 切片查询
+// ===========================
+
+// 切片方向
+enum SliceOrientation {
+  SLICE_ORIENTATION_UNSPECIFIED = 0;
+  SLICE_ORIENTATION_HORIZONTAL = 1;                    // 水平切片
+  SLICE_ORIENTATION_VERTICAL = 2;                      // 垂直切片
+}
+
+message Slicereq {
+  string result_id = 1;
+  SliceOrientation orientation = 2;
+  double height = 3;                                   // 水平切片高度（米），水平方向时使用
+  anemos.common.v1.Coordinate start = 4;               // 垂直剖面起点（垂直方向时使用）
+  anemos.common.v1.Coordinate end = 5;                 // 垂直剖面终点（垂直方向时使用）
+  int32 resolution = 6;                                // 输出分辨率（像素数或采样点数）
+}
+
+message Slicersp {
+  string result_id = 1;
+  SliceOrientation orientation = 2;
+  double height = 3;
+  repeated WindVector data = 4;                        // 切片数据点（按行优先排列，不含空间坐标；BFF 根据 metadata 计算每点 lon/lat）
+  SliceMetadata metadata = 5;
+}
+
+message SliceMetadata {
+  int32 width = 1;                                     // 横向数据点数（列数）
+  int32 height_count = 2;                              // 纵向数据点数（行数）
+  anemos.common.v1.BoundingBox extent = 3;             // 数据覆盖范围（BFF 据此 + width × height_count 计算每个点的 lon/lat）
+}
+
+// 风速矢量
+message WindVector {
+  double u = 1;                                        // 东西分量 (m/s)
+  double v = 2;                                        // 南北分量 (m/s)
+  double w = 3;                                        // 垂直分量 (m/s)
+  double speed = 4;                                    // 风速标量 (m/s)
+  double direction = 5;                                // 风向 (°)
+  double turbulent_kinetic_energy = 6;                 // 湍动能 (m²/s²)，物理量，用于科学分析
+  double turbulence_intensity = 7;                     // 湍流强度 (0–1 归一化)，由服务端从 TKE 阈值归一化计算，用于前端色带映射与展示
+}
+
+// ===========================
+// 统一采样（oneof 模式）
+// ===========================
+
+message SampleWindFieldreq {
+  string result_id = 1;
+  oneof sample_mode {
+    PointSample point = 2;                             // 单点/多点采样
+    RouteSample route = 3;                             // 沿航线采样
+    ProfileSample profile = 4;                         // 垂直剖面采样
+  }
+}
+
+// 点采样定义
+message PointSample {
+  repeated anemos.common.v1.Coordinate3D points = 1;   // 采样点列表
+}
+
+// 航线采样定义
+message RouteSample {
+  repeated anemos.common.v1.Coordinate3D waypoints = 1; // 航线点列表
+  double sample_interval_m = 2;                         // 沿线采样间隔（米）
+}
+
+// 垂直剖面采样定义
+message ProfileSample {
+  anemos.common.v1.Coordinate start = 1;                // 剖面起点
+  anemos.common.v1.Coordinate end = 2;                  // 剖面终点
+  int32 horizontal_count = 3;                           // 水平采样点数
+  repeated double height_levels = 4;                    // 采样高度层
+}
+
+message SampleWindFieldrsp {
+  repeated SamplePoint samples = 1;
+}
+
+message SamplePoint {
+  anemos.common.v1.Coordinate3D location = 1;
+  WindVector wind = 2;
+  double distance_along_m = 3;                          // 沿线距离（航线采样时有值）
+}
+
+// ===========================
+// 风场网格数据查询（全分辨率）
+// ===========================
+
+message GetWindFieldGridreq {
+  string result_id = 1;                                  // 风场结果 ID
+  repeated double heights = 2;                           // 请求的高度层（米），为空则返回所有层
+}
+
+message GetWindFieldGridrsp {
+  WindFieldGridInfo grid_info = 1;
+  repeated WindFieldGridLayer layers = 2;
+}
+
+message WindFieldGridInfo {
+  int32 width = 1;                                       // 网格宽度（列数）
+  int32 height = 2;                                      // 网格高度（行数）
+  anemos.common.v1.BoundingBox bbox = 3;                 // 地理范围
+  double dx_m = 4;                                       // 东西方向网格间距（米）
+  double dy_m = 5;                                       // 南北方向网格间距（米）
+}
+
+message WindFieldGridLayer {
+  double height = 1;                                     // 高度层（米）
+  repeated double u = 2;                                 // U 分量，row-major
+  repeated double v = 3;                                 // V 分量，row-major
+  repeated double w = 4;                                 // W 分量，row-major
+}
+
+// ===========================
+// 子网格风场数据查询（按区域裁剪）
+// ===========================
+
+message GetWindFieldSubGridreq {
+  string result_id = 1;                                    // 风场结果 ID
+  anemos.common.v1.BoundingBox bbox = 2;                   // 水平裁剪范围
+  double min_alt = 3;                                      // 最低高度 (m)
+  double max_alt = 4;                                      // 最高高度 (m)
+}
+
+message GetWindFieldSubGridrsp {
+  int32 nx = 1;                                            // 裁剪后列数
+  int32 ny = 2;                                            // 裁剪后行数
+  double dx_m = 3;                                         // 经度方向格距 (m)
+  double dy_m = 4;                                         // 纬度方向格距 (m)
+  double origin_lon = 5;                                   // 子网格左下角经度
+  double origin_lat = 6;                                   // 子网格左下角纬度
+  repeated WindFieldGridLayer layers = 7;                  // 筛选后的高度层（复用现有 message）
+}
+
+// ===========================
+// 风场作业管理
+// ===========================
+
+message WindJob {
+  string job_id = 1;
+  string job_type = 2;                                 // generation / assimilation / recompute / backfill
+  string status = 3;                                   // queued / running / succeeded / failed / cancelled
+  string region_id = 4;                                // 受管区域 ID
+  anemos.common.v1.TimeRange time_window = 5;
+  string priority = 6;                                 // low / normal / high
+  string reason = 7;                                   // 触发原因
+  string model_version = 8;                            // 使用模型版本
+  string submitted_by = 9;
+  google.protobuf.Timestamp submitted_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  string failure_reason = 12;                          // 失败原因（仅 failed 状态有值）
+  string result_id = 13;                               // 关联的风场结果 ID（仅 succeeded 状态有值）
+  string result_url = 14;                              // 结果访问路径
+  double progress = 15;                                // 进度百分比（0-100）
+  repeated anemos.common.v1.JobStageStatus stages = 16; // 各阶段状态
+}
+
+message ListWindJobsreq {
+  string region_id = 1;                                // 受管区域 ID（可选）
+  string job_type = 2;                                 // 作业类型过滤（可选）
+  string status = 3;                                   // 状态过滤（可选）
+  anemos.common.v1.TimeRange time_range = 4;
+  anemos.common.v1.Paginationreq pagination = 5;
+}
+message ListWindJobsrsp {
+  repeated WindJob jobs = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message GetWindJobreq {
+  string job_id = 1;
+}
+message GetWindJobrsp {
+  WindJob job = 1;
+}
+
+message CreateGenerationJobreq {
+  string region_id = 1;                                // 受管区域 ID
+  string job_type = 2;                                 // recompute / backfill
+  anemos.common.v1.TimeRange time_window = 3;
+  string priority = 4;                                 // low / normal / high
+  string reason = 5;                                   // 触发原因
+  string model_version = 6;                            // 指定模型版本（可选，为空则使用当前活动版本）
+}
+message CreateGenerationJobrsp {
+  string job_id = 1;
+  string status = 2;                                   // queued
+}
+
+message CancelWindJobreq {
+  string job_id = 1;
+  string reason = 2;                                   // 取消原因
+}
+message CancelWindJobrsp {
+  bool success = 1;
+  string message = 2;
+}
+
+message RetryWindJobreq {
+  string job_id = 1;
+  string reason = 2;                                   // 重试原因
+}
+message RetryWindJobrsp {
+  string new_job_id = 1;                               // 新创建的作业 ID
+  bool success = 2;
+  string message = 3;
+}
+
+// ===========================
+// 模型版本管理
+// ===========================
+
+message ModelVersionInfo {
+  string version_id = 1;
+  string model_type = 2;                               // 如 "cfd-surrogate" / "diagnostic"
+  string version_tag = 3;                              // 如 "v2.1.0"
+  string status = 4;                                   // active / inactive / deprecated
+  string artifact_uri = 5;                             // 模型文件存储路径
+  string description = 6;
+  google.protobuf.Timestamp registered_at = 7;
+  google.protobuf.Timestamp activated_at = 8;
+}
+
+message GetActiveModelVersionreq {
+  string model_type = 1;                               // 模型类型（可选）
+}
+message GetActiveModelVersionrsp {
+  ModelVersionInfo version = 1;
+}
+
+message ActivateModelVersionreq {
+  string version_id = 1;
+  string reason = 2;                                   // 切换原因
+}
+message ActivateModelVersionrsp {
+  bool success = 1;
+  ModelVersionInfo active_version = 2;                 // 当前活动版本
+}
+
+message ListModelVersionsreq {
+  string model_type = 1;                               // 模型类型筛选（可选）
+  string status = 2;                                   // 状态筛选：active / inactive / deprecated（可选）
+  int32 page = 3;
+  int32 page_size = 4;
+}
+message ListModelVersionsrsp {
+  repeated ModelVersionInfo versions = 1;
+  int32 total = 2;
+}
+
+// ===========================
+// Worker 回调（内部接口）
+// ===========================
+
+message ReportGenerationResultreq {
+  string job_id = 1;
+  bool success = 2;
+  string result_object_path = 3;                       // 风场结果对象存储路径
+  GenerationStats stats = 4;                           // 推理统计
+  string failure_reason = 5;                           // 失败原因（success=false 时）
+}
+
+message GenerationStats {
+  double inference_time_sec = 1;                       // 推理耗时
+  double max_wind_speed = 2;                           // 最大风速
+  double min_wind_speed = 3;                           // 最小风速
+  double mean_wind_speed = 4;                          // 平均风速
+  int64 grid_point_count = 5;                          // 网格点总数
+}
+
+message ReportGenerationResultrsp {
+  bool acknowledged = 1;
+  string result_id = 2;                                // 分配的风场结果 ID
+}
+
+message ReportAssimilationResultreq {
+  string job_id = 1;
+  bool success = 2;
+  string result_object_path = 3;                       // 修正结果对象存储路径
+  AssimilationQuality quality = 4;                     // 同化质量指标
+  string failure_reason = 5;
+}
+
+message AssimilationQuality {
+  double rmse_before = 1;                              // 同化前 RMSE
+  double rmse_after = 2;                               // 同化后 RMSE
+  int32 observation_count = 3;                         // 使用的观测点数
+  double convergence_score = 4;                        // 收敛评分
+}
+
+message ReportAssimilationResultrsp {
+  bool acknowledged = 1;
+  string result_id = 2;                                // 更新后的风场结果 ID
+}

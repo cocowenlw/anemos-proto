@@ -1,0 +1,473 @@
+syntax = "proto3";
+
+package anemos.data_asset.v1;
+
+option go_package = "github.com/cocowenlw/anemos-proto/gen/go/data_asset/v1;dataassetv1";
+
+import "google/protobuf/timestamp.proto";
+import "common/v1/common.proto";
+
+// ============================================================
+// 数据资产服务 — DEM、建筑、禁飞区、观测、背景气象、CFD 工况
+// ============================================================
+
+service DataAssetService {
+  // ----- DEM 管理 -----
+  rpc GetDEM(GetDEMreq) returns (GetDEMrsp);                                        // 按区域获取 DEM 资产信息
+  rpc ListDEMAssets(ListDEMAssetsreq) returns (ListDEMAssetsrsp);                    // 查询 DEM 资产列表
+  rpc ImportDEM(ImportDEMreq) returns (ImportDEMrsp);                                // 导入/注册 DEM 资产
+  rpc UpdateDEMAsset(UpdateDEMAssetreq) returns (UpdateDEMAssetrsp);                  // 更新 DEM 元数据
+  rpc ActivateDEMVersion(ActivateDEMVersionreq) returns (ActivateDEMVersionrsp);      // 激活 DEM 版本
+  rpc ArchiveDEMAsset(ArchiveDEMAssetreq) returns (ArchiveDEMAssetrsp);               // 归档 DEM 资产
+  rpc DeleteDEMAsset(DeleteDEMAssetreq) returns (DeleteDEMAssetrsp);                   // 删除 DEM 资产
+
+  // ----- 建筑数据管理 -----
+  rpc ImportBuildings(ImportBuildingsreq) returns (ImportBuildingsrsp);               // 导入建筑数据
+  rpc ListBuildings(ListBuildingsreq) returns (ListBuildingsrsp);                     // 按范围查询建筑
+  rpc ListBuildingVersions(ListBuildingVersionsreq) returns (ListBuildingVersionsrsp); // 查询建筑版本列表
+  rpc ActivateBuildingVersion(ActivateBuildingVersionreq) returns (ActivateBuildingVersionrsp); // 激活建筑版本
+
+  // ----- 禁飞区/空域约束 -----
+  rpc ImportNoFlyZoneSet(ImportNoFlyZoneSetreq) returns (ImportNoFlyZoneSetrsp);     // 导入禁飞区/空域约束数据
+  rpc GetNoFlyZoneSet(GetNoFlyZoneSetreq) returns (GetNoFlyZoneSetrsp);              // 获取指定区域/时间点生效的禁飞区约束集合
+  rpc ListNoFlyZoneSets(ListNoFlyZoneSetsreq) returns (ListNoFlyZoneSetsrsp);        // 查询禁飞区数据集列表
+
+  // ----- 数据导入任务 -----
+  rpc ListImportJobs(ListImportJobsreq) returns (ListImportJobsrsp);                 // 查询数据导入任务列表
+  rpc GetImportJob(GetImportJobreq) returns (GetImportJobrsp);                       // 查询单个数据导入任务
+
+  // ----- 高程查询 -----
+  rpc QueryElevation(QueryElevationreq) returns (QueryElevationrsp);                 // 单点/批量高程查询
+
+  // ----- 背景气象 -----
+  rpc GetMeteoSnapshot(GetMeteoSnapshotreq) returns (GetMeteoSnapshotrsp);           // 获取背景气象快照
+  rpc QueryMeteoTimeseries(QueryMeteoTimeseriesreq) returns (QueryMeteoTimeseriesrsp); // 查询气象时序数据
+
+  // ----- CFD 仿真库 -----
+  rpc ListCFDCases(ListCFDCasesreq) returns (ListCFDCasesrsp);                       // 检索 CFD 工况
+  rpc RegisterCFDCase(RegisterCFDCasereq) returns (RegisterCFDCasersp);               // 注册/更新 CFD 工况
+
+  // ----- 观测数据 -----
+  rpc IngestObservation(IngestObservationreq) returns (IngestObservationrsp);         // 接收观测数据
+  rpc QueryObservations(QueryObservationsreq) returns (QueryObservationsrsp);         // 查询观测记录
+  rpc GetLatestObsByStation(GetLatestObsByStationreq) returns (GetLatestObsByStationrsp); // 获取每个站点最新观测
+}
+
+// ===========================
+// DEM 管理
+// ===========================
+
+message DEMAsset {
+  string asset_id = 1;                               // DEM 资产唯一标识
+  string region_id = 2;                              // 所属受管区域 ID
+  anemos.common.v1.BoundingBox coverage = 3;          // 覆盖范围
+  double resolution_m = 4;                            // 分辨率（米）
+  string crs = 5;                                     // 坐标参考系
+  string format = 6;                                  // 格式（如 TIFF）
+  string storage_path = 7;                            // 对象存储路径
+  string version_tag = 8;                             // 版本标签
+  string status = 9;                                  // 资产状态（processing / inactive / active / archived / failed）
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message GetDEMreq {
+  string region_id = 1;                               // 受管区域 ID
+}
+message GetDEMrsp {
+  DEMAsset asset = 1;
+}
+
+message ListDEMAssetsreq {
+  string region_id = 1;                               // 受管区域 ID（可选）
+  string version_filter = 2;                          // 版本过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListDEMAssetsrsp {
+  repeated DEMAsset assets = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message ImportDEMreq {
+  string region_id = 1;                               // 目标受管区域 ID
+  string file_reference = 2;                          // DEM 文件引用（对象存储路径或上传链接）
+  anemos.common.v1.BoundingBox coverage = 3;          // 覆盖区域
+  string version_tag = 4;                             // 版本标签
+  string description = 5;                             // 描述
+}
+message ImportDEMrsp {
+  string import_job_id = 1;                           // 导入任务 ID
+  string asset_id = 2;                                // 预分配的资产 ID
+  string status = 3;                                  // 初始状态（queued）
+}
+
+message UpdateDEMAssetreq {
+  string asset_id = 1;
+  string version_tag = 2;                              // 新版本标签（可选）
+  string description = 3;                              // 新描述（可选）
+}
+message UpdateDEMAssetrsp {
+  DEMAsset asset = 1;
+}
+
+message ActivateDEMVersionreq {
+  string asset_id = 1;                                 // 要激活的 DEM 资产 ID
+}
+message ActivateDEMVersionrsp {
+  DEMAsset asset = 1;
+}
+
+message ArchiveDEMAssetreq {
+  string asset_id = 1;
+}
+message ArchiveDEMAssetrsp {
+  bool success = 1;
+}
+
+message DeleteDEMAssetreq {
+  string asset_id = 1;
+}
+message DeleteDEMAssetrsp {
+  bool success = 1;
+}
+
+// ===========================
+// 建筑数据管理
+// ===========================
+
+message Building {
+  string building_id = 1;
+  string version_id = 2;
+  anemos.common.v1.Polygon footprint = 3;             // 建筑轮廓
+  double height = 4;                                  // 楼高（米）
+  double ground_elevation = 5;                        // 地面高程（米）
+  map<string, string> attributes = 6;                 // 扩展属性
+}
+
+message BuildingVersion {
+  string version_id = 1;
+  string region_id = 2;                              // 所属受管区域 ID
+  string version_tag = 3;
+  string status = 4;                                  // active / inactive / importing
+  int32 building_count = 5;
+  anemos.common.v1.BoundingBox coverage = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp activated_at = 8;
+}
+
+message ImportBuildingsreq {
+  string region_id = 1;                               // 目标受管区域 ID
+  string file_reference = 2;                          // 建筑数据文件引用
+  string version_tag = 3;
+  string format = 4;                                  // GeoJSON / CityGML / 3DTiles
+  string description = 5;
+}
+message ImportBuildingsrsp {
+  string import_job_id = 1;
+  string version_id = 2;
+  string status = 3;
+}
+
+message ListBuildingsreq {
+  string region_id = 1;                               // 受管区域 ID
+  string version_id = 2;                              // 可选，为空则使用当前活动版本
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListBuildingsrsp {
+  repeated Building buildings = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message ListBuildingVersionsreq {
+  string region_id = 1;                               // 受管区域 ID（可选）
+  string status_filter = 2;                           // 状态过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListBuildingVersionsrsp {
+  repeated BuildingVersion versions = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message ActivateBuildingVersionreq {
+  string version_id = 1;
+}
+message ActivateBuildingVersionrsp {
+  bool success = 1;
+  string message = 2;
+}
+
+// ===========================
+// 禁飞区 / 空域约束
+// ===========================
+
+message NoFlyZone {
+  string zone_id = 1;
+  string name = 2;
+  string zone_type = 3;                               // permanent / temporary / restricted
+  anemos.common.v1.Polygon boundary = 4;
+  double min_alt = 5;                                 // 最低限制高度
+  double max_alt = 6;                                 // 最高限制高度
+  google.protobuf.Timestamp effective_from = 7;
+  google.protobuf.Timestamp effective_to = 8;
+  string description = 9;
+}
+
+message NoFlyZoneSet {
+  string set_id = 1;
+  string region_id = 2;                              // 所属受管区域 ID
+  string version_tag = 3;
+  repeated NoFlyZone zones = 4;
+  string status = 5;                                  // active / inactive
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message ImportNoFlyZoneSetreq {
+  string region_id = 1;                               // 目标受管区域 ID
+  string file_reference = 2;
+  string version_tag = 3;
+  google.protobuf.Timestamp effective_from = 4;
+  google.protobuf.Timestamp effective_to = 5;
+}
+message ImportNoFlyZoneSetrsp {
+  string import_job_id = 1;
+  string set_id = 2;
+  string status = 3;
+}
+
+message GetNoFlyZoneSetreq {
+  string region_id = 1;                               // 受管区域 ID
+  google.protobuf.Timestamp query_time = 2;           // 查询生效时间点
+  string version_id = 3;                              // 可选，指定版本
+}
+message GetNoFlyZoneSetrsp {
+  NoFlyZoneSet zone_set = 1;
+}
+
+message ListNoFlyZoneSetsreq {
+  string region_id = 1;                               // 受管区域 ID（可选）
+  string status_filter = 2;
+  anemos.common.v1.Paginationreq pagination = 3;
+}
+message ListNoFlyZoneSetsrsp {
+  repeated NoFlyZoneSet zone_sets = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+// ===========================
+// 数据导入任务
+// ===========================
+
+message ImportJob {
+  string job_id = 1;
+  string region_id = 2;                              // 所属受管区域 ID
+  string asset_type = 3;                              // dem / building / no_fly_zone / cfd / meteo
+  string status = 4;                                  // queued / running / succeeded / failed
+  string file_reference = 5;
+  string related_asset_id = 6;                        // 关联的资产 ID
+  string failure_reason = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp finished_at = 9;
+}
+
+message ListImportJobsreq {
+  string region_id = 1;                               // 受管区域 ID（可选）
+  string asset_type = 2;                              // 资产类型过滤（可选）
+  string status = 3;                                  // 状态过滤（可选）
+  anemos.common.v1.TimeRange time_range = 4;
+  anemos.common.v1.Paginationreq pagination = 5;
+}
+message ListImportJobsrsp {
+  repeated ImportJob jobs = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message GetImportJobreq {
+  string job_id = 1;
+}
+message GetImportJobrsp {
+  ImportJob job = 1;
+}
+
+// ===========================
+// 高程查询
+// ===========================
+
+message ElevationPoint {
+  anemos.common.v1.Coordinate coordinate = 1;
+  double elevation = 2;                               // 高程值（米）
+}
+
+message QueryElevationreq {
+  repeated anemos.common.v1.Coordinate points = 1;    // 查询坐标点列表
+}
+message QueryElevationrsp {
+  repeated ElevationPoint results = 1;
+}
+
+// ===========================
+// 背景气象
+// ===========================
+
+// 气象快照（单一时刻的气象场数据）
+message MeteoSnapshot {
+  string snapshot_id = 1;
+  anemos.common.v1.BoundingBox coverage = 2;
+  google.protobuf.Timestamp forecast_time = 3;        // 预报目标时间
+  google.protobuf.Timestamp issued_at = 4;            // 预报发布时间
+  string source = 5;                                  // 数据源（如 GFS / ECMWF / ERA5）
+  double resolution_deg = 6;                          // 空间分辨率（度）
+  MeteoFields fields = 7;                             // 气象场数据
+}
+
+message MeteoFields {
+  double wind_u = 1;                                  // U 分量风速 (m/s)
+  double wind_v = 2;                                  // V 分量风速 (m/s)
+  double wind_w = 3;                                  // W 分量风速 (m/s)
+  double temperature = 4;                             // 温度 (K)
+  double pressure = 5;                                // 气压 (hPa)
+  double humidity = 6;                                // 相对湿度 (%)
+  double precipitation = 7;                           // 降水量 (mm/h)
+}
+
+message GetMeteoSnapshotreq {
+  string region_id = 1;                               // 受管区域 ID
+  google.protobuf.Timestamp query_time = 2;
+  string snapshot_id = 3;                             // 按快照 ID 精确查询（优先级高于 region_id + query_time）
+}
+message GetMeteoSnapshotrsp {
+  MeteoSnapshot snapshot = 1;
+}
+
+// 气象时序数据
+message MeteoTimeseriesPoint {
+  google.protobuf.Timestamp time = 1;
+  MeteoFields fields = 2;
+}
+
+message QueryMeteoTimeseriesreq {
+  string region_id = 1;                               // 受管区域 ID
+  anemos.common.v1.TimeRange time_range = 2;
+  repeated string elements = 3;                       // 气象要素列表（wind_u, wind_v, temperature 等）
+}
+message QueryMeteoTimeseriesrsp {
+  repeated MeteoTimeseriesPoint data_points = 1;
+  string source = 2;
+}
+
+// ===========================
+// CFD 仿真库
+// ===========================
+
+message CFDCase {
+  string case_id = 1;
+  string region_id = 2;                              // 所属受管区域 ID
+  string scene_id = 3;                                // 关联的建筑群场景 ID
+  double inflow_speed = 4;                            // 来流风速 (m/s)
+  double inflow_direction = 5;                        // 来流风向 (°)
+  string stability_class = 6;                         // 大气稳定度等级
+  string simulation_method = 7;                       // LES / RANS
+  double grid_resolution_h = 8;                       // 水平网格分辨率 (m)
+  double grid_resolution_v = 9;                       // 垂直网格分辨率 (m)
+  string result_path = 10;                            // 结果对象存储路径
+  repeated string tags = 11;                          // 标签
+  string status = 12;                                 // active / deprecated
+  google.protobuf.Timestamp created_at = 13;
+}
+
+message ListCFDCasesreq {
+  string region_id = 1;                               // 受管区域 ID（可选）
+  string scene_id = 2;                                // 场景过滤（可选）
+  double min_speed = 3;                               // 最小风速过滤（可选）
+  double max_speed = 4;                               // 最大风速过滤（可选）
+  double direction_from = 5;                          // 风向范围起始（可选）
+  double direction_to = 6;                            // 风向范围结束（可选）
+  string stability_class = 7;                         // 稳定度过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 8;
+}
+message ListCFDCasesrsp {
+  repeated CFDCase cases = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message RegisterCFDCasereq {
+  CFDCase case_data = 1;                              // 工况元数据
+}
+message RegisterCFDCasersp {
+  string case_id = 1;
+  bool success = 2;
+}
+
+// ===========================
+// 观测数据
+// ===========================
+
+// 观测源类型
+enum ObservationSourceType {
+  OBSERVATION_SOURCE_UNSPECIFIED = 0;
+  OBSERVATION_SOURCE_RADAR = 1;                       // 雷达
+  OBSERVATION_SOURCE_LIDAR = 2;                       // 激光雷达
+  OBSERVATION_SOURCE_ANEMOMETER = 3;                  // 风速计
+  OBSERVATION_SOURCE_UAV = 4;                         // 无人机机载
+}
+
+message Observation {
+  string observation_id = 1;
+  string station_id = 2;
+  google.protobuf.Timestamp observed_at = 3;
+  anemos.common.v1.Coordinate3D location = 4;
+  ObservationMeasurements measurements = 5;
+  ObservationSourceType source_type = 6;
+  string quality_flag = 7;                            // raw / qc_passed / qc_failed
+}
+
+message ObservationMeasurements {
+  double wind_speed = 1;                              // 风速 (m/s)
+  double wind_dir = 2;                                // 风向 (°)
+  double temperature = 3;                             // 温度 (°C)
+  double pressure = 4;                                // 气压 (hPa)
+}
+
+message IngestObservationreq {
+  string region_id = 1;                               // 所属受管区域 ID
+  string station_id = 2;
+  google.protobuf.Timestamp observed_at = 3;
+  anemos.common.v1.Coordinate3D location = 4;
+  ObservationMeasurements measurements = 5;
+  ObservationSourceType source_type = 6;
+  string quality_flag = 7;                            // raw / qc_passed
+}
+message IngestObservationrsp {
+  string ingest_id = 1;
+  string station_id = 2;
+  bool accepted = 3;
+  string observation_id = 4;
+  AssimilationTrigger assimilation = 5;               // 是否触发同化
+  google.protobuf.Timestamp received_at = 6;
+}
+
+message AssimilationTrigger {
+  bool triggered = 1;
+  string job_id = 2;
+  string status = 3;                                  // queued / skipped
+}
+
+message QueryObservationsreq {
+  string region_id = 1;                               // 受管区域 ID（可选）
+  string station_id = 2;                              // 站点过滤（可选）
+  anemos.common.v1.TimeRange time_range = 3;
+  ObservationSourceType source_type = 4;              // 来源过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 5;
+}
+message QueryObservationsrsp {
+  repeated Observation observations = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+// 获取区域内每个站点最新一条观测记录
+message GetLatestObsByStationreq {
+  string region_id = 1;                               // 受管区域 ID（必填）
+}
+message GetLatestObsByStationrsp {
+  repeated Observation observations = 1;              // 每个站点最新的一条观测
+  int32 station_count = 2;                            // 返回的站点数量
+}

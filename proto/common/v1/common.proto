@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package anemos.common.v1;
+
+option go_package = "github.com/cocowenlw/anemos-proto/gen/go/common/v1;commonv1";
+
+import "google/protobuf/timestamp.proto";
+
+// ============================================================
+// 公共消息定义 — 被所有服务共享引用
+// ============================================================
+
+// --- 分页 ---
+
+// 偏移量分页请求（REST 层常用）
+message Paginationreq {
+  int32 page = 1;       // 页码，从 1 开始
+  int32 page_size = 2;  // 每页数量，默认 20，最大 100
+}
+
+// 偏移量分页响应
+message Paginationrsp {
+  int32 total = 1;      // 总记录数
+  int32 page = 2;       // 当前页码
+  int32 page_size = 3;  // 每页数量
+}
+
+// 游标分页请求（深分页场景）
+message CursorPaginationreq {
+  int32 page_size = 1;     // 每页数量
+  string page_token = 2;   // 游标令牌（首页为空）
+}
+
+// 游标分页响应
+message CursorPaginationrsp {
+  string next_page_token = 1; // 下一页游标（为空表示已到末页）
+  int32 total_count = 2;      // 总记录数（可选，部分接口可能不返回）
+}
+
+// --- 空间类型 ---
+
+// 二维坐标点（经纬度）
+message Coordinate {
+  double lon = 1; // 经度 (WGS84)
+  double lat = 2; // 纬度 (WGS84)
+}
+
+// 三维坐标点（经纬度 + 高度）
+message Coordinate3D {
+  double lon = 1; // 经度 (WGS84)
+  double lat = 2; // 纬度 (WGS84)
+  double alt = 3; // 高度 (米)
+}
+
+// 包围盒区域
+message BoundingBox {
+  double min_lon = 1;
+  double min_lat = 2;
+  double max_lon = 3;
+  double max_lat = 4;
+}
+
+// 多边形区域
+message Polygon {
+  repeated Coordinate vertices = 1; // 多边形顶点列表（首尾闭合）
+}
+
+// 区域定义（支持包围盒或多边形）
+message AreaOfInterest {
+  string crs = 1; // 坐标参考系，默认 "EPSG:4326"
+  oneof geometry {
+    BoundingBox bbox = 2;
+    Polygon polygon = 3;
+  }
+}
+
+// --- 受管区域（Region）---
+
+// 区域状态枚举
+enum RegionStatus {
+  REGION_STATUS_UNSPECIFIED = 0;
+  REGION_STATUS_ACTIVE = 1;       // 已激活，数据可用
+  REGION_STATUS_INACTIVE = 2;     // 已停用
+  REGION_STATUS_PREPARING = 3;    // 准备中（数据资产导入中）
+}
+
+// 受管区域 — 全系统一等实体，以 region_id 作为全链路主查询键
+message Region {
+  string region_id = 1;                            // 区域唯一标识（UUID）
+  string name = 2;                                 // 区域名称（如"深圳南山科技园片区"）
+  string description = 3;                          // 区域描述
+  AreaOfInterest boundary = 4;                     // 区域边界（AOI），定义空间范围
+  double min_altitude = 5;                         // 最低管控高度 (米 AGL)
+  double max_altitude = 6;                         // 最高管控高度 (米 AGL)
+  RegionStatus status = 7;                         // 区域状态
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+// --- 时间范围 ---
+
+message TimeRange {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}
+
+// --- 业务错误 ---
+
+// 错误码枚举
+// 与《技术设计补充-API接口契约》中的错误码契约保持一致。
+enum ErrorCode {
+  ERROR_CODE_UNSPECIFIED = 0;
+
+  ERROR_CODE_INVALID_PARAMETER = 10001;
+  ERROR_CODE_RESOURCE_NOT_FOUND = 10002;
+  ERROR_CODE_RESOURCE_ALREADY_EXISTS = 10003;
+  ERROR_CODE_PERMISSION_DENIED = 10004;
+  ERROR_CODE_UNAUTHENTICATED = 10005;
+  ERROR_CODE_RATE_LIMITED = 10006;
+  ERROR_CODE_INTERNAL_ERROR = 10007;
+  ERROR_CODE_SERVICE_UNAVAILABLE = 10008;
+  ERROR_CODE_OPERATION_TIMEOUT = 10009;
+
+  ERROR_CODE_DEM_REGION_NOT_COVERED = 20001;
+  ERROR_CODE_BUILDING_VERSION_NOT_FOUND = 20002;
+  ERROR_CODE_METEO_DATA_EXPIRED = 20003;
+
+  ERROR_CODE_WIND_FIELD_NOT_FOUND = 30001;
+  ERROR_CODE_WIND_FIELD_NOT_AVAILABLE = 30002;
+  ERROR_CODE_MODEL_NOT_READY = 30003;
+  ERROR_CODE_WIND_GENERATION_FAILED = 30004;
+
+  ERROR_CODE_ROUTE_NOT_FOUND = 40001;
+  ERROR_CODE_ROUTE_ASSESSMENT_FAILED = 40002;
+  ERROR_CODE_RISK_THRESHOLD_EXCEEDED = 40003;
+
+  ERROR_CODE_USER_NOT_FOUND = 50001;
+  ERROR_CODE_ALERT_RULE_INVALID = 50002;
+  ERROR_CODE_REGION_NOT_FOUND = 50003;             // 区域不存在
+  ERROR_CODE_REGION_ACCESS_DENIED = 50004;         // 用户无权访问该区域
+  ERROR_CODE_REGION_OVERLAP = 50005;               // 区域边界重叠（初期不允许）
+}
+
+// 业务错误码，嵌入 gRPC Status.details
+message BusinessError {
+  int32 code = 1;          // 业务错误码，对应 ErrorCode 枚举值
+  string message = 2;      // 面向开发者的错误描述
+  string user_message = 3; // 面向用户的友好提示
+}
+
+// --- 异步作业状态 ---
+
+// 作业状态枚举
+enum JobStatus {
+  JOB_STATUS_UNSPECIFIED = 0;
+  JOB_STATUS_QUEUED = 1;
+  JOB_STATUS_RUNNING = 2;
+  JOB_STATUS_SUCCEEDED = 3;
+  JOB_STATUS_FAILED = 4;
+  JOB_STATUS_CANCELLED = 5;
+}
+
+// 作业阶段状态
+message JobStageStatus {
+  string stage_name = 1;                         // 如 queued / preprocessing / inference / postprocessing
+  string status = 2;
+  google.protobuf.Timestamp started_at = 3;
+  google.protobuf.Timestamp finished_at = 4;
+}
+
+// --- 排序 ---
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
