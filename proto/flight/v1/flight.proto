@@ -405,18 +405,32 @@ message RiskHeatmapreq {
   string wind_field_result_id = 2;
   double height = 3;                                   // 目标高度层（米）
   RiskType risk_type = 4;                              // 风险类型
-  int32 grid_resolution = 5;                           // 展示分辨率（米），默认 100，最小 20
+  int32 grid_resolution = 5;                           // 展示分辨率（米），默认 100，最小 20（仅离散模式使用）
   string threshold_template_id = 6;                    // 阈值模板（可选）
   double vertical_offset = 7;                          // 垂直采样偏移（米），预留，默认 50
 }
+
+// 连续风险场（纹理渲染模式使用）
+// values 为 width*height 个 Float32 的小端字节序列化，按行优先排列
+// 坐标约定与 WindFieldSlice 一致：values[y*width+x] 对应南起向北、西起向东的地理方向
+message ContinuousRiskField {
+  int32 width = 1;                                     // 网格列数
+  int32 height = 2;                                    // 网格行数
+  anemos.common.v1.BoundingBox extent = 3;             // 地理边界
+  bytes values = 4;                                    // Float32 LE 打包的归一化风险值 [value_min, value_max]
+  double value_min = 5;                                // 值域下限
+  double value_max = 6;                                // 值域上限
+}
+
 message RiskHeatmaprsp {
   string heatmap_id = 1;
   string wind_field_result_id = 2;
   RiskType risk_type = 3;
   double height = 4;
   repeated RiskHeatmapLegend legend = 5;
-  repeated RiskHeatmapCell cells = 6;
+  repeated RiskHeatmapCell cells = 6;                  // 离散模式（legacy：crosswind/turbulence/composite）填充
   google.protobuf.Timestamp generated_at = 7;
+  ContinuousRiskField continuous_field = 8;            // 连续模式（风切变）填充，替代 cells
 }
 
 // ===========================
