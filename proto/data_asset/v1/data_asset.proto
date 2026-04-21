@@ -331,8 +331,9 @@ message MeteoFields {
 
 message GetMeteoSnapshotreq {
   string region_id = 1;                               // 受管区域 ID
-  google.protobuf.Timestamp query_time = 2;
-  string snapshot_id = 3;                             // 按快照 ID 精确查询（优先级高于 region_id + query_time）
+  google.protobuf.Timestamp query_time = 2;           // 按 created_at 回溯（默认语义）
+  string snapshot_id = 3;                             // 按快照 ID 精确查询（优先级最高）
+  google.protobuf.Timestamp at_forecast_time = 4;     // 按 forecast_time 精确匹配（优先级次于 snapshot_id）
 }
 message GetMeteoSnapshotrsp {
   MeteoSnapshot snapshot = 1;

@@ -2741,12 +2741,13 @@ func (x *MeteoFields) GetPrecipitation() float64 {
 }
 
 type GetMeteoSnapshotreq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	RegionId      string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"` // 受管区域 ID
-	QueryTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=query_time,json=queryTime,proto3" json:"query_time,omitempty"`
-	SnapshotId    string                 `protobuf:"bytes,3,opt,name=snapshot_id,json=snapshotId,proto3" json:"snapshot_id,omitempty"` // 按快照 ID 精确查询（优先级高于 region_id + query_time）
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RegionId       string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                     // 受管区域 ID
+	QueryTime      *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=query_time,json=queryTime,proto3" json:"query_time,omitempty"`                  // 按 created_at 回溯（默认语义）
+	SnapshotId     string                 `protobuf:"bytes,3,opt,name=snapshot_id,json=snapshotId,proto3" json:"snapshot_id,omitempty"`               // 按快照 ID 精确查询（优先级最高）
+	AtForecastTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=at_forecast_time,json=atForecastTime,proto3" json:"at_forecast_time,omitempty"` // 按 forecast_time 精确匹配（优先级次于 snapshot_id）
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetMeteoSnapshotreq) Reset() {
@@ -2798,6 +2799,13 @@ func (x *GetMeteoSnapshotreq) GetSnapshotId() string {
 		return x.SnapshotId
 	}
 	return ""
+}
+
+func (x *GetMeteoSnapshotreq) GetAtForecastTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.AtForecastTime
+	}
+	return nil
 }
 
 type GetMeteoSnapshotrsp struct {
@@ -4257,13 +4265,14 @@ const file_data_asset_v1_data_asset_proto_rawDesc = "" +
 	"\vtemperature\x18\x04 \x01(\x01R\vtemperature\x12\x1a\n" +
 	"\bpressure\x18\x05 \x01(\x01R\bpressure\x12\x1a\n" +
 	"\bhumidity\x18\x06 \x01(\x01R\bhumidity\x12$\n" +
-	"\rprecipitation\x18\a \x01(\x01R\rprecipitation\"\x8e\x01\n" +
+	"\rprecipitation\x18\a \x01(\x01R\rprecipitation\"\xd4\x01\n" +
 	"\x13GetMeteoSnapshotreq\x12\x1b\n" +
 	"\tregion_id\x18\x01 \x01(\tR\bregionId\x129\n" +
 	"\n" +
 	"query_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tqueryTime\x12\x1f\n" +
 	"\vsnapshot_id\x18\x03 \x01(\tR\n" +
-	"snapshotId\"V\n" +
+	"snapshotId\x12D\n" +
+	"\x10at_forecast_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x0eatForecastTime\"V\n" +
 	"\x13GetMeteoSnapshotrsp\x12?\n" +
 	"\bsnapshot\x18\x01 \x01(\v2#.anemos.data_asset.v1.MeteoSnapshotR\bsnapshot\"\x81\x01\n" +
 	"\x14MeteoTimeseriesPoint\x12.\n" +
@@ -4547,85 +4556,86 @@ var file_data_asset_v1_data_asset_proto_depIdxs = []int32{
 	65, // 45: anemos.data_asset.v1.MeteoSnapshot.issued_at:type_name -> google.protobuf.Timestamp
 	43, // 46: anemos.data_asset.v1.MeteoSnapshot.fields:type_name -> anemos.data_asset.v1.MeteoFields
 	65, // 47: anemos.data_asset.v1.GetMeteoSnapshotreq.query_time:type_name -> google.protobuf.Timestamp
-	42, // 48: anemos.data_asset.v1.GetMeteoSnapshotrsp.snapshot:type_name -> anemos.data_asset.v1.MeteoSnapshot
-	65, // 49: anemos.data_asset.v1.MeteoTimeseriesPoint.time:type_name -> google.protobuf.Timestamp
-	43, // 50: anemos.data_asset.v1.MeteoTimeseriesPoint.fields:type_name -> anemos.data_asset.v1.MeteoFields
-	69, // 51: anemos.data_asset.v1.QueryMeteoTimeseriesreq.time_range:type_name -> anemos.common.v1.TimeRange
-	46, // 52: anemos.data_asset.v1.QueryMeteoTimeseriesrsp.data_points:type_name -> anemos.data_asset.v1.MeteoTimeseriesPoint
-	65, // 53: anemos.data_asset.v1.CFDCase.created_at:type_name -> google.protobuf.Timestamp
-	66, // 54: anemos.data_asset.v1.ListCFDCasesreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	49, // 55: anemos.data_asset.v1.ListCFDCasesrsp.cases:type_name -> anemos.data_asset.v1.CFDCase
-	67, // 56: anemos.data_asset.v1.ListCFDCasesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	49, // 57: anemos.data_asset.v1.RegisterCFDCasereq.case_data:type_name -> anemos.data_asset.v1.CFDCase
-	65, // 58: anemos.data_asset.v1.Observation.observed_at:type_name -> google.protobuf.Timestamp
-	71, // 59: anemos.data_asset.v1.Observation.location:type_name -> anemos.common.v1.Coordinate3D
-	55, // 60: anemos.data_asset.v1.Observation.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
-	0,  // 61: anemos.data_asset.v1.Observation.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
-	65, // 62: anemos.data_asset.v1.IngestObservationreq.observed_at:type_name -> google.protobuf.Timestamp
-	71, // 63: anemos.data_asset.v1.IngestObservationreq.location:type_name -> anemos.common.v1.Coordinate3D
-	55, // 64: anemos.data_asset.v1.IngestObservationreq.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
-	0,  // 65: anemos.data_asset.v1.IngestObservationreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
-	58, // 66: anemos.data_asset.v1.IngestObservationrsp.assimilation:type_name -> anemos.data_asset.v1.AssimilationTrigger
-	65, // 67: anemos.data_asset.v1.IngestObservationrsp.received_at:type_name -> google.protobuf.Timestamp
-	69, // 68: anemos.data_asset.v1.QueryObservationsreq.time_range:type_name -> anemos.common.v1.TimeRange
-	0,  // 69: anemos.data_asset.v1.QueryObservationsreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
-	66, // 70: anemos.data_asset.v1.QueryObservationsreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	54, // 71: anemos.data_asset.v1.QueryObservationsrsp.observations:type_name -> anemos.data_asset.v1.Observation
-	67, // 72: anemos.data_asset.v1.QueryObservationsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	54, // 73: anemos.data_asset.v1.GetLatestObsByStationrsp.observations:type_name -> anemos.data_asset.v1.Observation
-	2,  // 74: anemos.data_asset.v1.DataAssetService.GetDEM:input_type -> anemos.data_asset.v1.GetDEMreq
-	4,  // 75: anemos.data_asset.v1.DataAssetService.ListDEMAssets:input_type -> anemos.data_asset.v1.ListDEMAssetsreq
-	6,  // 76: anemos.data_asset.v1.DataAssetService.ImportDEM:input_type -> anemos.data_asset.v1.ImportDEMreq
-	8,  // 77: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:input_type -> anemos.data_asset.v1.UpdateDEMAssetreq
-	10, // 78: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:input_type -> anemos.data_asset.v1.ActivateDEMVersionreq
-	12, // 79: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:input_type -> anemos.data_asset.v1.ArchiveDEMAssetreq
-	14, // 80: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:input_type -> anemos.data_asset.v1.DeleteDEMAssetreq
-	18, // 81: anemos.data_asset.v1.DataAssetService.ImportBuildings:input_type -> anemos.data_asset.v1.ImportBuildingsreq
-	20, // 82: anemos.data_asset.v1.DataAssetService.ListBuildings:input_type -> anemos.data_asset.v1.ListBuildingsreq
-	22, // 83: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:input_type -> anemos.data_asset.v1.ListBuildingVersionsreq
-	24, // 84: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:input_type -> anemos.data_asset.v1.ActivateBuildingVersionreq
-	28, // 85: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:input_type -> anemos.data_asset.v1.ImportNoFlyZoneSetreq
-	30, // 86: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:input_type -> anemos.data_asset.v1.GetNoFlyZoneSetreq
-	32, // 87: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:input_type -> anemos.data_asset.v1.ListNoFlyZoneSetsreq
-	35, // 88: anemos.data_asset.v1.DataAssetService.ListImportJobs:input_type -> anemos.data_asset.v1.ListImportJobsreq
-	37, // 89: anemos.data_asset.v1.DataAssetService.GetImportJob:input_type -> anemos.data_asset.v1.GetImportJobreq
-	40, // 90: anemos.data_asset.v1.DataAssetService.QueryElevation:input_type -> anemos.data_asset.v1.QueryElevationreq
-	44, // 91: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:input_type -> anemos.data_asset.v1.GetMeteoSnapshotreq
-	47, // 92: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:input_type -> anemos.data_asset.v1.QueryMeteoTimeseriesreq
-	50, // 93: anemos.data_asset.v1.DataAssetService.ListCFDCases:input_type -> anemos.data_asset.v1.ListCFDCasesreq
-	52, // 94: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:input_type -> anemos.data_asset.v1.RegisterCFDCasereq
-	56, // 95: anemos.data_asset.v1.DataAssetService.IngestObservation:input_type -> anemos.data_asset.v1.IngestObservationreq
-	59, // 96: anemos.data_asset.v1.DataAssetService.QueryObservations:input_type -> anemos.data_asset.v1.QueryObservationsreq
-	61, // 97: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:input_type -> anemos.data_asset.v1.GetLatestObsByStationreq
-	3,  // 98: anemos.data_asset.v1.DataAssetService.GetDEM:output_type -> anemos.data_asset.v1.GetDEMrsp
-	5,  // 99: anemos.data_asset.v1.DataAssetService.ListDEMAssets:output_type -> anemos.data_asset.v1.ListDEMAssetsrsp
-	7,  // 100: anemos.data_asset.v1.DataAssetService.ImportDEM:output_type -> anemos.data_asset.v1.ImportDEMrsp
-	9,  // 101: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:output_type -> anemos.data_asset.v1.UpdateDEMAssetrsp
-	11, // 102: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:output_type -> anemos.data_asset.v1.ActivateDEMVersionrsp
-	13, // 103: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:output_type -> anemos.data_asset.v1.ArchiveDEMAssetrsp
-	15, // 104: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:output_type -> anemos.data_asset.v1.DeleteDEMAssetrsp
-	19, // 105: anemos.data_asset.v1.DataAssetService.ImportBuildings:output_type -> anemos.data_asset.v1.ImportBuildingsrsp
-	21, // 106: anemos.data_asset.v1.DataAssetService.ListBuildings:output_type -> anemos.data_asset.v1.ListBuildingsrsp
-	23, // 107: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:output_type -> anemos.data_asset.v1.ListBuildingVersionsrsp
-	25, // 108: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:output_type -> anemos.data_asset.v1.ActivateBuildingVersionrsp
-	29, // 109: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:output_type -> anemos.data_asset.v1.ImportNoFlyZoneSetrsp
-	31, // 110: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:output_type -> anemos.data_asset.v1.GetNoFlyZoneSetrsp
-	33, // 111: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:output_type -> anemos.data_asset.v1.ListNoFlyZoneSetsrsp
-	36, // 112: anemos.data_asset.v1.DataAssetService.ListImportJobs:output_type -> anemos.data_asset.v1.ListImportJobsrsp
-	38, // 113: anemos.data_asset.v1.DataAssetService.GetImportJob:output_type -> anemos.data_asset.v1.GetImportJobrsp
-	41, // 114: anemos.data_asset.v1.DataAssetService.QueryElevation:output_type -> anemos.data_asset.v1.QueryElevationrsp
-	45, // 115: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:output_type -> anemos.data_asset.v1.GetMeteoSnapshotrsp
-	48, // 116: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:output_type -> anemos.data_asset.v1.QueryMeteoTimeseriesrsp
-	51, // 117: anemos.data_asset.v1.DataAssetService.ListCFDCases:output_type -> anemos.data_asset.v1.ListCFDCasesrsp
-	53, // 118: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:output_type -> anemos.data_asset.v1.RegisterCFDCasersp
-	57, // 119: anemos.data_asset.v1.DataAssetService.IngestObservation:output_type -> anemos.data_asset.v1.IngestObservationrsp
-	60, // 120: anemos.data_asset.v1.DataAssetService.QueryObservations:output_type -> anemos.data_asset.v1.QueryObservationsrsp
-	62, // 121: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:output_type -> anemos.data_asset.v1.GetLatestObsByStationrsp
-	98, // [98:122] is the sub-list for method output_type
-	74, // [74:98] is the sub-list for method input_type
-	74, // [74:74] is the sub-list for extension type_name
-	74, // [74:74] is the sub-list for extension extendee
-	0,  // [0:74] is the sub-list for field type_name
+	65, // 48: anemos.data_asset.v1.GetMeteoSnapshotreq.at_forecast_time:type_name -> google.protobuf.Timestamp
+	42, // 49: anemos.data_asset.v1.GetMeteoSnapshotrsp.snapshot:type_name -> anemos.data_asset.v1.MeteoSnapshot
+	65, // 50: anemos.data_asset.v1.MeteoTimeseriesPoint.time:type_name -> google.protobuf.Timestamp
+	43, // 51: anemos.data_asset.v1.MeteoTimeseriesPoint.fields:type_name -> anemos.data_asset.v1.MeteoFields
+	69, // 52: anemos.data_asset.v1.QueryMeteoTimeseriesreq.time_range:type_name -> anemos.common.v1.TimeRange
+	46, // 53: anemos.data_asset.v1.QueryMeteoTimeseriesrsp.data_points:type_name -> anemos.data_asset.v1.MeteoTimeseriesPoint
+	65, // 54: anemos.data_asset.v1.CFDCase.created_at:type_name -> google.protobuf.Timestamp
+	66, // 55: anemos.data_asset.v1.ListCFDCasesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	49, // 56: anemos.data_asset.v1.ListCFDCasesrsp.cases:type_name -> anemos.data_asset.v1.CFDCase
+	67, // 57: anemos.data_asset.v1.ListCFDCasesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	49, // 58: anemos.data_asset.v1.RegisterCFDCasereq.case_data:type_name -> anemos.data_asset.v1.CFDCase
+	65, // 59: anemos.data_asset.v1.Observation.observed_at:type_name -> google.protobuf.Timestamp
+	71, // 60: anemos.data_asset.v1.Observation.location:type_name -> anemos.common.v1.Coordinate3D
+	55, // 61: anemos.data_asset.v1.Observation.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
+	0,  // 62: anemos.data_asset.v1.Observation.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
+	65, // 63: anemos.data_asset.v1.IngestObservationreq.observed_at:type_name -> google.protobuf.Timestamp
+	71, // 64: anemos.data_asset.v1.IngestObservationreq.location:type_name -> anemos.common.v1.Coordinate3D
+	55, // 65: anemos.data_asset.v1.IngestObservationreq.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
+	0,  // 66: anemos.data_asset.v1.IngestObservationreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
+	58, // 67: anemos.data_asset.v1.IngestObservationrsp.assimilation:type_name -> anemos.data_asset.v1.AssimilationTrigger
+	65, // 68: anemos.data_asset.v1.IngestObservationrsp.received_at:type_name -> google.protobuf.Timestamp
+	69, // 69: anemos.data_asset.v1.QueryObservationsreq.time_range:type_name -> anemos.common.v1.TimeRange
+	0,  // 70: anemos.data_asset.v1.QueryObservationsreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
+	66, // 71: anemos.data_asset.v1.QueryObservationsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	54, // 72: anemos.data_asset.v1.QueryObservationsrsp.observations:type_name -> anemos.data_asset.v1.Observation
+	67, // 73: anemos.data_asset.v1.QueryObservationsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	54, // 74: anemos.data_asset.v1.GetLatestObsByStationrsp.observations:type_name -> anemos.data_asset.v1.Observation
+	2,  // 75: anemos.data_asset.v1.DataAssetService.GetDEM:input_type -> anemos.data_asset.v1.GetDEMreq
+	4,  // 76: anemos.data_asset.v1.DataAssetService.ListDEMAssets:input_type -> anemos.data_asset.v1.ListDEMAssetsreq
+	6,  // 77: anemos.data_asset.v1.DataAssetService.ImportDEM:input_type -> anemos.data_asset.v1.ImportDEMreq
+	8,  // 78: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:input_type -> anemos.data_asset.v1.UpdateDEMAssetreq
+	10, // 79: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:input_type -> anemos.data_asset.v1.ActivateDEMVersionreq
+	12, // 80: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:input_type -> anemos.data_asset.v1.ArchiveDEMAssetreq
+	14, // 81: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:input_type -> anemos.data_asset.v1.DeleteDEMAssetreq
+	18, // 82: anemos.data_asset.v1.DataAssetService.ImportBuildings:input_type -> anemos.data_asset.v1.ImportBuildingsreq
+	20, // 83: anemos.data_asset.v1.DataAssetService.ListBuildings:input_type -> anemos.data_asset.v1.ListBuildingsreq
+	22, // 84: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:input_type -> anemos.data_asset.v1.ListBuildingVersionsreq
+	24, // 85: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:input_type -> anemos.data_asset.v1.ActivateBuildingVersionreq
+	28, // 86: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:input_type -> anemos.data_asset.v1.ImportNoFlyZoneSetreq
+	30, // 87: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:input_type -> anemos.data_asset.v1.GetNoFlyZoneSetreq
+	32, // 88: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:input_type -> anemos.data_asset.v1.ListNoFlyZoneSetsreq
+	35, // 89: anemos.data_asset.v1.DataAssetService.ListImportJobs:input_type -> anemos.data_asset.v1.ListImportJobsreq
+	37, // 90: anemos.data_asset.v1.DataAssetService.GetImportJob:input_type -> anemos.data_asset.v1.GetImportJobreq
+	40, // 91: anemos.data_asset.v1.DataAssetService.QueryElevation:input_type -> anemos.data_asset.v1.QueryElevationreq
+	44, // 92: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:input_type -> anemos.data_asset.v1.GetMeteoSnapshotreq
+	47, // 93: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:input_type -> anemos.data_asset.v1.QueryMeteoTimeseriesreq
+	50, // 94: anemos.data_asset.v1.DataAssetService.ListCFDCases:input_type -> anemos.data_asset.v1.ListCFDCasesreq
+	52, // 95: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:input_type -> anemos.data_asset.v1.RegisterCFDCasereq
+	56, // 96: anemos.data_asset.v1.DataAssetService.IngestObservation:input_type -> anemos.data_asset.v1.IngestObservationreq
+	59, // 97: anemos.data_asset.v1.DataAssetService.QueryObservations:input_type -> anemos.data_asset.v1.QueryObservationsreq
+	61, // 98: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:input_type -> anemos.data_asset.v1.GetLatestObsByStationreq
+	3,  // 99: anemos.data_asset.v1.DataAssetService.GetDEM:output_type -> anemos.data_asset.v1.GetDEMrsp
+	5,  // 100: anemos.data_asset.v1.DataAssetService.ListDEMAssets:output_type -> anemos.data_asset.v1.ListDEMAssetsrsp
+	7,  // 101: anemos.data_asset.v1.DataAssetService.ImportDEM:output_type -> anemos.data_asset.v1.ImportDEMrsp
+	9,  // 102: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:output_type -> anemos.data_asset.v1.UpdateDEMAssetrsp
+	11, // 103: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:output_type -> anemos.data_asset.v1.ActivateDEMVersionrsp
+	13, // 104: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:output_type -> anemos.data_asset.v1.ArchiveDEMAssetrsp
+	15, // 105: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:output_type -> anemos.data_asset.v1.DeleteDEMAssetrsp
+	19, // 106: anemos.data_asset.v1.DataAssetService.ImportBuildings:output_type -> anemos.data_asset.v1.ImportBuildingsrsp
+	21, // 107: anemos.data_asset.v1.DataAssetService.ListBuildings:output_type -> anemos.data_asset.v1.ListBuildingsrsp
+	23, // 108: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:output_type -> anemos.data_asset.v1.ListBuildingVersionsrsp
+	25, // 109: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:output_type -> anemos.data_asset.v1.ActivateBuildingVersionrsp
+	29, // 110: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:output_type -> anemos.data_asset.v1.ImportNoFlyZoneSetrsp
+	31, // 111: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:output_type -> anemos.data_asset.v1.GetNoFlyZoneSetrsp
+	33, // 112: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:output_type -> anemos.data_asset.v1.ListNoFlyZoneSetsrsp
+	36, // 113: anemos.data_asset.v1.DataAssetService.ListImportJobs:output_type -> anemos.data_asset.v1.ListImportJobsrsp
+	38, // 114: anemos.data_asset.v1.DataAssetService.GetImportJob:output_type -> anemos.data_asset.v1.GetImportJobrsp
+	41, // 115: anemos.data_asset.v1.DataAssetService.QueryElevation:output_type -> anemos.data_asset.v1.QueryElevationrsp
+	45, // 116: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:output_type -> anemos.data_asset.v1.GetMeteoSnapshotrsp
+	48, // 117: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:output_type -> anemos.data_asset.v1.QueryMeteoTimeseriesrsp
+	51, // 118: anemos.data_asset.v1.DataAssetService.ListCFDCases:output_type -> anemos.data_asset.v1.ListCFDCasesrsp
+	53, // 119: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:output_type -> anemos.data_asset.v1.RegisterCFDCasersp
+	57, // 120: anemos.data_asset.v1.DataAssetService.IngestObservation:output_type -> anemos.data_asset.v1.IngestObservationrsp
+	60, // 121: anemos.data_asset.v1.DataAssetService.QueryObservations:output_type -> anemos.data_asset.v1.QueryObservationsrsp
+	62, // 122: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:output_type -> anemos.data_asset.v1.GetLatestObsByStationrsp
+	99, // [99:123] is the sub-list for method output_type
+	75, // [75:99] is the sub-list for method input_type
+	75, // [75:75] is the sub-list for extension type_name
+	75, // [75:75] is the sub-list for extension extendee
+	0,  // [0:75] is the sub-list for field type_name
 }
 
 func init() { file_data_asset_v1_data_asset_proto_init() }

@@ -26,6 +26,7 @@ const (
 	WindService_SampleWindField_FullMethodName          = "/anemos.wind.v1.WindService/SampleWindField"
 	WindService_GetWindFieldGrid_FullMethodName         = "/anemos.wind.v1.WindService/GetWindFieldGrid"
 	WindService_GetWindFieldSubGrid_FullMethodName      = "/anemos.wind.v1.WindService/GetWindFieldSubGrid"
+	WindService_GenerateWindFieldByTime_FullMethodName  = "/anemos.wind.v1.WindService/GenerateWindFieldByTime"
 	WindService_ListWindJobs_FullMethodName             = "/anemos.wind.v1.WindService/ListWindJobs"
 	WindService_GetWindJob_FullMethodName               = "/anemos.wind.v1.WindService/GetWindJob"
 	WindService_CreateGenerationJob_FullMethodName      = "/anemos.wind.v1.WindService/CreateGenerationJob"
@@ -50,6 +51,10 @@ type WindServiceClient interface {
 	SampleWindField(ctx context.Context, in *SampleWindFieldreq, opts ...grpc.CallOption) (*SampleWindFieldrsp, error)
 	GetWindFieldGrid(ctx context.Context, in *GetWindFieldGridreq, opts ...grpc.CallOption) (*GetWindFieldGridrsp, error)
 	GetWindFieldSubGrid(ctx context.Context, in *GetWindFieldSubGridreq, opts ...grpc.CallOption) (*GetWindFieldSubGridrsp, error)
+	// JIT 推演：按 (region_id, valid_time) 按需生成/返回风场。
+	//   - 命中已有 ready 结果 → 直接返回 result
+	//   - 未命中 → 按气象 forecast_time=valid_time 创建 job，返回 pending + job_id 供前端轮询
+	GenerateWindFieldByTime(ctx context.Context, in *GenerateWindFieldByTimereq, opts ...grpc.CallOption) (*GenerateWindFieldByTimersp, error)
 	// ----- 管理端任务中心（仅 BFF 管理端 / 运维入口） -----
 	ListWindJobs(ctx context.Context, in *ListWindJobsreq, opts ...grpc.CallOption) (*ListWindJobsrsp, error)
 	GetWindJob(ctx context.Context, in *GetWindJobreq, opts ...grpc.CallOption) (*GetWindJobrsp, error)
@@ -137,6 +142,16 @@ func (c *windServiceClient) GetWindFieldSubGrid(ctx context.Context, in *GetWind
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWindFieldSubGridrsp)
 	err := c.cc.Invoke(ctx, WindService_GetWindFieldSubGrid_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *windServiceClient) GenerateWindFieldByTime(ctx context.Context, in *GenerateWindFieldByTimereq, opts ...grpc.CallOption) (*GenerateWindFieldByTimersp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GenerateWindFieldByTimersp)
+	err := c.cc.Invoke(ctx, WindService_GenerateWindFieldByTime_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -255,6 +270,10 @@ type WindServiceServer interface {
 	SampleWindField(context.Context, *SampleWindFieldreq) (*SampleWindFieldrsp, error)
 	GetWindFieldGrid(context.Context, *GetWindFieldGridreq) (*GetWindFieldGridrsp, error)
 	GetWindFieldSubGrid(context.Context, *GetWindFieldSubGridreq) (*GetWindFieldSubGridrsp, error)
+	// JIT 推演：按 (region_id, valid_time) 按需生成/返回风场。
+	//   - 命中已有 ready 结果 → 直接返回 result
+	//   - 未命中 → 按气象 forecast_time=valid_time 创建 job，返回 pending + job_id 供前端轮询
+	GenerateWindFieldByTime(context.Context, *GenerateWindFieldByTimereq) (*GenerateWindFieldByTimersp, error)
 	// ----- 管理端任务中心（仅 BFF 管理端 / 运维入口） -----
 	ListWindJobs(context.Context, *ListWindJobsreq) (*ListWindJobsrsp, error)
 	GetWindJob(context.Context, *GetWindJobreq) (*GetWindJobrsp, error)
@@ -298,6 +317,9 @@ func (UnimplementedWindServiceServer) GetWindFieldGrid(context.Context, *GetWind
 }
 func (UnimplementedWindServiceServer) GetWindFieldSubGrid(context.Context, *GetWindFieldSubGridreq) (*GetWindFieldSubGridrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetWindFieldSubGrid not implemented")
+}
+func (UnimplementedWindServiceServer) GenerateWindFieldByTime(context.Context, *GenerateWindFieldByTimereq) (*GenerateWindFieldByTimersp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GenerateWindFieldByTime not implemented")
 }
 func (UnimplementedWindServiceServer) ListWindJobs(context.Context, *ListWindJobsreq) (*ListWindJobsrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListWindJobs not implemented")
@@ -472,6 +494,24 @@ func _WindService_GetWindFieldSubGrid_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WindServiceServer).GetWindFieldSubGrid(ctx, req.(*GetWindFieldSubGridreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WindService_GenerateWindFieldByTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateWindFieldByTimereq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WindServiceServer).GenerateWindFieldByTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WindService_GenerateWindFieldByTime_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WindServiceServer).GenerateWindFieldByTime(ctx, req.(*GenerateWindFieldByTimereq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -690,6 +730,10 @@ var WindService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetWindFieldSubGrid",
 			Handler:    _WindService_GetWindFieldSubGrid_Handler,
+		},
+		{
+			MethodName: "GenerateWindFieldByTime",
+			Handler:    _WindService_GenerateWindFieldByTime_Handler,
 		},
 		{
 			MethodName: "ListWindJobs",
