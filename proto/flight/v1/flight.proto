@@ -38,6 +38,17 @@ service FlightService {
   // ----- 风险阈值模板 -----
   rpc ListRiskTemplates(ListRiskTemplatesreq) returns (ListRiskTemplatesrsp);
   rpc UpsertRiskTemplate(UpsertRiskTemplatereq) returns (UpsertRiskTemplatersp);
+
+  // ----- 活跃预警（用户从评估记录手动激活；与 alerts 并存不合并） -----
+  rpc ActivateWarning(ActivateWarningreq) returns (ActivateWarningrsp);
+  rpc DeactivateWarning(DeactivateWarningreq) returns (DeactivateWarningrsp);
+  rpc ListActiveWarnings(ListActiveWarningsreq) returns (ListActiveWarningsrsp);
+
+  // ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
+  rpc GetRouteRiskSummary(GetRouteRiskSummaryreq) returns (GetRouteRiskSummaryrsp);
+
+  // ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
+  rpc GetRouteWindTrend(GetRouteWindTrendreq) returns (GetRouteWindTrendrsp);
 }
 
 // ===========================
@@ -511,4 +522,100 @@ message UpsertRiskTemplatereq {
 message UpsertRiskTemplatersp {
   string template_id = 1;
   bool success = 2;
+}
+
+// ===========================
+// 活跃预警（active_flight_warning）
+// ===========================
+//
+// 语义说明：用户在航线管理 Tab 内从一次评估记录手动点击"设为当前预警"时激活。
+// 与 alerts（规则驱动的系统告警）**职责不同，并存不合并**：
+//   - alerts           — 阈值 / 定时规则触发，由 anemos-mgr-front 的 /alerts 页面管理
+//   - ActiveWarning    — 用户从评估手动激活，同一航线同时只允许一条活跃预警
+//
+// 生命周期：
+//   - Activate   — 用户手动，INSERT（同航线旧 warning 先 deactivate）
+//   - Update     — AssessRoute 完成并订阅后触发整体 severity 变化
+//   - Deactivate — 用户手动 或 AssessRoute 完成后整体 < MEDIUM 自动 或 航线/评估级联删除
+//
+// NATS 事件对应：
+//   events.flight.warning.activated / events.flight.warning.updated / events.flight.warning.deactivated
+
+message ActiveWarning {
+  string warning_id = 1;
+  string assessment_id = 2;                            // 来源评估 ID
+  string route_id = 3;
+  string region_id = 4;
+  string activated_by = 5;                             // 激活用户
+  google.protobuf.Timestamp activated_at = 6;
+  RiskLevel severity = 7;                              // 评估整体等级
+  string summary = 8;                                  // 摘要文案，如 "航段 3 存在严重横风"
+  repeated SegmentRisk segments = 9;                   // 冗余展开，前端无需再查 assessment
+}
+
+message ActivateWarningreq {
+  string assessment_id = 1;                            // 要激活的评估 ID
+  string activated_by = 2;                             // 激活用户
+}
+message ActivateWarningrsp {
+  ActiveWarning warning = 1;
+}
+
+message DeactivateWarningreq {
+  string warning_id = 1;
+  string reason = 2;                                   // 可选：停用原因
+}
+message DeactivateWarningrsp {
+  bool success = 1;
+}
+
+message ListActiveWarningsreq {
+  string region_id = 1;                                // 受管区域 ID（可选，为空则全部）
+}
+message ListActiveWarningsrsp {
+  repeated ActiveWarning warnings = 1;
+}
+
+// ===========================
+// 航线风险概览（综合态势 Tab 顶部卡片）
+// ===========================
+//
+// 按 region_id 聚合该区域内每条航线**最近一次评估**的 risk_level 统计。
+// 不随 timeline.current 变化（展示"最近一次评估"静态聚合）。
+// 未评估的航线计入 unknown_count。
+
+message GetRouteRiskSummaryreq {
+  string region_id = 1;                                // 受管区域 ID
+}
+message GetRouteRiskSummaryrsp {
+  int32 total_routes = 1;                              // 总航线数
+  int32 critical_count = 2;                            // RISK_LEVEL_CRITICAL
+  int32 high_count = 3;                                // RISK_LEVEL_HIGH
+  int32 medium_count = 4;                              // RISK_LEVEL_MEDIUM
+  int32 low_count = 5;                                 // RISK_LEVEL_LOW
+  int32 unknown_count = 6;                             // 无评估的航线
+}
+
+// ===========================
+// 24h 影响趋势（TrendChart）
+// ===========================
+//
+// 以 center_time 为中心、window_hours 小时窗口内、按时间步长（默认 1h）
+// 扫描 wind-service ListWindFields，沿航线采样并返回 avg/max 风速序列。
+// 缺数据点直接跳过（前端看到断点即可）。
+
+message GetRouteWindTrendreq {
+  string route_id = 1;
+  google.protobuf.Timestamp center_time = 2;           // 默认 now
+  int32 window_hours = 3;                              // 默认 24
+}
+
+message WindTrendPoint {
+  google.protobuf.Timestamp time = 1;                  // 桶时间（按小时对齐）
+  double avg_wind_speed = 2;                           // 沿航线采样点的平均风速 (m/s)
+  double max_wind_speed = 3;                           // 沿航线采样点的最大风速 (m/s)
+}
+
+message GetRouteWindTrendrsp {
+  repeated WindTrendPoint points = 1;                  // 按 time 升序
 }
