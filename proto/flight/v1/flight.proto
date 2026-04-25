@@ -49,6 +49,10 @@ service FlightService {
 
   // ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
   rpc GetRouteWindTrend(GetRouteWindTrendreq) returns (GetRouteWindTrendrsp);
+
+  // ----- AI 辅助分析（LLM 生成自然语言研判） -----
+  rpc AdviseAssessment(AdviseAssessmentreq) returns (AdviseAssessmentrsp);          // 单条评估的 AI 研判文本
+  rpc AdviseComparison(AdviseComparisonreq) returns (AdviseComparisonrsp);          // 双评估对比的 AI 研判文本
 }
 
 // ===========================
@@ -374,6 +378,9 @@ message AssessmentRecord {
   double overall_risk_score = 4;
   string status = 5;                                   // COMPLETED / FAILED
   google.protobuf.Timestamp assessed_at = 6;
+  string overall_level = 7;                            // LOW / MEDIUM / HIGH / CRITICAL（前端做等级筛选）
+  string decision = 8;                                 // GO / CONDITIONAL / NO_GO
+  bool is_active_warning = 9;                          // 是否为该航线当前活跃预警
 }
 
 message ListAssessmentsreq {
@@ -618,4 +625,35 @@ message WindTrendPoint {
 
 message GetRouteWindTrendrsp {
   repeated WindTrendPoint points = 1;                  // 按 time 升序
+}
+
+// ===========================
+// AI 辅助分析
+// ===========================
+//
+// 基于 assessment 结果（决策、综合分、维度分、分段风险）调用外部 LLM（OpenAI 兼容接口，
+// 默认 DashScope qwen-max）生成一段简短自然语言研判。文本仅用于展示，不触发任何写操作。
+// 相同 assessment_id 的文本可在服务端缓存（同一评估结果幂等）。
+
+message AdviseAssessmentreq {
+  string assessment_id = 1;                            // 评估记录 ID（必填）
+  bool refresh = 2;                                    // true 则跳过缓存强制重新生成
+}
+message AdviseAssessmentrsp {
+  string advice = 1;                                   // AI 研判文本（纯文本/Markdown）
+  string model = 2;                                    // 使用的模型名（观测用）
+  google.protobuf.Timestamp generated_at = 3;          // 生成时间（缓存命中则为原始时间）
+  bool cached = 4;                                     // 是否命中缓存
+}
+
+message AdviseComparisonreq {
+  string left_assessment_id = 1;                       // 对比双方（A）
+  string right_assessment_id = 2;                      // 对比双方（B）
+  bool refresh = 3;
+}
+message AdviseComparisonrsp {
+  string advice = 1;
+  string model = 2;
+  google.protobuf.Timestamp generated_at = 3;
+  bool cached = 4;
 }
