@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package anemos.llm.v1;
+
+option go_package = "github.com/cocowenlw/anemos-proto/gen/go/llm/v1;llmv1";
+
+// ============================================================
+// LLM 网关服务 — OpenAI 兼容协议（DashScope / DeepSeek / vLLM 等）的统一代理
+// 任何业务服务（flight-service / bff-gateway / wind-service ...）需要调用大模型
+// 时，都应通过此服务，避免在各服务中重复实现 HTTP 客户端、API key 管理与限流。
+// ============================================================
+
+service LLMService {
+  // 单轮对话（非流式）。messages 顺序由调用方控制（system / user / assistant ...）。
+  rpc Chat(Chatreq) returns (Chatrsp);
+}
+
+// ChatMessage 对应 OpenAI Chat Completion 的 messages 元素。
+message ChatMessage {
+  string role = 1;     // "system" | "user" | "assistant"
+  string content = 2;
+}
+
+message Chatreq {
+  repeated ChatMessage messages = 1;
+
+  // 可选：覆盖网关默认模型（如 "qwen-max" / "deepseek-chat"）。空则用网关配置。
+  string model = 2;
+
+  // 可选：采样温度。0 表示使用网关默认值（一般是 0.3）。
+  double temperature = 3;
+}
+
+message Chatrsp {
+  string content = 1;  // 助手回复文本（已 trim 空白）
+  string model = 2;    // 实际使用的模型名（用于上层 observability）
+}
