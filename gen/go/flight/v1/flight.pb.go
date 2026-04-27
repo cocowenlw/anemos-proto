@@ -5014,6 +5014,302 @@ func (x *AdviseComparisonrsp) GetCached() bool {
 	return false
 }
 
+type PredictRouteTimeseriesreq struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	RegionId              string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                                           // 受管区域
+	RouteIds              []string               `protobuf:"bytes,2,rep,name=route_ids,json=routeIds,proto3" json:"route_ids,omitempty"`                                           // 空 = 全 region
+	TimeRangeStart        *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=time_range_start,json=timeRangeStart,proto3" json:"time_range_start,omitempty"`                       // 窗口起点
+	TimeRangeEnd          *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=time_range_end,json=timeRangeEnd,proto3" json:"time_range_end,omitempty"`                             // 窗口终点
+	SampleIntervalMinutes int32                  `protobuf:"varint,5,opt,name=sample_interval_minutes,json=sampleIntervalMinutes,proto3" json:"sample_interval_minutes,omitempty"` // 0 = 用配置默认（30min）
+	ForceRefresh          bool                   `protobuf:"varint,6,opt,name=force_refresh,json=forceRefresh,proto3" json:"force_refresh,omitempty"`                              // 跳过缓存
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *PredictRouteTimeseriesreq) Reset() {
+	*x = PredictRouteTimeseriesreq{}
+	mi := &file_flight_v1_flight_proto_msgTypes[71]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PredictRouteTimeseriesreq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PredictRouteTimeseriesreq) ProtoMessage() {}
+
+func (x *PredictRouteTimeseriesreq) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[71]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PredictRouteTimeseriesreq.ProtoReflect.Descriptor instead.
+func (*PredictRouteTimeseriesreq) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{71}
+}
+
+func (x *PredictRouteTimeseriesreq) GetRegionId() string {
+	if x != nil {
+		return x.RegionId
+	}
+	return ""
+}
+
+func (x *PredictRouteTimeseriesreq) GetRouteIds() []string {
+	if x != nil {
+		return x.RouteIds
+	}
+	return nil
+}
+
+func (x *PredictRouteTimeseriesreq) GetTimeRangeStart() *timestamppb.Timestamp {
+	if x != nil {
+		return x.TimeRangeStart
+	}
+	return nil
+}
+
+func (x *PredictRouteTimeseriesreq) GetTimeRangeEnd() *timestamppb.Timestamp {
+	if x != nil {
+		return x.TimeRangeEnd
+	}
+	return nil
+}
+
+func (x *PredictRouteTimeseriesreq) GetSampleIntervalMinutes() int32 {
+	if x != nil {
+		return x.SampleIntervalMinutes
+	}
+	return 0
+}
+
+func (x *PredictRouteTimeseriesreq) GetForceRefresh() bool {
+	if x != nil {
+		return x.ForceRefresh
+	}
+	return false
+}
+
+type PredictRouteTimeseriesrsp struct {
+	state          protoimpl.MessageState   `protogen:"open.v1"`
+	GeneratedAt    *timestamppb.Timestamp   `protobuf:"bytes,1,opt,name=generated_at,json=generatedAt,proto3" json:"generated_at,omitempty"`
+	Predictions    []*RoutePrediction       `protobuf:"bytes,2,rep,name=predictions,proto3" json:"predictions,omitempty"`
+	MissingSamples []*timestamppb.Timestamp `protobuf:"bytes,3,rep,name=missing_samples,json=missingSamples,proto3" json:"missing_samples,omitempty"` // 风场数据缺失的采样时刻
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *PredictRouteTimeseriesrsp) Reset() {
+	*x = PredictRouteTimeseriesrsp{}
+	mi := &file_flight_v1_flight_proto_msgTypes[72]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PredictRouteTimeseriesrsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PredictRouteTimeseriesrsp) ProtoMessage() {}
+
+func (x *PredictRouteTimeseriesrsp) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[72]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PredictRouteTimeseriesrsp.ProtoReflect.Descriptor instead.
+func (*PredictRouteTimeseriesrsp) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{72}
+}
+
+func (x *PredictRouteTimeseriesrsp) GetGeneratedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.GeneratedAt
+	}
+	return nil
+}
+
+func (x *PredictRouteTimeseriesrsp) GetPredictions() []*RoutePrediction {
+	if x != nil {
+		return x.Predictions
+	}
+	return nil
+}
+
+func (x *PredictRouteTimeseriesrsp) GetMissingSamples() []*timestamppb.Timestamp {
+	if x != nil {
+		return x.MissingSamples
+	}
+	return nil
+}
+
+type RoutePrediction struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	RouteId         string                 `protobuf:"bytes,1,opt,name=route_id,json=routeId,proto3" json:"route_id,omitempty"`
+	OverallSeverity string                 `protobuf:"bytes,2,opt,name=overall_severity,json=overallSeverity,proto3" json:"overall_severity,omitempty"` // CRITICAL / HIGH / MEDIUM
+	Segments        []*RiskTimeSegment     `protobuf:"bytes,3,rep,name=segments,proto3" json:"segments,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *RoutePrediction) Reset() {
+	*x = RoutePrediction{}
+	mi := &file_flight_v1_flight_proto_msgTypes[73]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RoutePrediction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoutePrediction) ProtoMessage() {}
+
+func (x *RoutePrediction) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[73]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoutePrediction.ProtoReflect.Descriptor instead.
+func (*RoutePrediction) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{73}
+}
+
+func (x *RoutePrediction) GetRouteId() string {
+	if x != nil {
+		return x.RouteId
+	}
+	return ""
+}
+
+func (x *RoutePrediction) GetOverallSeverity() string {
+	if x != nil {
+		return x.OverallSeverity
+	}
+	return ""
+}
+
+func (x *RoutePrediction) GetSegments() []*RiskTimeSegment {
+	if x != nil {
+		return x.Segments
+	}
+	return nil
+}
+
+type RiskTimeSegment struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Start              *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=start,proto3" json:"start,omitempty"`
+	End                *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=end,proto3" json:"end,omitempty"`
+	MaxSeverity        string                 `protobuf:"bytes,3,opt,name=max_severity,json=maxSeverity,proto3" json:"max_severity,omitempty"`                                // 时段内最高等级
+	MaxScore           float64                `protobuf:"fixed64,4,opt,name=max_score,json=maxScore,proto3" json:"max_score,omitempty"`                                       // 时段内最高分数
+	PeakTime           *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=peak_time,json=peakTime,proto3" json:"peak_time,omitempty"`                                         // 峰值时刻
+	TriggerDimensions  []string               `protobuf:"bytes,6,rep,name=trigger_dimensions,json=triggerDimensions,proto3" json:"trigger_dimensions,omitempty"`              // 触发维度并集
+	AffectedSegmentIdx []int32                `protobuf:"varint,7,rep,packed,name=affected_segment_idx,json=affectedSegmentIdx,proto3" json:"affected_segment_idx,omitempty"` // 受影响的航段索引并集
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *RiskTimeSegment) Reset() {
+	*x = RiskTimeSegment{}
+	mi := &file_flight_v1_flight_proto_msgTypes[74]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RiskTimeSegment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RiskTimeSegment) ProtoMessage() {}
+
+func (x *RiskTimeSegment) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[74]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RiskTimeSegment.ProtoReflect.Descriptor instead.
+func (*RiskTimeSegment) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{74}
+}
+
+func (x *RiskTimeSegment) GetStart() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Start
+	}
+	return nil
+}
+
+func (x *RiskTimeSegment) GetEnd() *timestamppb.Timestamp {
+	if x != nil {
+		return x.End
+	}
+	return nil
+}
+
+func (x *RiskTimeSegment) GetMaxSeverity() string {
+	if x != nil {
+		return x.MaxSeverity
+	}
+	return ""
+}
+
+func (x *RiskTimeSegment) GetMaxScore() float64 {
+	if x != nil {
+		return x.MaxScore
+	}
+	return 0
+}
+
+func (x *RiskTimeSegment) GetPeakTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.PeakTime
+	}
+	return nil
+}
+
+func (x *RiskTimeSegment) GetTriggerDimensions() []string {
+	if x != nil {
+		return x.TriggerDimensions
+	}
+	return nil
+}
+
+func (x *RiskTimeSegment) GetAffectedSegmentIdx() []int32 {
+	if x != nil {
+		return x.AffectedSegmentIdx
+	}
+	return nil
+}
+
 var File_flight_v1_flight_proto protoreflect.FileDescriptor
 
 const file_flight_v1_flight_proto_rawDesc = "" +
@@ -5395,7 +5691,30 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\x06advice\x18\x01 \x01(\tR\x06advice\x12\x14\n" +
 	"\x05model\x18\x02 \x01(\tR\x05model\x12=\n" +
 	"\fgenerated_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\vgeneratedAt\x12\x16\n" +
-	"\x06cached\x18\x04 \x01(\bR\x06cached*\x97\x02\n" +
+	"\x06cached\x18\x04 \x01(\bR\x06cached\"\xba\x02\n" +
+	"\x19PredictRouteTimeseriesreq\x12\x1b\n" +
+	"\tregion_id\x18\x01 \x01(\tR\bregionId\x12\x1b\n" +
+	"\troute_ids\x18\x02 \x03(\tR\brouteIds\x12D\n" +
+	"\x10time_range_start\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x0etimeRangeStart\x12@\n" +
+	"\x0etime_range_end\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\ftimeRangeEnd\x126\n" +
+	"\x17sample_interval_minutes\x18\x05 \x01(\x05R\x15sampleIntervalMinutes\x12#\n" +
+	"\rforce_refresh\x18\x06 \x01(\bR\fforceRefresh\"\xe4\x01\n" +
+	"\x19PredictRouteTimeseriesrsp\x12=\n" +
+	"\fgenerated_at\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vgeneratedAt\x12C\n" +
+	"\vpredictions\x18\x02 \x03(\v2!.anemos.flight.v1.RoutePredictionR\vpredictions\x12C\n" +
+	"\x0fmissing_samples\x18\x03 \x03(\v2\x1a.google.protobuf.TimestampR\x0emissingSamples\"\x96\x01\n" +
+	"\x0fRoutePrediction\x12\x19\n" +
+	"\broute_id\x18\x01 \x01(\tR\arouteId\x12)\n" +
+	"\x10overall_severity\x18\x02 \x01(\tR\x0foverallSeverity\x12=\n" +
+	"\bsegments\x18\x03 \x03(\v2!.anemos.flight.v1.RiskTimeSegmentR\bsegments\"\xcb\x02\n" +
+	"\x0fRiskTimeSegment\x120\n" +
+	"\x05start\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x05start\x12,\n" +
+	"\x03end\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x03end\x12!\n" +
+	"\fmax_severity\x18\x03 \x01(\tR\vmaxSeverity\x12\x1b\n" +
+	"\tmax_score\x18\x04 \x01(\x01R\bmaxScore\x127\n" +
+	"\tpeak_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\bpeakTime\x12-\n" +
+	"\x12trigger_dimensions\x18\x06 \x03(\tR\x11triggerDimensions\x120\n" +
+	"\x14affected_segment_idx\x18\a \x03(\x05R\x12affectedSegmentIdx*\x97\x02\n" +
 	"\bRiskType\x12\x19\n" +
 	"\x15RISK_TYPE_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13RISK_TYPE_CROSSWIND\x10\x01\x12\x18\n" +
@@ -5432,7 +5751,7 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\x1eFLIGHT_REPORT_TYPE_UNSPECIFIED\x10\x00\x12'\n" +
 	"#FLIGHT_REPORT_TYPE_ROUTE_ASSESSMENT\x10\x01\x12)\n" +
 	"%FLIGHT_REPORT_TYPE_ROUTE_OPTIMIZATION\x10\x02\x12$\n" +
-	" FLIGHT_REPORT_TYPE_REGIONAL_RISK\x10\x032\x8f\x13\n" +
+	" FLIGHT_REPORT_TYPE_REGIONAL_RISK\x10\x032\x83\x14\n" +
 	"\rFlightService\x12Q\n" +
 	"\vCreateRoute\x12 .anemos.flight.v1.CreateRoutereq\x1a .anemos.flight.v1.CreateRoutersp\x12H\n" +
 	"\bGetRoute\x12\x1d.anemos.flight.v1.GetRoutereq\x1a\x1d.anemos.flight.v1.GetRoutersp\x12N\n" +
@@ -5456,7 +5775,8 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\x12UpsertRiskTemplate\x12'.anemos.flight.v1.UpsertRiskTemplatereq\x1a'.anemos.flight.v1.UpsertRiskTemplatersp\x12]\n" +
 	"\x0fActivateWarning\x12$.anemos.flight.v1.ActivateWarningreq\x1a$.anemos.flight.v1.ActivateWarningrsp\x12c\n" +
 	"\x11DeactivateWarning\x12&.anemos.flight.v1.DeactivateWarningreq\x1a&.anemos.flight.v1.DeactivateWarningrsp\x12f\n" +
-	"\x12ListActiveWarnings\x12'.anemos.flight.v1.ListActiveWarningsreq\x1a'.anemos.flight.v1.ListActiveWarningsrsp\x12i\n" +
+	"\x12ListActiveWarnings\x12'.anemos.flight.v1.ListActiveWarningsreq\x1a'.anemos.flight.v1.ListActiveWarningsrsp\x12r\n" +
+	"\x16PredictRouteTimeseries\x12+.anemos.flight.v1.PredictRouteTimeseriesreq\x1a+.anemos.flight.v1.PredictRouteTimeseriesrsp\x12i\n" +
 	"\x13GetRouteRiskSummary\x12(.anemos.flight.v1.GetRouteRiskSummaryreq\x1a(.anemos.flight.v1.GetRouteRiskSummaryrsp\x12c\n" +
 	"\x11GetRouteWindTrend\x12&.anemos.flight.v1.GetRouteWindTrendreq\x1a&.anemos.flight.v1.GetRouteWindTrendrsp\x12`\n" +
 	"\x10AdviseAssessment\x12%.anemos.flight.v1.AdviseAssessmentreq\x1a%.anemos.flight.v1.AdviseAssessmentrsp\x12`\n" +
@@ -5475,102 +5795,106 @@ func file_flight_v1_flight_proto_rawDescGZIP() []byte {
 }
 
 var file_flight_v1_flight_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
-var file_flight_v1_flight_proto_msgTypes = make([]protoimpl.MessageInfo, 71)
+var file_flight_v1_flight_proto_msgTypes = make([]protoimpl.MessageInfo, 75)
 var file_flight_v1_flight_proto_goTypes = []any{
-	(RiskType)(0),                   // 0: anemos.flight.v1.RiskType
-	(FlightPhase)(0),                // 1: anemos.flight.v1.FlightPhase
-	(FlightDecision)(0),             // 2: anemos.flight.v1.FlightDecision
-	(RiskLevel)(0),                  // 3: anemos.flight.v1.RiskLevel
-	(OptimizationObjective)(0),      // 4: anemos.flight.v1.OptimizationObjective
-	(FlightReportType)(0),           // 5: anemos.flight.v1.FlightReportType
-	(*Waypoint)(nil),                // 6: anemos.flight.v1.Waypoint
-	(*Route)(nil),                   // 7: anemos.flight.v1.Route
-	(*CreateRoutereq)(nil),          // 8: anemos.flight.v1.CreateRoutereq
-	(*CreateRoutersp)(nil),          // 9: anemos.flight.v1.CreateRoutersp
-	(*GetRoutereq)(nil),             // 10: anemos.flight.v1.GetRoutereq
-	(*GetRoutersp)(nil),             // 11: anemos.flight.v1.GetRoutersp
-	(*ListRoutesreq)(nil),           // 12: anemos.flight.v1.ListRoutesreq
-	(*ListRoutesrsp)(nil),           // 13: anemos.flight.v1.ListRoutesrsp
-	(*UpdateRoutereq)(nil),          // 14: anemos.flight.v1.UpdateRoutereq
-	(*UpdateRoutersp)(nil),          // 15: anemos.flight.v1.UpdateRoutersp
-	(*ArchiveRoutereq)(nil),         // 16: anemos.flight.v1.ArchiveRoutereq
-	(*ArchiveRoutersp)(nil),         // 17: anemos.flight.v1.ArchiveRoutersp
-	(*DeleteRoutereq)(nil),          // 18: anemos.flight.v1.DeleteRoutereq
-	(*DeleteRoutersp)(nil),          // 19: anemos.flight.v1.DeleteRoutersp
-	(*DimensionScore)(nil),          // 20: anemos.flight.v1.DimensionScore
-	(*DimensionScores)(nil),         // 21: anemos.flight.v1.DimensionScores
-	(*AssessmentParams)(nil),        // 22: anemos.flight.v1.AssessmentParams
-	(*SegmentRisk)(nil),             // 23: anemos.flight.v1.SegmentRisk
-	(*AssessmentSummary)(nil),       // 24: anemos.flight.v1.AssessmentSummary
-	(*AssessRoutereq)(nil),          // 25: anemos.flight.v1.AssessRoutereq
-	(*AssessRoutersp)(nil),          // 26: anemos.flight.v1.AssessRoutersp
-	(*GetAssessmentreq)(nil),        // 27: anemos.flight.v1.GetAssessmentreq
-	(*DeleteAssessmentreq)(nil),     // 28: anemos.flight.v1.DeleteAssessmentreq
-	(*DeleteAssessmentrsp)(nil),     // 29: anemos.flight.v1.DeleteAssessmentrsp
-	(*BatchAssessreq)(nil),          // 30: anemos.flight.v1.BatchAssessreq
-	(*BatchAssessrsp)(nil),          // 31: anemos.flight.v1.BatchAssessrsp
-	(*OptimizationConstraints)(nil), // 32: anemos.flight.v1.OptimizationConstraints
-	(*OptimizeRoutereq)(nil),        // 33: anemos.flight.v1.OptimizeRoutereq
-	(*OptimizeRoutersp)(nil),        // 34: anemos.flight.v1.OptimizeRoutersp
-	(*RiskComparison)(nil),          // 35: anemos.flight.v1.RiskComparison
-	(*SegmentRiskDiff)(nil),         // 36: anemos.flight.v1.SegmentRiskDiff
-	(*GetOptimizationreq)(nil),      // 37: anemos.flight.v1.GetOptimizationreq
-	(*DeleteOptimizationreq)(nil),   // 38: anemos.flight.v1.DeleteOptimizationreq
-	(*DeleteOptimizationrsp)(nil),   // 39: anemos.flight.v1.DeleteOptimizationrsp
-	(*ListOptimizationsreq)(nil),    // 40: anemos.flight.v1.ListOptimizationsreq
-	(*ListOptimizationsrsp)(nil),    // 41: anemos.flight.v1.ListOptimizationsrsp
-	(*OptimizationRecord)(nil),      // 42: anemos.flight.v1.OptimizationRecord
-	(*AssessmentRecord)(nil),        // 43: anemos.flight.v1.AssessmentRecord
-	(*ListAssessmentsreq)(nil),      // 44: anemos.flight.v1.ListAssessmentsreq
-	(*ListAssessmentsrsp)(nil),      // 45: anemos.flight.v1.ListAssessmentsrsp
-	(*RiskHeatmapCell)(nil),         // 46: anemos.flight.v1.RiskHeatmapCell
-	(*RiskHeatmapLegend)(nil),       // 47: anemos.flight.v1.RiskHeatmapLegend
-	(*RiskHeatmapreq)(nil),          // 48: anemos.flight.v1.RiskHeatmapreq
-	(*ContinuousRiskField)(nil),     // 49: anemos.flight.v1.ContinuousRiskField
-	(*RiskHeatmaprsp)(nil),          // 50: anemos.flight.v1.RiskHeatmaprsp
-	(*GenerateFlightReportreq)(nil), // 51: anemos.flight.v1.GenerateFlightReportreq
-	(*GenerateFlightReportrsp)(nil), // 52: anemos.flight.v1.GenerateFlightReportrsp
-	(*ReportSection)(nil),           // 53: anemos.flight.v1.ReportSection
-	(*ReportConclusion)(nil),        // 54: anemos.flight.v1.ReportConclusion
-	(*RiskThresholdTemplate)(nil),   // 55: anemos.flight.v1.RiskThresholdTemplate
-	(*RiskThresholdConfig)(nil),     // 56: anemos.flight.v1.RiskThresholdConfig
-	(*ListRiskTemplatesreq)(nil),    // 57: anemos.flight.v1.ListRiskTemplatesreq
-	(*ListRiskTemplatesrsp)(nil),    // 58: anemos.flight.v1.ListRiskTemplatesrsp
-	(*UpsertRiskTemplatereq)(nil),   // 59: anemos.flight.v1.UpsertRiskTemplatereq
-	(*UpsertRiskTemplatersp)(nil),   // 60: anemos.flight.v1.UpsertRiskTemplatersp
-	(*ActiveWarning)(nil),           // 61: anemos.flight.v1.ActiveWarning
-	(*ActivateWarningreq)(nil),      // 62: anemos.flight.v1.ActivateWarningreq
-	(*ActivateWarningrsp)(nil),      // 63: anemos.flight.v1.ActivateWarningrsp
-	(*DeactivateWarningreq)(nil),    // 64: anemos.flight.v1.DeactivateWarningreq
-	(*DeactivateWarningrsp)(nil),    // 65: anemos.flight.v1.DeactivateWarningrsp
-	(*ListActiveWarningsreq)(nil),   // 66: anemos.flight.v1.ListActiveWarningsreq
-	(*ListActiveWarningsrsp)(nil),   // 67: anemos.flight.v1.ListActiveWarningsrsp
-	(*GetRouteRiskSummaryreq)(nil),  // 68: anemos.flight.v1.GetRouteRiskSummaryreq
-	(*GetRouteRiskSummaryrsp)(nil),  // 69: anemos.flight.v1.GetRouteRiskSummaryrsp
-	(*GetRouteWindTrendreq)(nil),    // 70: anemos.flight.v1.GetRouteWindTrendreq
-	(*WindTrendPoint)(nil),          // 71: anemos.flight.v1.WindTrendPoint
-	(*GetRouteWindTrendrsp)(nil),    // 72: anemos.flight.v1.GetRouteWindTrendrsp
-	(*AdviseAssessmentreq)(nil),     // 73: anemos.flight.v1.AdviseAssessmentreq
-	(*AdviseAssessmentrsp)(nil),     // 74: anemos.flight.v1.AdviseAssessmentrsp
-	(*AdviseComparisonreq)(nil),     // 75: anemos.flight.v1.AdviseComparisonreq
-	(*AdviseComparisonrsp)(nil),     // 76: anemos.flight.v1.AdviseComparisonrsp
-	(*timestamppb.Timestamp)(nil),   // 77: google.protobuf.Timestamp
-	(*v1.Paginationreq)(nil),        // 78: anemos.common.v1.Paginationreq
-	(*v1.Paginationrsp)(nil),        // 79: anemos.common.v1.Paginationrsp
-	(*v1.Coordinate)(nil),           // 80: anemos.common.v1.Coordinate
-	(*v1.BoundingBox)(nil),          // 81: anemos.common.v1.BoundingBox
-	(*v1.TimeRange)(nil),            // 82: anemos.common.v1.TimeRange
+	(RiskType)(0),                     // 0: anemos.flight.v1.RiskType
+	(FlightPhase)(0),                  // 1: anemos.flight.v1.FlightPhase
+	(FlightDecision)(0),               // 2: anemos.flight.v1.FlightDecision
+	(RiskLevel)(0),                    // 3: anemos.flight.v1.RiskLevel
+	(OptimizationObjective)(0),        // 4: anemos.flight.v1.OptimizationObjective
+	(FlightReportType)(0),             // 5: anemos.flight.v1.FlightReportType
+	(*Waypoint)(nil),                  // 6: anemos.flight.v1.Waypoint
+	(*Route)(nil),                     // 7: anemos.flight.v1.Route
+	(*CreateRoutereq)(nil),            // 8: anemos.flight.v1.CreateRoutereq
+	(*CreateRoutersp)(nil),            // 9: anemos.flight.v1.CreateRoutersp
+	(*GetRoutereq)(nil),               // 10: anemos.flight.v1.GetRoutereq
+	(*GetRoutersp)(nil),               // 11: anemos.flight.v1.GetRoutersp
+	(*ListRoutesreq)(nil),             // 12: anemos.flight.v1.ListRoutesreq
+	(*ListRoutesrsp)(nil),             // 13: anemos.flight.v1.ListRoutesrsp
+	(*UpdateRoutereq)(nil),            // 14: anemos.flight.v1.UpdateRoutereq
+	(*UpdateRoutersp)(nil),            // 15: anemos.flight.v1.UpdateRoutersp
+	(*ArchiveRoutereq)(nil),           // 16: anemos.flight.v1.ArchiveRoutereq
+	(*ArchiveRoutersp)(nil),           // 17: anemos.flight.v1.ArchiveRoutersp
+	(*DeleteRoutereq)(nil),            // 18: anemos.flight.v1.DeleteRoutereq
+	(*DeleteRoutersp)(nil),            // 19: anemos.flight.v1.DeleteRoutersp
+	(*DimensionScore)(nil),            // 20: anemos.flight.v1.DimensionScore
+	(*DimensionScores)(nil),           // 21: anemos.flight.v1.DimensionScores
+	(*AssessmentParams)(nil),          // 22: anemos.flight.v1.AssessmentParams
+	(*SegmentRisk)(nil),               // 23: anemos.flight.v1.SegmentRisk
+	(*AssessmentSummary)(nil),         // 24: anemos.flight.v1.AssessmentSummary
+	(*AssessRoutereq)(nil),            // 25: anemos.flight.v1.AssessRoutereq
+	(*AssessRoutersp)(nil),            // 26: anemos.flight.v1.AssessRoutersp
+	(*GetAssessmentreq)(nil),          // 27: anemos.flight.v1.GetAssessmentreq
+	(*DeleteAssessmentreq)(nil),       // 28: anemos.flight.v1.DeleteAssessmentreq
+	(*DeleteAssessmentrsp)(nil),       // 29: anemos.flight.v1.DeleteAssessmentrsp
+	(*BatchAssessreq)(nil),            // 30: anemos.flight.v1.BatchAssessreq
+	(*BatchAssessrsp)(nil),            // 31: anemos.flight.v1.BatchAssessrsp
+	(*OptimizationConstraints)(nil),   // 32: anemos.flight.v1.OptimizationConstraints
+	(*OptimizeRoutereq)(nil),          // 33: anemos.flight.v1.OptimizeRoutereq
+	(*OptimizeRoutersp)(nil),          // 34: anemos.flight.v1.OptimizeRoutersp
+	(*RiskComparison)(nil),            // 35: anemos.flight.v1.RiskComparison
+	(*SegmentRiskDiff)(nil),           // 36: anemos.flight.v1.SegmentRiskDiff
+	(*GetOptimizationreq)(nil),        // 37: anemos.flight.v1.GetOptimizationreq
+	(*DeleteOptimizationreq)(nil),     // 38: anemos.flight.v1.DeleteOptimizationreq
+	(*DeleteOptimizationrsp)(nil),     // 39: anemos.flight.v1.DeleteOptimizationrsp
+	(*ListOptimizationsreq)(nil),      // 40: anemos.flight.v1.ListOptimizationsreq
+	(*ListOptimizationsrsp)(nil),      // 41: anemos.flight.v1.ListOptimizationsrsp
+	(*OptimizationRecord)(nil),        // 42: anemos.flight.v1.OptimizationRecord
+	(*AssessmentRecord)(nil),          // 43: anemos.flight.v1.AssessmentRecord
+	(*ListAssessmentsreq)(nil),        // 44: anemos.flight.v1.ListAssessmentsreq
+	(*ListAssessmentsrsp)(nil),        // 45: anemos.flight.v1.ListAssessmentsrsp
+	(*RiskHeatmapCell)(nil),           // 46: anemos.flight.v1.RiskHeatmapCell
+	(*RiskHeatmapLegend)(nil),         // 47: anemos.flight.v1.RiskHeatmapLegend
+	(*RiskHeatmapreq)(nil),            // 48: anemos.flight.v1.RiskHeatmapreq
+	(*ContinuousRiskField)(nil),       // 49: anemos.flight.v1.ContinuousRiskField
+	(*RiskHeatmaprsp)(nil),            // 50: anemos.flight.v1.RiskHeatmaprsp
+	(*GenerateFlightReportreq)(nil),   // 51: anemos.flight.v1.GenerateFlightReportreq
+	(*GenerateFlightReportrsp)(nil),   // 52: anemos.flight.v1.GenerateFlightReportrsp
+	(*ReportSection)(nil),             // 53: anemos.flight.v1.ReportSection
+	(*ReportConclusion)(nil),          // 54: anemos.flight.v1.ReportConclusion
+	(*RiskThresholdTemplate)(nil),     // 55: anemos.flight.v1.RiskThresholdTemplate
+	(*RiskThresholdConfig)(nil),       // 56: anemos.flight.v1.RiskThresholdConfig
+	(*ListRiskTemplatesreq)(nil),      // 57: anemos.flight.v1.ListRiskTemplatesreq
+	(*ListRiskTemplatesrsp)(nil),      // 58: anemos.flight.v1.ListRiskTemplatesrsp
+	(*UpsertRiskTemplatereq)(nil),     // 59: anemos.flight.v1.UpsertRiskTemplatereq
+	(*UpsertRiskTemplatersp)(nil),     // 60: anemos.flight.v1.UpsertRiskTemplatersp
+	(*ActiveWarning)(nil),             // 61: anemos.flight.v1.ActiveWarning
+	(*ActivateWarningreq)(nil),        // 62: anemos.flight.v1.ActivateWarningreq
+	(*ActivateWarningrsp)(nil),        // 63: anemos.flight.v1.ActivateWarningrsp
+	(*DeactivateWarningreq)(nil),      // 64: anemos.flight.v1.DeactivateWarningreq
+	(*DeactivateWarningrsp)(nil),      // 65: anemos.flight.v1.DeactivateWarningrsp
+	(*ListActiveWarningsreq)(nil),     // 66: anemos.flight.v1.ListActiveWarningsreq
+	(*ListActiveWarningsrsp)(nil),     // 67: anemos.flight.v1.ListActiveWarningsrsp
+	(*GetRouteRiskSummaryreq)(nil),    // 68: anemos.flight.v1.GetRouteRiskSummaryreq
+	(*GetRouteRiskSummaryrsp)(nil),    // 69: anemos.flight.v1.GetRouteRiskSummaryrsp
+	(*GetRouteWindTrendreq)(nil),      // 70: anemos.flight.v1.GetRouteWindTrendreq
+	(*WindTrendPoint)(nil),            // 71: anemos.flight.v1.WindTrendPoint
+	(*GetRouteWindTrendrsp)(nil),      // 72: anemos.flight.v1.GetRouteWindTrendrsp
+	(*AdviseAssessmentreq)(nil),       // 73: anemos.flight.v1.AdviseAssessmentreq
+	(*AdviseAssessmentrsp)(nil),       // 74: anemos.flight.v1.AdviseAssessmentrsp
+	(*AdviseComparisonreq)(nil),       // 75: anemos.flight.v1.AdviseComparisonreq
+	(*AdviseComparisonrsp)(nil),       // 76: anemos.flight.v1.AdviseComparisonrsp
+	(*PredictRouteTimeseriesreq)(nil), // 77: anemos.flight.v1.PredictRouteTimeseriesreq
+	(*PredictRouteTimeseriesrsp)(nil), // 78: anemos.flight.v1.PredictRouteTimeseriesrsp
+	(*RoutePrediction)(nil),           // 79: anemos.flight.v1.RoutePrediction
+	(*RiskTimeSegment)(nil),           // 80: anemos.flight.v1.RiskTimeSegment
+	(*timestamppb.Timestamp)(nil),     // 81: google.protobuf.Timestamp
+	(*v1.Paginationreq)(nil),          // 82: anemos.common.v1.Paginationreq
+	(*v1.Paginationrsp)(nil),          // 83: anemos.common.v1.Paginationrsp
+	(*v1.Coordinate)(nil),             // 84: anemos.common.v1.Coordinate
+	(*v1.BoundingBox)(nil),            // 85: anemos.common.v1.BoundingBox
+	(*v1.TimeRange)(nil),              // 86: anemos.common.v1.TimeRange
 }
 var file_flight_v1_flight_proto_depIdxs = []int32{
 	6,   // 0: anemos.flight.v1.Route.waypoints:type_name -> anemos.flight.v1.Waypoint
-	77,  // 1: anemos.flight.v1.Route.created_at:type_name -> google.protobuf.Timestamp
-	77,  // 2: anemos.flight.v1.Route.updated_at:type_name -> google.protobuf.Timestamp
+	81,  // 1: anemos.flight.v1.Route.created_at:type_name -> google.protobuf.Timestamp
+	81,  // 2: anemos.flight.v1.Route.updated_at:type_name -> google.protobuf.Timestamp
 	6,   // 3: anemos.flight.v1.CreateRoutereq.waypoints:type_name -> anemos.flight.v1.Waypoint
 	7,   // 4: anemos.flight.v1.CreateRoutersp.route:type_name -> anemos.flight.v1.Route
 	7,   // 5: anemos.flight.v1.GetRoutersp.route:type_name -> anemos.flight.v1.Route
-	78,  // 6: anemos.flight.v1.ListRoutesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	82,  // 6: anemos.flight.v1.ListRoutesreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	7,   // 7: anemos.flight.v1.ListRoutesrsp.routes:type_name -> anemos.flight.v1.Route
-	79,  // 8: anemos.flight.v1.ListRoutesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	83,  // 8: anemos.flight.v1.ListRoutesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	6,   // 9: anemos.flight.v1.UpdateRoutereq.waypoints:type_name -> anemos.flight.v1.Waypoint
 	7,   // 10: anemos.flight.v1.UpdateRoutersp.route:type_name -> anemos.flight.v1.Route
 	20,  // 11: anemos.flight.v1.DimensionScores.crosswind:type_name -> anemos.flight.v1.DimensionScore
@@ -5587,7 +5911,7 @@ var file_flight_v1_flight_proto_depIdxs = []int32{
 	3,   // 22: anemos.flight.v1.AssessRoutersp.overall_level:type_name -> anemos.flight.v1.RiskLevel
 	23,  // 23: anemos.flight.v1.AssessRoutersp.segment_results:type_name -> anemos.flight.v1.SegmentRisk
 	24,  // 24: anemos.flight.v1.AssessRoutersp.summary:type_name -> anemos.flight.v1.AssessmentSummary
-	77,  // 25: anemos.flight.v1.AssessRoutersp.generated_at:type_name -> google.protobuf.Timestamp
+	81,  // 25: anemos.flight.v1.AssessRoutersp.generated_at:type_name -> google.protobuf.Timestamp
 	2,   // 26: anemos.flight.v1.AssessRoutersp.decision:type_name -> anemos.flight.v1.FlightDecision
 	21,  // 27: anemos.flight.v1.AssessRoutersp.dimension_scores:type_name -> anemos.flight.v1.DimensionScores
 	22,  // 28: anemos.flight.v1.BatchAssessreq.params:type_name -> anemos.flight.v1.AssessmentParams
@@ -5596,106 +5920,117 @@ var file_flight_v1_flight_proto_depIdxs = []int32{
 	32,  // 31: anemos.flight.v1.OptimizeRoutereq.constraints:type_name -> anemos.flight.v1.OptimizationConstraints
 	7,   // 32: anemos.flight.v1.OptimizeRoutersp.recommended_route:type_name -> anemos.flight.v1.Route
 	35,  // 33: anemos.flight.v1.OptimizeRoutersp.comparison:type_name -> anemos.flight.v1.RiskComparison
-	77,  // 34: anemos.flight.v1.OptimizeRoutersp.generated_at:type_name -> google.protobuf.Timestamp
+	81,  // 34: anemos.flight.v1.OptimizeRoutersp.generated_at:type_name -> google.protobuf.Timestamp
 	36,  // 35: anemos.flight.v1.RiskComparison.segment_diffs:type_name -> anemos.flight.v1.SegmentRiskDiff
 	42,  // 36: anemos.flight.v1.ListOptimizationsrsp.optimizations:type_name -> anemos.flight.v1.OptimizationRecord
 	35,  // 37: anemos.flight.v1.OptimizationRecord.comparison:type_name -> anemos.flight.v1.RiskComparison
-	77,  // 38: anemos.flight.v1.OptimizationRecord.generated_at:type_name -> google.protobuf.Timestamp
-	77,  // 39: anemos.flight.v1.AssessmentRecord.assessed_at:type_name -> google.protobuf.Timestamp
-	77,  // 40: anemos.flight.v1.ListAssessmentsreq.start_time:type_name -> google.protobuf.Timestamp
-	77,  // 41: anemos.flight.v1.ListAssessmentsreq.end_time:type_name -> google.protobuf.Timestamp
+	81,  // 38: anemos.flight.v1.OptimizationRecord.generated_at:type_name -> google.protobuf.Timestamp
+	81,  // 39: anemos.flight.v1.AssessmentRecord.assessed_at:type_name -> google.protobuf.Timestamp
+	81,  // 40: anemos.flight.v1.ListAssessmentsreq.start_time:type_name -> google.protobuf.Timestamp
+	81,  // 41: anemos.flight.v1.ListAssessmentsreq.end_time:type_name -> google.protobuf.Timestamp
 	43,  // 42: anemos.flight.v1.ListAssessmentsrsp.records:type_name -> anemos.flight.v1.AssessmentRecord
-	80,  // 43: anemos.flight.v1.RiskHeatmapCell.center:type_name -> anemos.common.v1.Coordinate
+	84,  // 43: anemos.flight.v1.RiskHeatmapCell.center:type_name -> anemos.common.v1.Coordinate
 	3,   // 44: anemos.flight.v1.RiskHeatmapCell.risk_level:type_name -> anemos.flight.v1.RiskLevel
 	0,   // 45: anemos.flight.v1.RiskHeatmapCell.main_factor:type_name -> anemos.flight.v1.RiskType
 	3,   // 46: anemos.flight.v1.RiskHeatmapLegend.level:type_name -> anemos.flight.v1.RiskLevel
 	0,   // 47: anemos.flight.v1.RiskHeatmapreq.risk_type:type_name -> anemos.flight.v1.RiskType
-	81,  // 48: anemos.flight.v1.ContinuousRiskField.extent:type_name -> anemos.common.v1.BoundingBox
+	85,  // 48: anemos.flight.v1.ContinuousRiskField.extent:type_name -> anemos.common.v1.BoundingBox
 	0,   // 49: anemos.flight.v1.RiskHeatmaprsp.risk_type:type_name -> anemos.flight.v1.RiskType
 	47,  // 50: anemos.flight.v1.RiskHeatmaprsp.legend:type_name -> anemos.flight.v1.RiskHeatmapLegend
 	46,  // 51: anemos.flight.v1.RiskHeatmaprsp.cells:type_name -> anemos.flight.v1.RiskHeatmapCell
-	77,  // 52: anemos.flight.v1.RiskHeatmaprsp.generated_at:type_name -> google.protobuf.Timestamp
+	81,  // 52: anemos.flight.v1.RiskHeatmaprsp.generated_at:type_name -> google.protobuf.Timestamp
 	49,  // 53: anemos.flight.v1.RiskHeatmaprsp.continuous_field:type_name -> anemos.flight.v1.ContinuousRiskField
 	5,   // 54: anemos.flight.v1.GenerateFlightReportreq.report_type:type_name -> anemos.flight.v1.FlightReportType
-	82,  // 55: anemos.flight.v1.GenerateFlightReportreq.time_range:type_name -> anemos.common.v1.TimeRange
+	86,  // 55: anemos.flight.v1.GenerateFlightReportreq.time_range:type_name -> anemos.common.v1.TimeRange
 	5,   // 56: anemos.flight.v1.GenerateFlightReportrsp.report_type:type_name -> anemos.flight.v1.FlightReportType
 	53,  // 57: anemos.flight.v1.GenerateFlightReportrsp.sections:type_name -> anemos.flight.v1.ReportSection
 	54,  // 58: anemos.flight.v1.GenerateFlightReportrsp.conclusion:type_name -> anemos.flight.v1.ReportConclusion
 	56,  // 59: anemos.flight.v1.RiskThresholdTemplate.thresholds:type_name -> anemos.flight.v1.RiskThresholdConfig
-	77,  // 60: anemos.flight.v1.RiskThresholdTemplate.created_at:type_name -> google.protobuf.Timestamp
-	77,  // 61: anemos.flight.v1.RiskThresholdTemplate.updated_at:type_name -> google.protobuf.Timestamp
+	81,  // 60: anemos.flight.v1.RiskThresholdTemplate.created_at:type_name -> google.protobuf.Timestamp
+	81,  // 61: anemos.flight.v1.RiskThresholdTemplate.updated_at:type_name -> google.protobuf.Timestamp
 	0,   // 62: anemos.flight.v1.RiskThresholdConfig.risk_type:type_name -> anemos.flight.v1.RiskType
-	78,  // 63: anemos.flight.v1.ListRiskTemplatesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	82,  // 63: anemos.flight.v1.ListRiskTemplatesreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	55,  // 64: anemos.flight.v1.ListRiskTemplatesrsp.templates:type_name -> anemos.flight.v1.RiskThresholdTemplate
-	79,  // 65: anemos.flight.v1.ListRiskTemplatesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	83,  // 65: anemos.flight.v1.ListRiskTemplatesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	55,  // 66: anemos.flight.v1.UpsertRiskTemplatereq.template:type_name -> anemos.flight.v1.RiskThresholdTemplate
-	77,  // 67: anemos.flight.v1.ActiveWarning.activated_at:type_name -> google.protobuf.Timestamp
+	81,  // 67: anemos.flight.v1.ActiveWarning.activated_at:type_name -> google.protobuf.Timestamp
 	3,   // 68: anemos.flight.v1.ActiveWarning.severity:type_name -> anemos.flight.v1.RiskLevel
 	23,  // 69: anemos.flight.v1.ActiveWarning.segments:type_name -> anemos.flight.v1.SegmentRisk
 	61,  // 70: anemos.flight.v1.ActivateWarningrsp.warning:type_name -> anemos.flight.v1.ActiveWarning
 	61,  // 71: anemos.flight.v1.ListActiveWarningsrsp.warnings:type_name -> anemos.flight.v1.ActiveWarning
-	77,  // 72: anemos.flight.v1.GetRouteWindTrendreq.center_time:type_name -> google.protobuf.Timestamp
-	77,  // 73: anemos.flight.v1.WindTrendPoint.time:type_name -> google.protobuf.Timestamp
+	81,  // 72: anemos.flight.v1.GetRouteWindTrendreq.center_time:type_name -> google.protobuf.Timestamp
+	81,  // 73: anemos.flight.v1.WindTrendPoint.time:type_name -> google.protobuf.Timestamp
 	71,  // 74: anemos.flight.v1.GetRouteWindTrendrsp.points:type_name -> anemos.flight.v1.WindTrendPoint
-	77,  // 75: anemos.flight.v1.AdviseAssessmentrsp.generated_at:type_name -> google.protobuf.Timestamp
-	77,  // 76: anemos.flight.v1.AdviseComparisonrsp.generated_at:type_name -> google.protobuf.Timestamp
-	8,   // 77: anemos.flight.v1.FlightService.CreateRoute:input_type -> anemos.flight.v1.CreateRoutereq
-	10,  // 78: anemos.flight.v1.FlightService.GetRoute:input_type -> anemos.flight.v1.GetRoutereq
-	12,  // 79: anemos.flight.v1.FlightService.ListRoutes:input_type -> anemos.flight.v1.ListRoutesreq
-	14,  // 80: anemos.flight.v1.FlightService.UpdateRoute:input_type -> anemos.flight.v1.UpdateRoutereq
-	16,  // 81: anemos.flight.v1.FlightService.ArchiveRoute:input_type -> anemos.flight.v1.ArchiveRoutereq
-	18,  // 82: anemos.flight.v1.FlightService.DeleteRoute:input_type -> anemos.flight.v1.DeleteRoutereq
-	25,  // 83: anemos.flight.v1.FlightService.AssessRoute:input_type -> anemos.flight.v1.AssessRoutereq
-	30,  // 84: anemos.flight.v1.FlightService.BatchAssess:input_type -> anemos.flight.v1.BatchAssessreq
-	33,  // 85: anemos.flight.v1.FlightService.OptimizeRoute:input_type -> anemos.flight.v1.OptimizeRoutereq
-	40,  // 86: anemos.flight.v1.FlightService.ListOptimizations:input_type -> anemos.flight.v1.ListOptimizationsreq
-	37,  // 87: anemos.flight.v1.FlightService.GetOptimization:input_type -> anemos.flight.v1.GetOptimizationreq
-	38,  // 88: anemos.flight.v1.FlightService.DeleteOptimization:input_type -> anemos.flight.v1.DeleteOptimizationreq
-	27,  // 89: anemos.flight.v1.FlightService.GetAssessment:input_type -> anemos.flight.v1.GetAssessmentreq
-	28,  // 90: anemos.flight.v1.FlightService.DeleteAssessment:input_type -> anemos.flight.v1.DeleteAssessmentreq
-	44,  // 91: anemos.flight.v1.FlightService.ListAssessments:input_type -> anemos.flight.v1.ListAssessmentsreq
-	51,  // 92: anemos.flight.v1.FlightService.GenerateFlightReport:input_type -> anemos.flight.v1.GenerateFlightReportreq
-	48,  // 93: anemos.flight.v1.FlightService.GenerateRiskHeatmap:input_type -> anemos.flight.v1.RiskHeatmapreq
-	57,  // 94: anemos.flight.v1.FlightService.ListRiskTemplates:input_type -> anemos.flight.v1.ListRiskTemplatesreq
-	59,  // 95: anemos.flight.v1.FlightService.UpsertRiskTemplate:input_type -> anemos.flight.v1.UpsertRiskTemplatereq
-	62,  // 96: anemos.flight.v1.FlightService.ActivateWarning:input_type -> anemos.flight.v1.ActivateWarningreq
-	64,  // 97: anemos.flight.v1.FlightService.DeactivateWarning:input_type -> anemos.flight.v1.DeactivateWarningreq
-	66,  // 98: anemos.flight.v1.FlightService.ListActiveWarnings:input_type -> anemos.flight.v1.ListActiveWarningsreq
-	68,  // 99: anemos.flight.v1.FlightService.GetRouteRiskSummary:input_type -> anemos.flight.v1.GetRouteRiskSummaryreq
-	70,  // 100: anemos.flight.v1.FlightService.GetRouteWindTrend:input_type -> anemos.flight.v1.GetRouteWindTrendreq
-	73,  // 101: anemos.flight.v1.FlightService.AdviseAssessment:input_type -> anemos.flight.v1.AdviseAssessmentreq
-	75,  // 102: anemos.flight.v1.FlightService.AdviseComparison:input_type -> anemos.flight.v1.AdviseComparisonreq
-	9,   // 103: anemos.flight.v1.FlightService.CreateRoute:output_type -> anemos.flight.v1.CreateRoutersp
-	11,  // 104: anemos.flight.v1.FlightService.GetRoute:output_type -> anemos.flight.v1.GetRoutersp
-	13,  // 105: anemos.flight.v1.FlightService.ListRoutes:output_type -> anemos.flight.v1.ListRoutesrsp
-	15,  // 106: anemos.flight.v1.FlightService.UpdateRoute:output_type -> anemos.flight.v1.UpdateRoutersp
-	17,  // 107: anemos.flight.v1.FlightService.ArchiveRoute:output_type -> anemos.flight.v1.ArchiveRoutersp
-	19,  // 108: anemos.flight.v1.FlightService.DeleteRoute:output_type -> anemos.flight.v1.DeleteRoutersp
-	26,  // 109: anemos.flight.v1.FlightService.AssessRoute:output_type -> anemos.flight.v1.AssessRoutersp
-	31,  // 110: anemos.flight.v1.FlightService.BatchAssess:output_type -> anemos.flight.v1.BatchAssessrsp
-	34,  // 111: anemos.flight.v1.FlightService.OptimizeRoute:output_type -> anemos.flight.v1.OptimizeRoutersp
-	41,  // 112: anemos.flight.v1.FlightService.ListOptimizations:output_type -> anemos.flight.v1.ListOptimizationsrsp
-	34,  // 113: anemos.flight.v1.FlightService.GetOptimization:output_type -> anemos.flight.v1.OptimizeRoutersp
-	39,  // 114: anemos.flight.v1.FlightService.DeleteOptimization:output_type -> anemos.flight.v1.DeleteOptimizationrsp
-	26,  // 115: anemos.flight.v1.FlightService.GetAssessment:output_type -> anemos.flight.v1.AssessRoutersp
-	29,  // 116: anemos.flight.v1.FlightService.DeleteAssessment:output_type -> anemos.flight.v1.DeleteAssessmentrsp
-	45,  // 117: anemos.flight.v1.FlightService.ListAssessments:output_type -> anemos.flight.v1.ListAssessmentsrsp
-	52,  // 118: anemos.flight.v1.FlightService.GenerateFlightReport:output_type -> anemos.flight.v1.GenerateFlightReportrsp
-	50,  // 119: anemos.flight.v1.FlightService.GenerateRiskHeatmap:output_type -> anemos.flight.v1.RiskHeatmaprsp
-	58,  // 120: anemos.flight.v1.FlightService.ListRiskTemplates:output_type -> anemos.flight.v1.ListRiskTemplatesrsp
-	60,  // 121: anemos.flight.v1.FlightService.UpsertRiskTemplate:output_type -> anemos.flight.v1.UpsertRiskTemplatersp
-	63,  // 122: anemos.flight.v1.FlightService.ActivateWarning:output_type -> anemos.flight.v1.ActivateWarningrsp
-	65,  // 123: anemos.flight.v1.FlightService.DeactivateWarning:output_type -> anemos.flight.v1.DeactivateWarningrsp
-	67,  // 124: anemos.flight.v1.FlightService.ListActiveWarnings:output_type -> anemos.flight.v1.ListActiveWarningsrsp
-	69,  // 125: anemos.flight.v1.FlightService.GetRouteRiskSummary:output_type -> anemos.flight.v1.GetRouteRiskSummaryrsp
-	72,  // 126: anemos.flight.v1.FlightService.GetRouteWindTrend:output_type -> anemos.flight.v1.GetRouteWindTrendrsp
-	74,  // 127: anemos.flight.v1.FlightService.AdviseAssessment:output_type -> anemos.flight.v1.AdviseAssessmentrsp
-	76,  // 128: anemos.flight.v1.FlightService.AdviseComparison:output_type -> anemos.flight.v1.AdviseComparisonrsp
-	103, // [103:129] is the sub-list for method output_type
-	77,  // [77:103] is the sub-list for method input_type
-	77,  // [77:77] is the sub-list for extension type_name
-	77,  // [77:77] is the sub-list for extension extendee
-	0,   // [0:77] is the sub-list for field type_name
+	81,  // 75: anemos.flight.v1.AdviseAssessmentrsp.generated_at:type_name -> google.protobuf.Timestamp
+	81,  // 76: anemos.flight.v1.AdviseComparisonrsp.generated_at:type_name -> google.protobuf.Timestamp
+	81,  // 77: anemos.flight.v1.PredictRouteTimeseriesreq.time_range_start:type_name -> google.protobuf.Timestamp
+	81,  // 78: anemos.flight.v1.PredictRouteTimeseriesreq.time_range_end:type_name -> google.protobuf.Timestamp
+	81,  // 79: anemos.flight.v1.PredictRouteTimeseriesrsp.generated_at:type_name -> google.protobuf.Timestamp
+	79,  // 80: anemos.flight.v1.PredictRouteTimeseriesrsp.predictions:type_name -> anemos.flight.v1.RoutePrediction
+	81,  // 81: anemos.flight.v1.PredictRouteTimeseriesrsp.missing_samples:type_name -> google.protobuf.Timestamp
+	80,  // 82: anemos.flight.v1.RoutePrediction.segments:type_name -> anemos.flight.v1.RiskTimeSegment
+	81,  // 83: anemos.flight.v1.RiskTimeSegment.start:type_name -> google.protobuf.Timestamp
+	81,  // 84: anemos.flight.v1.RiskTimeSegment.end:type_name -> google.protobuf.Timestamp
+	81,  // 85: anemos.flight.v1.RiskTimeSegment.peak_time:type_name -> google.protobuf.Timestamp
+	8,   // 86: anemos.flight.v1.FlightService.CreateRoute:input_type -> anemos.flight.v1.CreateRoutereq
+	10,  // 87: anemos.flight.v1.FlightService.GetRoute:input_type -> anemos.flight.v1.GetRoutereq
+	12,  // 88: anemos.flight.v1.FlightService.ListRoutes:input_type -> anemos.flight.v1.ListRoutesreq
+	14,  // 89: anemos.flight.v1.FlightService.UpdateRoute:input_type -> anemos.flight.v1.UpdateRoutereq
+	16,  // 90: anemos.flight.v1.FlightService.ArchiveRoute:input_type -> anemos.flight.v1.ArchiveRoutereq
+	18,  // 91: anemos.flight.v1.FlightService.DeleteRoute:input_type -> anemos.flight.v1.DeleteRoutereq
+	25,  // 92: anemos.flight.v1.FlightService.AssessRoute:input_type -> anemos.flight.v1.AssessRoutereq
+	30,  // 93: anemos.flight.v1.FlightService.BatchAssess:input_type -> anemos.flight.v1.BatchAssessreq
+	33,  // 94: anemos.flight.v1.FlightService.OptimizeRoute:input_type -> anemos.flight.v1.OptimizeRoutereq
+	40,  // 95: anemos.flight.v1.FlightService.ListOptimizations:input_type -> anemos.flight.v1.ListOptimizationsreq
+	37,  // 96: anemos.flight.v1.FlightService.GetOptimization:input_type -> anemos.flight.v1.GetOptimizationreq
+	38,  // 97: anemos.flight.v1.FlightService.DeleteOptimization:input_type -> anemos.flight.v1.DeleteOptimizationreq
+	27,  // 98: anemos.flight.v1.FlightService.GetAssessment:input_type -> anemos.flight.v1.GetAssessmentreq
+	28,  // 99: anemos.flight.v1.FlightService.DeleteAssessment:input_type -> anemos.flight.v1.DeleteAssessmentreq
+	44,  // 100: anemos.flight.v1.FlightService.ListAssessments:input_type -> anemos.flight.v1.ListAssessmentsreq
+	51,  // 101: anemos.flight.v1.FlightService.GenerateFlightReport:input_type -> anemos.flight.v1.GenerateFlightReportreq
+	48,  // 102: anemos.flight.v1.FlightService.GenerateRiskHeatmap:input_type -> anemos.flight.v1.RiskHeatmapreq
+	57,  // 103: anemos.flight.v1.FlightService.ListRiskTemplates:input_type -> anemos.flight.v1.ListRiskTemplatesreq
+	59,  // 104: anemos.flight.v1.FlightService.UpsertRiskTemplate:input_type -> anemos.flight.v1.UpsertRiskTemplatereq
+	62,  // 105: anemos.flight.v1.FlightService.ActivateWarning:input_type -> anemos.flight.v1.ActivateWarningreq
+	64,  // 106: anemos.flight.v1.FlightService.DeactivateWarning:input_type -> anemos.flight.v1.DeactivateWarningreq
+	66,  // 107: anemos.flight.v1.FlightService.ListActiveWarnings:input_type -> anemos.flight.v1.ListActiveWarningsreq
+	77,  // 108: anemos.flight.v1.FlightService.PredictRouteTimeseries:input_type -> anemos.flight.v1.PredictRouteTimeseriesreq
+	68,  // 109: anemos.flight.v1.FlightService.GetRouteRiskSummary:input_type -> anemos.flight.v1.GetRouteRiskSummaryreq
+	70,  // 110: anemos.flight.v1.FlightService.GetRouteWindTrend:input_type -> anemos.flight.v1.GetRouteWindTrendreq
+	73,  // 111: anemos.flight.v1.FlightService.AdviseAssessment:input_type -> anemos.flight.v1.AdviseAssessmentreq
+	75,  // 112: anemos.flight.v1.FlightService.AdviseComparison:input_type -> anemos.flight.v1.AdviseComparisonreq
+	9,   // 113: anemos.flight.v1.FlightService.CreateRoute:output_type -> anemos.flight.v1.CreateRoutersp
+	11,  // 114: anemos.flight.v1.FlightService.GetRoute:output_type -> anemos.flight.v1.GetRoutersp
+	13,  // 115: anemos.flight.v1.FlightService.ListRoutes:output_type -> anemos.flight.v1.ListRoutesrsp
+	15,  // 116: anemos.flight.v1.FlightService.UpdateRoute:output_type -> anemos.flight.v1.UpdateRoutersp
+	17,  // 117: anemos.flight.v1.FlightService.ArchiveRoute:output_type -> anemos.flight.v1.ArchiveRoutersp
+	19,  // 118: anemos.flight.v1.FlightService.DeleteRoute:output_type -> anemos.flight.v1.DeleteRoutersp
+	26,  // 119: anemos.flight.v1.FlightService.AssessRoute:output_type -> anemos.flight.v1.AssessRoutersp
+	31,  // 120: anemos.flight.v1.FlightService.BatchAssess:output_type -> anemos.flight.v1.BatchAssessrsp
+	34,  // 121: anemos.flight.v1.FlightService.OptimizeRoute:output_type -> anemos.flight.v1.OptimizeRoutersp
+	41,  // 122: anemos.flight.v1.FlightService.ListOptimizations:output_type -> anemos.flight.v1.ListOptimizationsrsp
+	34,  // 123: anemos.flight.v1.FlightService.GetOptimization:output_type -> anemos.flight.v1.OptimizeRoutersp
+	39,  // 124: anemos.flight.v1.FlightService.DeleteOptimization:output_type -> anemos.flight.v1.DeleteOptimizationrsp
+	26,  // 125: anemos.flight.v1.FlightService.GetAssessment:output_type -> anemos.flight.v1.AssessRoutersp
+	29,  // 126: anemos.flight.v1.FlightService.DeleteAssessment:output_type -> anemos.flight.v1.DeleteAssessmentrsp
+	45,  // 127: anemos.flight.v1.FlightService.ListAssessments:output_type -> anemos.flight.v1.ListAssessmentsrsp
+	52,  // 128: anemos.flight.v1.FlightService.GenerateFlightReport:output_type -> anemos.flight.v1.GenerateFlightReportrsp
+	50,  // 129: anemos.flight.v1.FlightService.GenerateRiskHeatmap:output_type -> anemos.flight.v1.RiskHeatmaprsp
+	58,  // 130: anemos.flight.v1.FlightService.ListRiskTemplates:output_type -> anemos.flight.v1.ListRiskTemplatesrsp
+	60,  // 131: anemos.flight.v1.FlightService.UpsertRiskTemplate:output_type -> anemos.flight.v1.UpsertRiskTemplatersp
+	63,  // 132: anemos.flight.v1.FlightService.ActivateWarning:output_type -> anemos.flight.v1.ActivateWarningrsp
+	65,  // 133: anemos.flight.v1.FlightService.DeactivateWarning:output_type -> anemos.flight.v1.DeactivateWarningrsp
+	67,  // 134: anemos.flight.v1.FlightService.ListActiveWarnings:output_type -> anemos.flight.v1.ListActiveWarningsrsp
+	78,  // 135: anemos.flight.v1.FlightService.PredictRouteTimeseries:output_type -> anemos.flight.v1.PredictRouteTimeseriesrsp
+	69,  // 136: anemos.flight.v1.FlightService.GetRouteRiskSummary:output_type -> anemos.flight.v1.GetRouteRiskSummaryrsp
+	72,  // 137: anemos.flight.v1.FlightService.GetRouteWindTrend:output_type -> anemos.flight.v1.GetRouteWindTrendrsp
+	74,  // 138: anemos.flight.v1.FlightService.AdviseAssessment:output_type -> anemos.flight.v1.AdviseAssessmentrsp
+	76,  // 139: anemos.flight.v1.FlightService.AdviseComparison:output_type -> anemos.flight.v1.AdviseComparisonrsp
+	113, // [113:140] is the sub-list for method output_type
+	86,  // [86:113] is the sub-list for method input_type
+	86,  // [86:86] is the sub-list for extension type_name
+	86,  // [86:86] is the sub-list for extension extendee
+	0,   // [0:86] is the sub-list for field type_name
 }
 
 func init() { file_flight_v1_flight_proto_init() }
@@ -5709,7 +6044,7 @@ func file_flight_v1_flight_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_flight_v1_flight_proto_rawDesc), len(file_flight_v1_flight_proto_rawDesc)),
 			NumEnums:      6,
-			NumMessages:   71,
+			NumMessages:   75,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

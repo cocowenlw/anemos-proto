@@ -44,6 +44,9 @@ service FlightService {
   rpc DeactivateWarning(DeactivateWarningreq) returns (DeactivateWarningrsp);
   rpc ListActiveWarnings(ListActiveWarningsreq) returns (ListActiveWarningsrsp);
 
+  // ----- 24h 风险预测（综合态势 sidebar） -----
+  rpc PredictRouteTimeseries(PredictRouteTimeseriesreq) returns (PredictRouteTimeseriesrsp);
+
   // ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
   rpc GetRouteRiskSummary(GetRouteRiskSummaryreq) returns (GetRouteRiskSummaryrsp);
 
@@ -656,4 +659,39 @@ message AdviseComparisonrsp {
   string model = 2;
   google.protobuf.Timestamp generated_at = 3;
   bool cached = 4;
+}
+
+// ===========================
+// 24h 风险预测
+// ===========================
+
+message PredictRouteTimeseriesreq {
+  string region_id = 1;                                  // 受管区域
+  repeated string route_ids = 2;                         // 空 = 全 region
+  google.protobuf.Timestamp time_range_start = 3;        // 窗口起点
+  google.protobuf.Timestamp time_range_end = 4;          // 窗口终点
+  int32 sample_interval_minutes = 5;                     // 0 = 用配置默认（30min）
+  bool force_refresh = 6;                                // 跳过缓存
+}
+
+message PredictRouteTimeseriesrsp {
+  google.protobuf.Timestamp generated_at = 1;
+  repeated RoutePrediction predictions = 2;
+  repeated google.protobuf.Timestamp missing_samples = 3; // 风场数据缺失的采样时刻
+}
+
+message RoutePrediction {
+  string route_id = 1;
+  string overall_severity = 2;                           // CRITICAL / HIGH / MEDIUM
+  repeated RiskTimeSegment segments = 3;
+}
+
+message RiskTimeSegment {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+  string max_severity = 3;                               // 时段内最高等级
+  double max_score = 4;                                  // 时段内最高分数
+  google.protobuf.Timestamp peak_time = 5;               // 峰值时刻
+  repeated string trigger_dimensions = 6;                // 触发维度并集
+  repeated int32 affected_segment_idx = 7;               // 受影响的航段索引并集
 }

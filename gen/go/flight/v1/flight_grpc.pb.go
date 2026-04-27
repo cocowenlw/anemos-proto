@@ -19,32 +19,33 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FlightService_CreateRoute_FullMethodName          = "/anemos.flight.v1.FlightService/CreateRoute"
-	FlightService_GetRoute_FullMethodName             = "/anemos.flight.v1.FlightService/GetRoute"
-	FlightService_ListRoutes_FullMethodName           = "/anemos.flight.v1.FlightService/ListRoutes"
-	FlightService_UpdateRoute_FullMethodName          = "/anemos.flight.v1.FlightService/UpdateRoute"
-	FlightService_ArchiveRoute_FullMethodName         = "/anemos.flight.v1.FlightService/ArchiveRoute"
-	FlightService_DeleteRoute_FullMethodName          = "/anemos.flight.v1.FlightService/DeleteRoute"
-	FlightService_AssessRoute_FullMethodName          = "/anemos.flight.v1.FlightService/AssessRoute"
-	FlightService_BatchAssess_FullMethodName          = "/anemos.flight.v1.FlightService/BatchAssess"
-	FlightService_OptimizeRoute_FullMethodName        = "/anemos.flight.v1.FlightService/OptimizeRoute"
-	FlightService_ListOptimizations_FullMethodName    = "/anemos.flight.v1.FlightService/ListOptimizations"
-	FlightService_GetOptimization_FullMethodName      = "/anemos.flight.v1.FlightService/GetOptimization"
-	FlightService_DeleteOptimization_FullMethodName   = "/anemos.flight.v1.FlightService/DeleteOptimization"
-	FlightService_GetAssessment_FullMethodName        = "/anemos.flight.v1.FlightService/GetAssessment"
-	FlightService_DeleteAssessment_FullMethodName     = "/anemos.flight.v1.FlightService/DeleteAssessment"
-	FlightService_ListAssessments_FullMethodName      = "/anemos.flight.v1.FlightService/ListAssessments"
-	FlightService_GenerateFlightReport_FullMethodName = "/anemos.flight.v1.FlightService/GenerateFlightReport"
-	FlightService_GenerateRiskHeatmap_FullMethodName  = "/anemos.flight.v1.FlightService/GenerateRiskHeatmap"
-	FlightService_ListRiskTemplates_FullMethodName    = "/anemos.flight.v1.FlightService/ListRiskTemplates"
-	FlightService_UpsertRiskTemplate_FullMethodName   = "/anemos.flight.v1.FlightService/UpsertRiskTemplate"
-	FlightService_ActivateWarning_FullMethodName      = "/anemos.flight.v1.FlightService/ActivateWarning"
-	FlightService_DeactivateWarning_FullMethodName    = "/anemos.flight.v1.FlightService/DeactivateWarning"
-	FlightService_ListActiveWarnings_FullMethodName   = "/anemos.flight.v1.FlightService/ListActiveWarnings"
-	FlightService_GetRouteRiskSummary_FullMethodName  = "/anemos.flight.v1.FlightService/GetRouteRiskSummary"
-	FlightService_GetRouteWindTrend_FullMethodName    = "/anemos.flight.v1.FlightService/GetRouteWindTrend"
-	FlightService_AdviseAssessment_FullMethodName     = "/anemos.flight.v1.FlightService/AdviseAssessment"
-	FlightService_AdviseComparison_FullMethodName     = "/anemos.flight.v1.FlightService/AdviseComparison"
+	FlightService_CreateRoute_FullMethodName            = "/anemos.flight.v1.FlightService/CreateRoute"
+	FlightService_GetRoute_FullMethodName               = "/anemos.flight.v1.FlightService/GetRoute"
+	FlightService_ListRoutes_FullMethodName             = "/anemos.flight.v1.FlightService/ListRoutes"
+	FlightService_UpdateRoute_FullMethodName            = "/anemos.flight.v1.FlightService/UpdateRoute"
+	FlightService_ArchiveRoute_FullMethodName           = "/anemos.flight.v1.FlightService/ArchiveRoute"
+	FlightService_DeleteRoute_FullMethodName            = "/anemos.flight.v1.FlightService/DeleteRoute"
+	FlightService_AssessRoute_FullMethodName            = "/anemos.flight.v1.FlightService/AssessRoute"
+	FlightService_BatchAssess_FullMethodName            = "/anemos.flight.v1.FlightService/BatchAssess"
+	FlightService_OptimizeRoute_FullMethodName          = "/anemos.flight.v1.FlightService/OptimizeRoute"
+	FlightService_ListOptimizations_FullMethodName      = "/anemos.flight.v1.FlightService/ListOptimizations"
+	FlightService_GetOptimization_FullMethodName        = "/anemos.flight.v1.FlightService/GetOptimization"
+	FlightService_DeleteOptimization_FullMethodName     = "/anemos.flight.v1.FlightService/DeleteOptimization"
+	FlightService_GetAssessment_FullMethodName          = "/anemos.flight.v1.FlightService/GetAssessment"
+	FlightService_DeleteAssessment_FullMethodName       = "/anemos.flight.v1.FlightService/DeleteAssessment"
+	FlightService_ListAssessments_FullMethodName        = "/anemos.flight.v1.FlightService/ListAssessments"
+	FlightService_GenerateFlightReport_FullMethodName   = "/anemos.flight.v1.FlightService/GenerateFlightReport"
+	FlightService_GenerateRiskHeatmap_FullMethodName    = "/anemos.flight.v1.FlightService/GenerateRiskHeatmap"
+	FlightService_ListRiskTemplates_FullMethodName      = "/anemos.flight.v1.FlightService/ListRiskTemplates"
+	FlightService_UpsertRiskTemplate_FullMethodName     = "/anemos.flight.v1.FlightService/UpsertRiskTemplate"
+	FlightService_ActivateWarning_FullMethodName        = "/anemos.flight.v1.FlightService/ActivateWarning"
+	FlightService_DeactivateWarning_FullMethodName      = "/anemos.flight.v1.FlightService/DeactivateWarning"
+	FlightService_ListActiveWarnings_FullMethodName     = "/anemos.flight.v1.FlightService/ListActiveWarnings"
+	FlightService_PredictRouteTimeseries_FullMethodName = "/anemos.flight.v1.FlightService/PredictRouteTimeseries"
+	FlightService_GetRouteRiskSummary_FullMethodName    = "/anemos.flight.v1.FlightService/GetRouteRiskSummary"
+	FlightService_GetRouteWindTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteWindTrend"
+	FlightService_AdviseAssessment_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseAssessment"
+	FlightService_AdviseComparison_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseComparison"
 )
 
 // FlightServiceClient is the client API for FlightService service.
@@ -78,6 +79,8 @@ type FlightServiceClient interface {
 	ActivateWarning(ctx context.Context, in *ActivateWarningreq, opts ...grpc.CallOption) (*ActivateWarningrsp, error)
 	DeactivateWarning(ctx context.Context, in *DeactivateWarningreq, opts ...grpc.CallOption) (*DeactivateWarningrsp, error)
 	ListActiveWarnings(ctx context.Context, in *ListActiveWarningsreq, opts ...grpc.CallOption) (*ListActiveWarningsrsp, error)
+	// ----- 24h 风险预测（综合态势 sidebar） -----
+	PredictRouteTimeseries(ctx context.Context, in *PredictRouteTimeseriesreq, opts ...grpc.CallOption) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
 	GetRouteRiskSummary(ctx context.Context, in *GetRouteRiskSummaryreq, opts ...grpc.CallOption) (*GetRouteRiskSummaryrsp, error)
 	// ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
@@ -315,6 +318,16 @@ func (c *flightServiceClient) ListActiveWarnings(ctx context.Context, in *ListAc
 	return out, nil
 }
 
+func (c *flightServiceClient) PredictRouteTimeseries(ctx context.Context, in *PredictRouteTimeseriesreq, opts ...grpc.CallOption) (*PredictRouteTimeseriesrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PredictRouteTimeseriesrsp)
+	err := c.cc.Invoke(ctx, FlightService_PredictRouteTimeseries_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *flightServiceClient) GetRouteRiskSummary(ctx context.Context, in *GetRouteRiskSummaryreq, opts ...grpc.CallOption) (*GetRouteRiskSummaryrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetRouteRiskSummaryrsp)
@@ -386,6 +399,8 @@ type FlightServiceServer interface {
 	ActivateWarning(context.Context, *ActivateWarningreq) (*ActivateWarningrsp, error)
 	DeactivateWarning(context.Context, *DeactivateWarningreq) (*DeactivateWarningrsp, error)
 	ListActiveWarnings(context.Context, *ListActiveWarningsreq) (*ListActiveWarningsrsp, error)
+	// ----- 24h 风险预测（综合态势 sidebar） -----
+	PredictRouteTimeseries(context.Context, *PredictRouteTimeseriesreq) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
 	GetRouteRiskSummary(context.Context, *GetRouteRiskSummaryreq) (*GetRouteRiskSummaryrsp, error)
 	// ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
@@ -468,6 +483,9 @@ func (UnimplementedFlightServiceServer) DeactivateWarning(context.Context, *Deac
 }
 func (UnimplementedFlightServiceServer) ListActiveWarnings(context.Context, *ListActiveWarningsreq) (*ListActiveWarningsrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListActiveWarnings not implemented")
+}
+func (UnimplementedFlightServiceServer) PredictRouteTimeseries(context.Context, *PredictRouteTimeseriesreq) (*PredictRouteTimeseriesrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method PredictRouteTimeseries not implemented")
 }
 func (UnimplementedFlightServiceServer) GetRouteRiskSummary(context.Context, *GetRouteRiskSummaryreq) (*GetRouteRiskSummaryrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRouteRiskSummary not implemented")
@@ -898,6 +916,24 @@ func _FlightService_ListActiveWarnings_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FlightService_PredictRouteTimeseries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PredictRouteTimeseriesreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FlightServiceServer).PredictRouteTimeseries(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FlightService_PredictRouteTimeseries_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlightServiceServer).PredictRouteTimeseries(ctx, req.(*PredictRouteTimeseriesreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FlightService_GetRouteRiskSummary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRouteRiskSummaryreq)
 	if err := dec(in); err != nil {
@@ -1064,6 +1100,10 @@ var FlightService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListActiveWarnings",
 			Handler:    _FlightService_ListActiveWarnings_Handler,
+		},
+		{
+			MethodName: "PredictRouteTimeseries",
+			Handler:    _FlightService_PredictRouteTimeseries_Handler,
 		},
 		{
 			MethodName: "GetRouteRiskSummary",
