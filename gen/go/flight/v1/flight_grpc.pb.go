@@ -38,9 +38,6 @@ const (
 	FlightService_GenerateRiskHeatmap_FullMethodName    = "/anemos.flight.v1.FlightService/GenerateRiskHeatmap"
 	FlightService_ListRiskTemplates_FullMethodName      = "/anemos.flight.v1.FlightService/ListRiskTemplates"
 	FlightService_UpsertRiskTemplate_FullMethodName     = "/anemos.flight.v1.FlightService/UpsertRiskTemplate"
-	FlightService_ActivateWarning_FullMethodName        = "/anemos.flight.v1.FlightService/ActivateWarning"
-	FlightService_DeactivateWarning_FullMethodName      = "/anemos.flight.v1.FlightService/DeactivateWarning"
-	FlightService_ListActiveWarnings_FullMethodName     = "/anemos.flight.v1.FlightService/ListActiveWarnings"
 	FlightService_PredictRouteTimeseries_FullMethodName = "/anemos.flight.v1.FlightService/PredictRouteTimeseries"
 	FlightService_GetRouteRiskSummary_FullMethodName    = "/anemos.flight.v1.FlightService/GetRouteRiskSummary"
 	FlightService_GetRouteWindTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteWindTrend"
@@ -75,10 +72,6 @@ type FlightServiceClient interface {
 	// ----- 风险阈值模板 -----
 	ListRiskTemplates(ctx context.Context, in *ListRiskTemplatesreq, opts ...grpc.CallOption) (*ListRiskTemplatesrsp, error)
 	UpsertRiskTemplate(ctx context.Context, in *UpsertRiskTemplatereq, opts ...grpc.CallOption) (*UpsertRiskTemplatersp, error)
-	// ----- 活跃预警（用户从评估记录手动激活；与 alerts 并存不合并） -----
-	ActivateWarning(ctx context.Context, in *ActivateWarningreq, opts ...grpc.CallOption) (*ActivateWarningrsp, error)
-	DeactivateWarning(ctx context.Context, in *DeactivateWarningreq, opts ...grpc.CallOption) (*DeactivateWarningrsp, error)
-	ListActiveWarnings(ctx context.Context, in *ListActiveWarningsreq, opts ...grpc.CallOption) (*ListActiveWarningsrsp, error)
 	// ----- 24h 风险预测（综合态势 sidebar） -----
 	PredictRouteTimeseries(ctx context.Context, in *PredictRouteTimeseriesreq, opts ...grpc.CallOption) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
@@ -288,36 +281,6 @@ func (c *flightServiceClient) UpsertRiskTemplate(ctx context.Context, in *Upsert
 	return out, nil
 }
 
-func (c *flightServiceClient) ActivateWarning(ctx context.Context, in *ActivateWarningreq, opts ...grpc.CallOption) (*ActivateWarningrsp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ActivateWarningrsp)
-	err := c.cc.Invoke(ctx, FlightService_ActivateWarning_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *flightServiceClient) DeactivateWarning(ctx context.Context, in *DeactivateWarningreq, opts ...grpc.CallOption) (*DeactivateWarningrsp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeactivateWarningrsp)
-	err := c.cc.Invoke(ctx, FlightService_DeactivateWarning_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *flightServiceClient) ListActiveWarnings(ctx context.Context, in *ListActiveWarningsreq, opts ...grpc.CallOption) (*ListActiveWarningsrsp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListActiveWarningsrsp)
-	err := c.cc.Invoke(ctx, FlightService_ListActiveWarnings_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *flightServiceClient) PredictRouteTimeseries(ctx context.Context, in *PredictRouteTimeseriesreq, opts ...grpc.CallOption) (*PredictRouteTimeseriesrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PredictRouteTimeseriesrsp)
@@ -395,10 +358,6 @@ type FlightServiceServer interface {
 	// ----- 风险阈值模板 -----
 	ListRiskTemplates(context.Context, *ListRiskTemplatesreq) (*ListRiskTemplatesrsp, error)
 	UpsertRiskTemplate(context.Context, *UpsertRiskTemplatereq) (*UpsertRiskTemplatersp, error)
-	// ----- 活跃预警（用户从评估记录手动激活；与 alerts 并存不合并） -----
-	ActivateWarning(context.Context, *ActivateWarningreq) (*ActivateWarningrsp, error)
-	DeactivateWarning(context.Context, *DeactivateWarningreq) (*DeactivateWarningrsp, error)
-	ListActiveWarnings(context.Context, *ListActiveWarningsreq) (*ListActiveWarningsrsp, error)
 	// ----- 24h 风险预测（综合态势 sidebar） -----
 	PredictRouteTimeseries(context.Context, *PredictRouteTimeseriesreq) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
@@ -474,15 +433,6 @@ func (UnimplementedFlightServiceServer) ListRiskTemplates(context.Context, *List
 }
 func (UnimplementedFlightServiceServer) UpsertRiskTemplate(context.Context, *UpsertRiskTemplatereq) (*UpsertRiskTemplatersp, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpsertRiskTemplate not implemented")
-}
-func (UnimplementedFlightServiceServer) ActivateWarning(context.Context, *ActivateWarningreq) (*ActivateWarningrsp, error) {
-	return nil, status.Error(codes.Unimplemented, "method ActivateWarning not implemented")
-}
-func (UnimplementedFlightServiceServer) DeactivateWarning(context.Context, *DeactivateWarningreq) (*DeactivateWarningrsp, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeactivateWarning not implemented")
-}
-func (UnimplementedFlightServiceServer) ListActiveWarnings(context.Context, *ListActiveWarningsreq) (*ListActiveWarningsrsp, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListActiveWarnings not implemented")
 }
 func (UnimplementedFlightServiceServer) PredictRouteTimeseries(context.Context, *PredictRouteTimeseriesreq) (*PredictRouteTimeseriesrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method PredictRouteTimeseries not implemented")
@@ -862,60 +812,6 @@ func _FlightService_UpsertRiskTemplate_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _FlightService_ActivateWarning_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ActivateWarningreq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FlightServiceServer).ActivateWarning(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: FlightService_ActivateWarning_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlightServiceServer).ActivateWarning(ctx, req.(*ActivateWarningreq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FlightService_DeactivateWarning_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeactivateWarningreq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FlightServiceServer).DeactivateWarning(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: FlightService_DeactivateWarning_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlightServiceServer).DeactivateWarning(ctx, req.(*DeactivateWarningreq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FlightService_ListActiveWarnings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListActiveWarningsreq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FlightServiceServer).ListActiveWarnings(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: FlightService_ListActiveWarnings_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlightServiceServer).ListActiveWarnings(ctx, req.(*ListActiveWarningsreq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _FlightService_PredictRouteTimeseries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PredictRouteTimeseriesreq)
 	if err := dec(in); err != nil {
@@ -1088,18 +984,6 @@ var FlightService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpsertRiskTemplate",
 			Handler:    _FlightService_UpsertRiskTemplate_Handler,
-		},
-		{
-			MethodName: "ActivateWarning",
-			Handler:    _FlightService_ActivateWarning_Handler,
-		},
-		{
-			MethodName: "DeactivateWarning",
-			Handler:    _FlightService_DeactivateWarning_Handler,
-		},
-		{
-			MethodName: "ListActiveWarnings",
-			Handler:    _FlightService_ListActiveWarnings_Handler,
 		},
 		{
 			MethodName: "PredictRouteTimeseries",

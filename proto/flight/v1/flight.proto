@@ -39,11 +39,6 @@ service FlightService {
   rpc ListRiskTemplates(ListRiskTemplatesreq) returns (ListRiskTemplatesrsp);
   rpc UpsertRiskTemplate(UpsertRiskTemplatereq) returns (UpsertRiskTemplatersp);
 
-  // ----- 活跃预警（用户从评估记录手动激活；与 alerts 并存不合并） -----
-  rpc ActivateWarning(ActivateWarningreq) returns (ActivateWarningrsp);
-  rpc DeactivateWarning(DeactivateWarningreq) returns (DeactivateWarningrsp);
-  rpc ListActiveWarnings(ListActiveWarningsreq) returns (ListActiveWarningsrsp);
-
   // ----- 24h 风险预测（综合态势 sidebar） -----
   rpc PredictRouteTimeseries(PredictRouteTimeseriesreq) returns (PredictRouteTimeseriesrsp);
 
@@ -383,7 +378,6 @@ message AssessmentRecord {
   google.protobuf.Timestamp assessed_at = 6;
   string overall_level = 7;                            // LOW / MEDIUM / HIGH / CRITICAL（前端做等级筛选）
   string decision = 8;                                 // GO / CONDITIONAL / NO_GO
-  bool is_active_warning = 9;                          // 是否为该航线当前活跃预警
 }
 
 message ListAssessmentsreq {
@@ -532,58 +526,6 @@ message UpsertRiskTemplatereq {
 message UpsertRiskTemplatersp {
   string template_id = 1;
   bool success = 2;
-}
-
-// ===========================
-// 活跃预警（active_flight_warning）
-// ===========================
-//
-// 语义说明：用户在航线管理 Tab 内从一次评估记录手动点击"设为当前预警"时激活。
-// 与 alerts（规则驱动的系统告警）**职责不同，并存不合并**：
-//   - alerts           — 阈值 / 定时规则触发，由 anemos-mgr-front 的 /alerts 页面管理
-//   - ActiveWarning    — 用户从评估手动激活，同一航线同时只允许一条活跃预警
-//
-// 生命周期：
-//   - Activate   — 用户手动，INSERT（同航线旧 warning 先 deactivate）
-//   - Update     — AssessRoute 完成并订阅后触发整体 severity 变化
-//   - Deactivate — 用户手动 或 AssessRoute 完成后整体 < MEDIUM 自动 或 航线/评估级联删除
-//
-// NATS 事件对应：
-//   events.flight.warning.activated / events.flight.warning.updated / events.flight.warning.deactivated
-
-message ActiveWarning {
-  string warning_id = 1;
-  string assessment_id = 2;                            // 来源评估 ID
-  string route_id = 3;
-  string region_id = 4;
-  string activated_by = 5;                             // 激活用户
-  google.protobuf.Timestamp activated_at = 6;
-  RiskLevel severity = 7;                              // 评估整体等级
-  string summary = 8;                                  // 摘要文案，如 "航段 3 存在严重横风"
-  repeated SegmentRisk segments = 9;                   // 冗余展开，前端无需再查 assessment
-}
-
-message ActivateWarningreq {
-  string assessment_id = 1;                            // 要激活的评估 ID
-  string activated_by = 2;                             // 激活用户
-}
-message ActivateWarningrsp {
-  ActiveWarning warning = 1;
-}
-
-message DeactivateWarningreq {
-  string warning_id = 1;
-  string reason = 2;                                   // 可选：停用原因
-}
-message DeactivateWarningrsp {
-  bool success = 1;
-}
-
-message ListActiveWarningsreq {
-  string region_id = 1;                                // 受管区域 ID（可选，为空则全部）
-}
-message ListActiveWarningsrsp {
-  repeated ActiveWarning warnings = 1;
 }
 
 // ===========================
