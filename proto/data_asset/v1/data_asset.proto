@@ -41,6 +41,7 @@ service DataAssetService {
 
   // ----- 背景气象 -----
   rpc GetMeteoSnapshot(GetMeteoSnapshotreq) returns (GetMeteoSnapshotrsp);           // 获取背景气象快照
+  rpc GetMeteoSnapshotsByRange(GetMeteoSnapshotsByRangeRequest) returns (GetMeteoSnapshotsByRangeResponse); // 按时间范围批量获取气象快照
   rpc QueryMeteoTimeseries(QueryMeteoTimeseriesreq) returns (QueryMeteoTimeseriesrsp); // 查询气象时序数据
 
   // ----- CFD 仿真库 -----
@@ -337,6 +338,15 @@ message GetMeteoSnapshotreq {
 }
 message GetMeteoSnapshotrsp {
   MeteoSnapshot snapshot = 1;
+}
+
+message GetMeteoSnapshotsByRangeRequest {
+  string region_id = 1;                               // 受管区域 ID
+  google.protobuf.Timestamp start = 2;                // forecast_time >= start (inclusive)
+  google.protobuf.Timestamp end = 3;                  // forecast_time < end (exclusive)
+}
+message GetMeteoSnapshotsByRangeResponse {
+  repeated MeteoSnapshot snapshots = 1;               // 按 forecast_time 升序
 }
 
 // 气象时序数据

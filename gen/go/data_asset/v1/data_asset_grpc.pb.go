@@ -19,30 +19,31 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DataAssetService_GetDEM_FullMethodName                  = "/anemos.data_asset.v1.DataAssetService/GetDEM"
-	DataAssetService_ListDEMAssets_FullMethodName           = "/anemos.data_asset.v1.DataAssetService/ListDEMAssets"
-	DataAssetService_ImportDEM_FullMethodName               = "/anemos.data_asset.v1.DataAssetService/ImportDEM"
-	DataAssetService_UpdateDEMAsset_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/UpdateDEMAsset"
-	DataAssetService_ActivateDEMVersion_FullMethodName      = "/anemos.data_asset.v1.DataAssetService/ActivateDEMVersion"
-	DataAssetService_ArchiveDEMAsset_FullMethodName         = "/anemos.data_asset.v1.DataAssetService/ArchiveDEMAsset"
-	DataAssetService_DeleteDEMAsset_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/DeleteDEMAsset"
-	DataAssetService_ImportBuildings_FullMethodName         = "/anemos.data_asset.v1.DataAssetService/ImportBuildings"
-	DataAssetService_ListBuildings_FullMethodName           = "/anemos.data_asset.v1.DataAssetService/ListBuildings"
-	DataAssetService_ListBuildingVersions_FullMethodName    = "/anemos.data_asset.v1.DataAssetService/ListBuildingVersions"
-	DataAssetService_ActivateBuildingVersion_FullMethodName = "/anemos.data_asset.v1.DataAssetService/ActivateBuildingVersion"
-	DataAssetService_ImportNoFlyZoneSet_FullMethodName      = "/anemos.data_asset.v1.DataAssetService/ImportNoFlyZoneSet"
-	DataAssetService_GetNoFlyZoneSet_FullMethodName         = "/anemos.data_asset.v1.DataAssetService/GetNoFlyZoneSet"
-	DataAssetService_ListNoFlyZoneSets_FullMethodName       = "/anemos.data_asset.v1.DataAssetService/ListNoFlyZoneSets"
-	DataAssetService_ListImportJobs_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/ListImportJobs"
-	DataAssetService_GetImportJob_FullMethodName            = "/anemos.data_asset.v1.DataAssetService/GetImportJob"
-	DataAssetService_QueryElevation_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/QueryElevation"
-	DataAssetService_GetMeteoSnapshot_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/GetMeteoSnapshot"
-	DataAssetService_QueryMeteoTimeseries_FullMethodName    = "/anemos.data_asset.v1.DataAssetService/QueryMeteoTimeseries"
-	DataAssetService_ListCFDCases_FullMethodName            = "/anemos.data_asset.v1.DataAssetService/ListCFDCases"
-	DataAssetService_RegisterCFDCase_FullMethodName         = "/anemos.data_asset.v1.DataAssetService/RegisterCFDCase"
-	DataAssetService_IngestObservation_FullMethodName       = "/anemos.data_asset.v1.DataAssetService/IngestObservation"
-	DataAssetService_QueryObservations_FullMethodName       = "/anemos.data_asset.v1.DataAssetService/QueryObservations"
-	DataAssetService_GetLatestObsByStation_FullMethodName   = "/anemos.data_asset.v1.DataAssetService/GetLatestObsByStation"
+	DataAssetService_GetDEM_FullMethodName                   = "/anemos.data_asset.v1.DataAssetService/GetDEM"
+	DataAssetService_ListDEMAssets_FullMethodName            = "/anemos.data_asset.v1.DataAssetService/ListDEMAssets"
+	DataAssetService_ImportDEM_FullMethodName                = "/anemos.data_asset.v1.DataAssetService/ImportDEM"
+	DataAssetService_UpdateDEMAsset_FullMethodName           = "/anemos.data_asset.v1.DataAssetService/UpdateDEMAsset"
+	DataAssetService_ActivateDEMVersion_FullMethodName       = "/anemos.data_asset.v1.DataAssetService/ActivateDEMVersion"
+	DataAssetService_ArchiveDEMAsset_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/ArchiveDEMAsset"
+	DataAssetService_DeleteDEMAsset_FullMethodName           = "/anemos.data_asset.v1.DataAssetService/DeleteDEMAsset"
+	DataAssetService_ImportBuildings_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/ImportBuildings"
+	DataAssetService_ListBuildings_FullMethodName            = "/anemos.data_asset.v1.DataAssetService/ListBuildings"
+	DataAssetService_ListBuildingVersions_FullMethodName     = "/anemos.data_asset.v1.DataAssetService/ListBuildingVersions"
+	DataAssetService_ActivateBuildingVersion_FullMethodName  = "/anemos.data_asset.v1.DataAssetService/ActivateBuildingVersion"
+	DataAssetService_ImportNoFlyZoneSet_FullMethodName       = "/anemos.data_asset.v1.DataAssetService/ImportNoFlyZoneSet"
+	DataAssetService_GetNoFlyZoneSet_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/GetNoFlyZoneSet"
+	DataAssetService_ListNoFlyZoneSets_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/ListNoFlyZoneSets"
+	DataAssetService_ListImportJobs_FullMethodName           = "/anemos.data_asset.v1.DataAssetService/ListImportJobs"
+	DataAssetService_GetImportJob_FullMethodName             = "/anemos.data_asset.v1.DataAssetService/GetImportJob"
+	DataAssetService_QueryElevation_FullMethodName           = "/anemos.data_asset.v1.DataAssetService/QueryElevation"
+	DataAssetService_GetMeteoSnapshot_FullMethodName         = "/anemos.data_asset.v1.DataAssetService/GetMeteoSnapshot"
+	DataAssetService_GetMeteoSnapshotsByRange_FullMethodName = "/anemos.data_asset.v1.DataAssetService/GetMeteoSnapshotsByRange"
+	DataAssetService_QueryMeteoTimeseries_FullMethodName     = "/anemos.data_asset.v1.DataAssetService/QueryMeteoTimeseries"
+	DataAssetService_ListCFDCases_FullMethodName             = "/anemos.data_asset.v1.DataAssetService/ListCFDCases"
+	DataAssetService_RegisterCFDCase_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/RegisterCFDCase"
+	DataAssetService_IngestObservation_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/IngestObservation"
+	DataAssetService_QueryObservations_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/QueryObservations"
+	DataAssetService_GetLatestObsByStation_FullMethodName    = "/anemos.data_asset.v1.DataAssetService/GetLatestObsByStation"
 )
 
 // DataAssetServiceClient is the client API for DataAssetService service.
@@ -73,6 +74,7 @@ type DataAssetServiceClient interface {
 	QueryElevation(ctx context.Context, in *QueryElevationreq, opts ...grpc.CallOption) (*QueryElevationrsp, error)
 	// ----- 背景气象 -----
 	GetMeteoSnapshot(ctx context.Context, in *GetMeteoSnapshotreq, opts ...grpc.CallOption) (*GetMeteoSnapshotrsp, error)
+	GetMeteoSnapshotsByRange(ctx context.Context, in *GetMeteoSnapshotsByRangeRequest, opts ...grpc.CallOption) (*GetMeteoSnapshotsByRangeResponse, error)
 	QueryMeteoTimeseries(ctx context.Context, in *QueryMeteoTimeseriesreq, opts ...grpc.CallOption) (*QueryMeteoTimeseriesrsp, error)
 	// ----- CFD 仿真库 -----
 	ListCFDCases(ctx context.Context, in *ListCFDCasesreq, opts ...grpc.CallOption) (*ListCFDCasesrsp, error)
@@ -271,6 +273,16 @@ func (c *dataAssetServiceClient) GetMeteoSnapshot(ctx context.Context, in *GetMe
 	return out, nil
 }
 
+func (c *dataAssetServiceClient) GetMeteoSnapshotsByRange(ctx context.Context, in *GetMeteoSnapshotsByRangeRequest, opts ...grpc.CallOption) (*GetMeteoSnapshotsByRangeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMeteoSnapshotsByRangeResponse)
+	err := c.cc.Invoke(ctx, DataAssetService_GetMeteoSnapshotsByRange_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *dataAssetServiceClient) QueryMeteoTimeseries(ctx context.Context, in *QueryMeteoTimeseriesreq, opts ...grpc.CallOption) (*QueryMeteoTimeseriesrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(QueryMeteoTimeseriesrsp)
@@ -359,6 +371,7 @@ type DataAssetServiceServer interface {
 	QueryElevation(context.Context, *QueryElevationreq) (*QueryElevationrsp, error)
 	// ----- 背景气象 -----
 	GetMeteoSnapshot(context.Context, *GetMeteoSnapshotreq) (*GetMeteoSnapshotrsp, error)
+	GetMeteoSnapshotsByRange(context.Context, *GetMeteoSnapshotsByRangeRequest) (*GetMeteoSnapshotsByRangeResponse, error)
 	QueryMeteoTimeseries(context.Context, *QueryMeteoTimeseriesreq) (*QueryMeteoTimeseriesrsp, error)
 	// ----- CFD 仿真库 -----
 	ListCFDCases(context.Context, *ListCFDCasesreq) (*ListCFDCasesrsp, error)
@@ -430,6 +443,9 @@ func (UnimplementedDataAssetServiceServer) QueryElevation(context.Context, *Quer
 }
 func (UnimplementedDataAssetServiceServer) GetMeteoSnapshot(context.Context, *GetMeteoSnapshotreq) (*GetMeteoSnapshotrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMeteoSnapshot not implemented")
+}
+func (UnimplementedDataAssetServiceServer) GetMeteoSnapshotsByRange(context.Context, *GetMeteoSnapshotsByRangeRequest) (*GetMeteoSnapshotsByRangeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMeteoSnapshotsByRange not implemented")
 }
 func (UnimplementedDataAssetServiceServer) QueryMeteoTimeseries(context.Context, *QueryMeteoTimeseriesreq) (*QueryMeteoTimeseriesrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method QueryMeteoTimeseries not implemented")
@@ -794,6 +810,24 @@ func _DataAssetService_GetMeteoSnapshot_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataAssetService_GetMeteoSnapshotsByRange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMeteoSnapshotsByRangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataAssetServiceServer).GetMeteoSnapshotsByRange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataAssetService_GetMeteoSnapshotsByRange_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataAssetServiceServer).GetMeteoSnapshotsByRange(ctx, req.(*GetMeteoSnapshotsByRangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DataAssetService_QueryMeteoTimeseries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryMeteoTimeseriesreq)
 	if err := dec(in); err != nil {
@@ -980,6 +1014,10 @@ var DataAssetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMeteoSnapshot",
 			Handler:    _DataAssetService_GetMeteoSnapshot_Handler,
+		},
+		{
+			MethodName: "GetMeteoSnapshotsByRange",
+			Handler:    _DataAssetService_GetMeteoSnapshotsByRange_Handler,
 		},
 		{
 			MethodName: "QueryMeteoTimeseries",
