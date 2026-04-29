@@ -41,6 +41,7 @@ const (
 	FlightService_PredictRouteTimeseries_FullMethodName = "/anemos.flight.v1.FlightService/PredictRouteTimeseries"
 	FlightService_GetRouteRiskSummary_FullMethodName    = "/anemos.flight.v1.FlightService/GetRouteRiskSummary"
 	FlightService_GetRouteWindTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteWindTrend"
+	FlightService_GetRouteRiskTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteRiskTrend"
 	FlightService_AdviseAssessment_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseAssessment"
 	FlightService_AdviseComparison_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseComparison"
 )
@@ -78,6 +79,8 @@ type FlightServiceClient interface {
 	GetRouteRiskSummary(ctx context.Context, in *GetRouteRiskSummaryreq, opts ...grpc.CallOption) (*GetRouteRiskSummaryrsp, error)
 	// ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
 	GetRouteWindTrend(ctx context.Context, in *GetRouteWindTrendreq, opts ...grpc.CallOption) (*GetRouteWindTrendrsp, error)
+	// ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
+	GetRouteRiskTrend(ctx context.Context, in *GetRouteRiskTrendreq, opts ...grpc.CallOption) (*GetRouteRiskTrendrsp, error)
 	// ----- AI 辅助分析（LLM 生成自然语言研判） -----
 	AdviseAssessment(ctx context.Context, in *AdviseAssessmentreq, opts ...grpc.CallOption) (*AdviseAssessmentrsp, error)
 	AdviseComparison(ctx context.Context, in *AdviseComparisonreq, opts ...grpc.CallOption) (*AdviseComparisonrsp, error)
@@ -311,6 +314,16 @@ func (c *flightServiceClient) GetRouteWindTrend(ctx context.Context, in *GetRout
 	return out, nil
 }
 
+func (c *flightServiceClient) GetRouteRiskTrend(ctx context.Context, in *GetRouteRiskTrendreq, opts ...grpc.CallOption) (*GetRouteRiskTrendrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRouteRiskTrendrsp)
+	err := c.cc.Invoke(ctx, FlightService_GetRouteRiskTrend_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *flightServiceClient) AdviseAssessment(ctx context.Context, in *AdviseAssessmentreq, opts ...grpc.CallOption) (*AdviseAssessmentrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AdviseAssessmentrsp)
@@ -364,6 +377,8 @@ type FlightServiceServer interface {
 	GetRouteRiskSummary(context.Context, *GetRouteRiskSummaryreq) (*GetRouteRiskSummaryrsp, error)
 	// ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
 	GetRouteWindTrend(context.Context, *GetRouteWindTrendreq) (*GetRouteWindTrendrsp, error)
+	// ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
+	GetRouteRiskTrend(context.Context, *GetRouteRiskTrendreq) (*GetRouteRiskTrendrsp, error)
 	// ----- AI 辅助分析（LLM 生成自然语言研判） -----
 	AdviseAssessment(context.Context, *AdviseAssessmentreq) (*AdviseAssessmentrsp, error)
 	AdviseComparison(context.Context, *AdviseComparisonreq) (*AdviseComparisonrsp, error)
@@ -442,6 +457,9 @@ func (UnimplementedFlightServiceServer) GetRouteRiskSummary(context.Context, *Ge
 }
 func (UnimplementedFlightServiceServer) GetRouteWindTrend(context.Context, *GetRouteWindTrendreq) (*GetRouteWindTrendrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRouteWindTrend not implemented")
+}
+func (UnimplementedFlightServiceServer) GetRouteRiskTrend(context.Context, *GetRouteRiskTrendreq) (*GetRouteRiskTrendrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRouteRiskTrend not implemented")
 }
 func (UnimplementedFlightServiceServer) AdviseAssessment(context.Context, *AdviseAssessmentreq) (*AdviseAssessmentrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method AdviseAssessment not implemented")
@@ -866,6 +884,24 @@ func _FlightService_GetRouteWindTrend_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FlightService_GetRouteRiskTrend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRouteRiskTrendreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FlightServiceServer).GetRouteRiskTrend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FlightService_GetRouteRiskTrend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlightServiceServer).GetRouteRiskTrend(ctx, req.(*GetRouteRiskTrendreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FlightService_AdviseAssessment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AdviseAssessmentreq)
 	if err := dec(in); err != nil {
@@ -996,6 +1032,10 @@ var FlightService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRouteWindTrend",
 			Handler:    _FlightService_GetRouteWindTrend_Handler,
+		},
+		{
+			MethodName: "GetRouteRiskTrend",
+			Handler:    _FlightService_GetRouteRiskTrend_Handler,
 		},
 		{
 			MethodName: "AdviseAssessment",

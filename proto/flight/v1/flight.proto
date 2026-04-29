@@ -48,6 +48,9 @@ service FlightService {
   // ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
   rpc GetRouteWindTrend(GetRouteWindTrendreq) returns (GetRouteWindTrendrsp);
 
+  // ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
+  rpc GetRouteRiskTrend(GetRouteRiskTrendreq) returns (GetRouteRiskTrendrsp);
+
   // ----- AI 辅助分析（LLM 生成自然语言研判） -----
   rpc AdviseAssessment(AdviseAssessmentreq) returns (AdviseAssessmentrsp);          // 单条评估的 AI 研判文本
   rpc AdviseComparison(AdviseComparisonreq) returns (AdviseComparisonrsp);          // 双评估对比的 AI 研判文本
@@ -570,6 +573,25 @@ message WindTrendPoint {
 
 message GetRouteWindTrendrsp {
   repeated WindTrendPoint points = 1;                  // 按 time 升序
+}
+
+// ===========================
+// 24h 影响航线趋势
+// ===========================
+
+message GetRouteRiskTrendreq {
+  string region_id = 1;                                // 受管区域 ID
+  google.protobuf.Timestamp center_time = 2;           // 起始时刻，默认 now
+  int32 window_hours = 3;                              // 窗口时长（小时），默认 24
+}
+
+message RiskTrendPoint {
+  google.protobuf.Timestamp time = 1;                  // 桶时间（按小时对齐）
+  int32 affected_count = 2;                            // 非低风险航线数（medium+high+critical）
+}
+
+message GetRouteRiskTrendrsp {
+  repeated RiskTrendPoint points = 1;                  // 按 time 升序
 }
 
 // ===========================
