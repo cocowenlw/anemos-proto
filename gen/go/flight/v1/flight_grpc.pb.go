@@ -77,7 +77,7 @@ type FlightServiceClient interface {
 	PredictRouteTimeseries(ctx context.Context, in *PredictRouteTimeseriesreq, opts ...grpc.CallOption) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
 	GetRouteRiskSummary(ctx context.Context, in *GetRouteRiskSummaryreq, opts ...grpc.CallOption) (*GetRouteRiskSummaryrsp, error)
-	// ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
+	// ----- 单航线24h风速趋势 -----
 	GetRouteWindTrend(ctx context.Context, in *GetRouteWindTrendreq, opts ...grpc.CallOption) (*GetRouteWindTrendrsp, error)
 	// ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
 	GetRouteRiskTrend(ctx context.Context, in *GetRouteRiskTrendreq, opts ...grpc.CallOption) (*GetRouteRiskTrendrsp, error)
@@ -375,7 +375,7 @@ type FlightServiceServer interface {
 	PredictRouteTimeseries(context.Context, *PredictRouteTimeseriesreq) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
 	GetRouteRiskSummary(context.Context, *GetRouteRiskSummaryreq) (*GetRouteRiskSummaryrsp, error)
-	// ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
+	// ----- 单航线24h风速趋势 -----
 	GetRouteWindTrend(context.Context, *GetRouteWindTrendreq) (*GetRouteWindTrendrsp, error)
 	// ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
 	GetRouteRiskTrend(context.Context, *GetRouteRiskTrendreq) (*GetRouteRiskTrendrsp, error)

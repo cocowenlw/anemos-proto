@@ -45,7 +45,7 @@ service FlightService {
   // ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
   rpc GetRouteRiskSummary(GetRouteRiskSummaryreq) returns (GetRouteRiskSummaryrsp);
 
-  // ----- 24h 影响趋势（风险分析 Tab 的 TrendChart） -----
+  // ----- 单航线24h风速趋势 -----
   rpc GetRouteWindTrend(GetRouteWindTrendreq) returns (GetRouteWindTrendrsp);
 
   // ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
