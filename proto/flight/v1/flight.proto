@@ -541,6 +541,7 @@ message UpsertRiskTemplatersp {
 
 message GetRouteRiskSummaryreq {
   string region_id = 1;                                // 受管区域 ID
+  RiskType risk_type = 2;                              // 维度筛选；UNSPECIFIED / COMPOSITE 走 OverallLevel
 }
 message GetRouteRiskSummaryrsp {
   int32 total_routes = 1;                              // 总航线数
@@ -583,6 +584,7 @@ message GetRouteRiskTrendreq {
   string region_id = 1;                                // 受管区域 ID
   google.protobuf.Timestamp center_time = 2;           // 起始时刻，默认 now
   int32 window_hours = 3;                              // 窗口时长（小时），默认 24
+  RiskType risk_type = 4;                              // 维度筛选；UNSPECIFIED / COMPOSITE 走 OverallLevel
 }
 
 message RiskTrendPoint {
