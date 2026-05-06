@@ -28,10 +28,11 @@ type ObservationSourceType int32
 
 const (
 	ObservationSourceType_OBSERVATION_SOURCE_UNSPECIFIED ObservationSourceType = 0
-	ObservationSourceType_OBSERVATION_SOURCE_RADAR       ObservationSourceType = 1 // 雷达
-	ObservationSourceType_OBSERVATION_SOURCE_LIDAR       ObservationSourceType = 2 // 激光雷达
-	ObservationSourceType_OBSERVATION_SOURCE_ANEMOMETER  ObservationSourceType = 3 // 风速计
-	ObservationSourceType_OBSERVATION_SOURCE_UAV         ObservationSourceType = 4 // 无人机机载
+	// Deprecated: Marked as deprecated in data_asset/v1/data_asset.proto.
+	ObservationSourceType_OBSERVATION_SOURCE_RADAR      ObservationSourceType = 1 // 雷达（已废弃；测风统一使用 LIDAR）
+	ObservationSourceType_OBSERVATION_SOURCE_LIDAR      ObservationSourceType = 2 // 激光雷达
+	ObservationSourceType_OBSERVATION_SOURCE_ANEMOMETER ObservationSourceType = 3 // 风速计
+	ObservationSourceType_OBSERVATION_SOURCE_UAV        ObservationSourceType = 4 // 无人机机载
 )
 
 // Enum value maps for ObservationSourceType.
@@ -4496,10 +4497,10 @@ const file_data_asset_v1_data_asset_proto_rawDesc = "" +
 	"\tregion_id\x18\x01 \x01(\tR\bregionId\"\x86\x01\n" +
 	"\x18GetLatestObsByStationrsp\x12E\n" +
 	"\fobservations\x18\x01 \x03(\v2!.anemos.data_asset.v1.ObservationR\fobservations\x12#\n" +
-	"\rstation_count\x18\x02 \x01(\x05R\fstationCount*\xb6\x01\n" +
+	"\rstation_count\x18\x02 \x01(\x05R\fstationCount*\xba\x01\n" +
 	"\x15ObservationSourceType\x12\"\n" +
-	"\x1eOBSERVATION_SOURCE_UNSPECIFIED\x10\x00\x12\x1c\n" +
-	"\x18OBSERVATION_SOURCE_RADAR\x10\x01\x12\x1c\n" +
+	"\x1eOBSERVATION_SOURCE_UNSPECIFIED\x10\x00\x12 \n" +
+	"\x18OBSERVATION_SOURCE_RADAR\x10\x01\x1a\x02\b\x01\x12\x1c\n" +
 	"\x18OBSERVATION_SOURCE_LIDAR\x10\x02\x12!\n" +
 	"\x1dOBSERVATION_SOURCE_ANEMOMETER\x10\x03\x12\x1a\n" +
 	"\x16OBSERVATION_SOURCE_UAV\x10\x042\xde\x14\n" +

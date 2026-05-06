@@ -415,7 +415,7 @@ message RegisterCFDCasersp {
 // 观测源类型
 enum ObservationSourceType {
   OBSERVATION_SOURCE_UNSPECIFIED = 0;
-  OBSERVATION_SOURCE_RADAR = 1;                       // 雷达
+  OBSERVATION_SOURCE_RADAR = 1 [deprecated = true];   // 雷达（已废弃；测风统一使用 LIDAR）
   OBSERVATION_SOURCE_LIDAR = 2;                       // 激光雷达
   OBSERVATION_SOURCE_ANEMOMETER = 3;                  // 风速计
   OBSERVATION_SOURCE_UAV = 4;                         // 无人机机载
