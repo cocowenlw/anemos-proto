@@ -496,14 +496,41 @@ message ReportConclusion {
 // 风险阈值模板
 // ===========================
 
+// 机型物理阈值（V3）
+// 文档：docs/superpowers/specs/2026-05-13-flow-field-risk-v3-design.md §5.1
+message AircraftPhysicalLimits {
+  double u_safe                  = 1;   // 巡航 U_safe (m/s)
+  double u_limit                 = 2;   // 巡航 U_limit (m/s)
+  double ti_limit                = 3;   // 湍流强度上限（0-1）
+  double gamma_limit             = 4;   // 侧向切变上限 (s⁻¹)
+  double beta_gust               = 5;   // 阵风因子，默认 3.0
+  double lambda_u                = 6;   // R_U 的 max-avg 加权系数，默认 0.7
+  double alpha_gamma             = 7;   // R_γ 的 max-avg 加权系数，默认 0.7
+  double u_safe_takeoff_landing  = 8;   // 起降阶段 U_safe；为 0 表示沿用 u_safe
+  double u_limit_takeoff_landing = 9;   // 起降阶段 U_limit；为 0 表示沿用 u_limit
+  // R_gust 用算术平均，无加权系数（见 spec §3.4）
+  // R_TI 高风区加权倍数固定 2.0（见 spec §3.2），如需可调再扩字段
+}
+
+// 全局聚合系数（V3）
+// R_route = α_max·Risk_max + α_avg·Risk_avg + α_high·P_high
+message GlobalAggregation {
+  double alpha_max           = 1;   // Risk_max 权重，默认 0.50
+  double alpha_avg           = 2;   // Risk_avg 权重，默认 0.30
+  double alpha_high          = 3;   // P_high 权重，默认 0.20
+  double high_risk_threshold = 4;   // P_high 触发阈值，默认 0.6
+}
+
 message RiskThresholdTemplate {
   string template_id = 1;
   string name = 2;
   string aircraft_type = 3;                            // 适用机型（可选）
   string description = 4;
-  repeated RiskThresholdConfig thresholds = 5;
+  repeated RiskThresholdConfig thresholds = 5;         // legacy 桶边界（V3 仍兼容保留）
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
+  AircraftPhysicalLimits physical  = 8;                // V3 物理阈值
+  GlobalAggregation      aggregation = 9;              // V3 全局聚合系数
 }
 
 // 单项风险阈值配置
