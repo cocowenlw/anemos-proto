@@ -142,15 +142,16 @@ message DeleteRoutersp {
 // 风险类型
 enum RiskType {
   RISK_TYPE_UNSPECIFIED = 0;
-  RISK_TYPE_CROSSWIND = 1;                             // 侧风
-  RISK_TYPE_TURBULENCE = 2;                            // 湍流
-  RISK_TYPE_WINDSHEAR = 3;                             // 风切变（综合水平+垂直）
-  RISK_TYPE_COMPOSITE = 4;                             // 综合风险
-  RISK_TYPE_WIND_SPEED = 5;                            // 风速风险（热力图专用）
-  RISK_TYPE_VERTICAL_SHEAR = 6;                        // 垂直风切变（预留，待高度层数据就绪）
-  RISK_TYPE_HORIZONTAL_SHEAR = 7;                      // 水平风切变
-  RISK_TYPE_HEADWIND = 8;                              // 顺逆风
-  RISK_TYPE_VERTICAL_WIND = 9;                         // 垂直风 W
+  RISK_TYPE_CROSSWIND = 1 [deprecated = true];                  // 已弃用：V3 替换为 R_γ
+  RISK_TYPE_TURBULENCE = 2;                                     // R_TI 语义改为 √(2k/3)/Umag
+  RISK_TYPE_WINDSHEAR = 3;                                      // R_γ（航线模式）/ Frobenius 上限（热力图模式）
+  RISK_TYPE_COMPOSITE = 4;                                      // 综合
+  RISK_TYPE_WIND_SPEED = 5;                                     // R_U 风速超限（V3 硬约束）
+  RISK_TYPE_VERTICAL_SHEAR = 6 [deprecated = true];             // 已弃用：V3 替换为 R_γ
+  RISK_TYPE_HORIZONTAL_SHEAR = 7 [deprecated = true];           // 已弃用：V3 替换为 R_γ
+  RISK_TYPE_HEADWIND = 8 [deprecated = true];                   // 已弃用
+  RISK_TYPE_VERTICAL_WIND = 9 [deprecated = true];              // 已弃用
+  RISK_TYPE_GUST = 10;                                          // 新增：阵风 R_gust
 }
 
 // 飞行阶段

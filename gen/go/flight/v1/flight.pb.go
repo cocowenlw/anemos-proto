@@ -27,31 +27,38 @@ const (
 type RiskType int32
 
 const (
-	RiskType_RISK_TYPE_UNSPECIFIED      RiskType = 0
-	RiskType_RISK_TYPE_CROSSWIND        RiskType = 1 // 侧风
-	RiskType_RISK_TYPE_TURBULENCE       RiskType = 2 // 湍流
-	RiskType_RISK_TYPE_WINDSHEAR        RiskType = 3 // 风切变（综合水平+垂直）
-	RiskType_RISK_TYPE_COMPOSITE        RiskType = 4 // 综合风险
-	RiskType_RISK_TYPE_WIND_SPEED       RiskType = 5 // 风速风险（热力图专用）
-	RiskType_RISK_TYPE_VERTICAL_SHEAR   RiskType = 6 // 垂直风切变（预留，待高度层数据就绪）
-	RiskType_RISK_TYPE_HORIZONTAL_SHEAR RiskType = 7 // 水平风切变
-	RiskType_RISK_TYPE_HEADWIND         RiskType = 8 // 顺逆风
-	RiskType_RISK_TYPE_VERTICAL_WIND    RiskType = 9 // 垂直风 W
+	RiskType_RISK_TYPE_UNSPECIFIED RiskType = 0
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	RiskType_RISK_TYPE_CROSSWIND  RiskType = 1 // 已弃用：V3 替换为 R_γ
+	RiskType_RISK_TYPE_TURBULENCE RiskType = 2 // R_TI 语义改为 √(2k/3)/Umag
+	RiskType_RISK_TYPE_WINDSHEAR  RiskType = 3 // R_γ（航线模式）/ Frobenius 上限（热力图模式）
+	RiskType_RISK_TYPE_COMPOSITE  RiskType = 4 // 综合
+	RiskType_RISK_TYPE_WIND_SPEED RiskType = 5 // R_U 风速超限（V3 硬约束）
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	RiskType_RISK_TYPE_VERTICAL_SHEAR RiskType = 6 // 已弃用：V3 替换为 R_γ
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	RiskType_RISK_TYPE_HORIZONTAL_SHEAR RiskType = 7 // 已弃用：V3 替换为 R_γ
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	RiskType_RISK_TYPE_HEADWIND RiskType = 8 // 已弃用
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	RiskType_RISK_TYPE_VERTICAL_WIND RiskType = 9  // 已弃用
+	RiskType_RISK_TYPE_GUST          RiskType = 10 // 新增：阵风 R_gust
 )
 
 // Enum value maps for RiskType.
 var (
 	RiskType_name = map[int32]string{
-		0: "RISK_TYPE_UNSPECIFIED",
-		1: "RISK_TYPE_CROSSWIND",
-		2: "RISK_TYPE_TURBULENCE",
-		3: "RISK_TYPE_WINDSHEAR",
-		4: "RISK_TYPE_COMPOSITE",
-		5: "RISK_TYPE_WIND_SPEED",
-		6: "RISK_TYPE_VERTICAL_SHEAR",
-		7: "RISK_TYPE_HORIZONTAL_SHEAR",
-		8: "RISK_TYPE_HEADWIND",
-		9: "RISK_TYPE_VERTICAL_WIND",
+		0:  "RISK_TYPE_UNSPECIFIED",
+		1:  "RISK_TYPE_CROSSWIND",
+		2:  "RISK_TYPE_TURBULENCE",
+		3:  "RISK_TYPE_WINDSHEAR",
+		4:  "RISK_TYPE_COMPOSITE",
+		5:  "RISK_TYPE_WIND_SPEED",
+		6:  "RISK_TYPE_VERTICAL_SHEAR",
+		7:  "RISK_TYPE_HORIZONTAL_SHEAR",
+		8:  "RISK_TYPE_HEADWIND",
+		9:  "RISK_TYPE_VERTICAL_WIND",
+		10: "RISK_TYPE_GUST",
 	}
 	RiskType_value = map[string]int32{
 		"RISK_TYPE_UNSPECIFIED":      0,
@@ -64,6 +71,7 @@ var (
 		"RISK_TYPE_HORIZONTAL_SHEAR": 7,
 		"RISK_TYPE_HEADWIND":         8,
 		"RISK_TYPE_VERTICAL_WIND":    9,
+		"RISK_TYPE_GUST":             10,
 	}
 )
 
@@ -5475,18 +5483,20 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\tmax_score\x18\x04 \x01(\x01R\bmaxScore\x127\n" +
 	"\tpeak_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\bpeakTime\x12-\n" +
 	"\x12trigger_dimensions\x18\x06 \x03(\tR\x11triggerDimensions\x120\n" +
-	"\x14affected_segment_idx\x18\a \x03(\x05R\x12affectedSegmentIdx*\x97\x02\n" +
+	"\x14affected_segment_idx\x18\a \x03(\x05R\x12affectedSegmentIdx*\xbf\x02\n" +
 	"\bRiskType\x12\x19\n" +
-	"\x15RISK_TYPE_UNSPECIFIED\x10\x00\x12\x17\n" +
-	"\x13RISK_TYPE_CROSSWIND\x10\x01\x12\x18\n" +
+	"\x15RISK_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x13RISK_TYPE_CROSSWIND\x10\x01\x1a\x02\b\x01\x12\x18\n" +
 	"\x14RISK_TYPE_TURBULENCE\x10\x02\x12\x17\n" +
 	"\x13RISK_TYPE_WINDSHEAR\x10\x03\x12\x17\n" +
 	"\x13RISK_TYPE_COMPOSITE\x10\x04\x12\x18\n" +
-	"\x14RISK_TYPE_WIND_SPEED\x10\x05\x12\x1c\n" +
-	"\x18RISK_TYPE_VERTICAL_SHEAR\x10\x06\x12\x1e\n" +
-	"\x1aRISK_TYPE_HORIZONTAL_SHEAR\x10\a\x12\x16\n" +
-	"\x12RISK_TYPE_HEADWIND\x10\b\x12\x1b\n" +
-	"\x17RISK_TYPE_VERTICAL_WIND\x10\t*x\n" +
+	"\x14RISK_TYPE_WIND_SPEED\x10\x05\x12 \n" +
+	"\x18RISK_TYPE_VERTICAL_SHEAR\x10\x06\x1a\x02\b\x01\x12\"\n" +
+	"\x1aRISK_TYPE_HORIZONTAL_SHEAR\x10\a\x1a\x02\b\x01\x12\x1a\n" +
+	"\x12RISK_TYPE_HEADWIND\x10\b\x1a\x02\b\x01\x12\x1f\n" +
+	"\x17RISK_TYPE_VERTICAL_WIND\x10\t\x1a\x02\b\x01\x12\x12\n" +
+	"\x0eRISK_TYPE_GUST\x10\n" +
+	"*x\n" +
 	"\vFlightPhase\x12\x1c\n" +
 	"\x18FLIGHT_PHASE_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14FLIGHT_PHASE_TAKEOFF\x10\x01\x12\x17\n" +
