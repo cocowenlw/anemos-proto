@@ -1693,6 +1693,317 @@ func (x *AssessmentSummary) GetCruiseSegments() []int32 {
 	return nil
 }
 
+// V3 单维度结果
+type DimensionResultV3 struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Score         float64                `protobuf:"fixed64,1,opt,name=score,proto3" json:"score,omitempty"`                                  // 维度聚合分（按维度自己的聚合规则，0-1）
+	MaxPerPoint   float64                `protobuf:"fixed64,2,opt,name=max_per_point,json=maxPerPoint,proto3" json:"max_per_point,omitempty"` // 该维度逐点最大
+	AvgPerPoint   float64                `protobuf:"fixed64,3,opt,name=avg_per_point,json=avgPerPoint,proto3" json:"avg_per_point,omitempty"` // 该维度逐点平均
+	MaxPhysical   float64                `protobuf:"fixed64,4,opt,name=max_physical,json=maxPhysical,proto3" json:"max_physical,omitempty"`   // 物理峰值（U_gust m/s / TI / γ⊥ s⁻¹ / Umag m/s）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DimensionResultV3) Reset() {
+	*x = DimensionResultV3{}
+	mi := &file_flight_v1_flight_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DimensionResultV3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DimensionResultV3) ProtoMessage() {}
+
+func (x *DimensionResultV3) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DimensionResultV3.ProtoReflect.Descriptor instead.
+func (*DimensionResultV3) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *DimensionResultV3) GetScore() float64 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
+func (x *DimensionResultV3) GetMaxPerPoint() float64 {
+	if x != nil {
+		return x.MaxPerPoint
+	}
+	return 0
+}
+
+func (x *DimensionResultV3) GetAvgPerPoint() float64 {
+	if x != nil {
+		return x.AvgPerPoint
+	}
+	return 0
+}
+
+func (x *DimensionResultV3) GetMaxPhysical() float64 {
+	if x != nil {
+		return x.MaxPhysical
+	}
+	return 0
+}
+
+// V3 四维聚合
+type DimensionScoresV3 struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	WindSpeed     *DimensionResultV3     `protobuf:"bytes,1,opt,name=wind_speed,json=windSpeed,proto3" json:"wind_speed,omitempty"`          // R_U
+	Turbulence    *DimensionResultV3     `protobuf:"bytes,2,opt,name=turbulence,proto3" json:"turbulence,omitempty"`                         // R_TI
+	LateralShear  *DimensionResultV3     `protobuf:"bytes,3,opt,name=lateral_shear,json=lateralShear,proto3" json:"lateral_shear,omitempty"` // R_γ
+	Gust          *DimensionResultV3     `protobuf:"bytes,4,opt,name=gust,proto3" json:"gust,omitempty"`                                     // R_gust
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DimensionScoresV3) Reset() {
+	*x = DimensionScoresV3{}
+	mi := &file_flight_v1_flight_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DimensionScoresV3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DimensionScoresV3) ProtoMessage() {}
+
+func (x *DimensionScoresV3) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DimensionScoresV3.ProtoReflect.Descriptor instead.
+func (*DimensionScoresV3) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *DimensionScoresV3) GetWindSpeed() *DimensionResultV3 {
+	if x != nil {
+		return x.WindSpeed
+	}
+	return nil
+}
+
+func (x *DimensionScoresV3) GetTurbulence() *DimensionResultV3 {
+	if x != nil {
+		return x.Turbulence
+	}
+	return nil
+}
+
+func (x *DimensionScoresV3) GetLateralShear() *DimensionResultV3 {
+	if x != nil {
+		return x.LateralShear
+	}
+	return nil
+}
+
+func (x *DimensionScoresV3) GetGust() *DimensionResultV3 {
+	if x != nil {
+		return x.Gust
+	}
+	return nil
+}
+
+// V3 段结果
+type SegmentRiskResultV3 struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	SegmentIndex      int32                  `protobuf:"varint,1,opt,name=segment_index,json=segmentIndex,proto3" json:"segment_index,omitempty"`
+	From              *Waypoint              `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To                *Waypoint              `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Phase             string                 `protobuf:"bytes,4,opt,name=phase,proto3" json:"phase,omitempty"` // "takeoff" / "cruise" / "landing"
+	DistanceM         float64                `protobuf:"fixed64,5,opt,name=distance_m,json=distanceM,proto3" json:"distance_m,omitempty"`
+	RU                float64                `protobuf:"fixed64,6,opt,name=r_u,json=rU,proto3" json:"r_u,omitempty"`
+	RTi               float64                `protobuf:"fixed64,7,opt,name=r_ti,json=rTi,proto3" json:"r_ti,omitempty"`
+	RGamma            float64                `protobuf:"fixed64,8,opt,name=r_gamma,json=rGamma,proto3" json:"r_gamma,omitempty"`
+	RGust             float64                `protobuf:"fixed64,9,opt,name=r_gust,json=rGust,proto3" json:"r_gust,omitempty"`
+	RTotalMax         float64                `protobuf:"fixed64,10,opt,name=r_total_max,json=rTotalMax,proto3" json:"r_total_max,omitempty"`
+	RTotalAvg         float64                `protobuf:"fixed64,11,opt,name=r_total_avg,json=rTotalAvg,proto3" json:"r_total_avg,omitempty"`
+	RiskLevel         string                 `protobuf:"bytes,12,opt,name=risk_level,json=riskLevel,proto3" json:"risk_level,omitempty"` // "L1".."L5"
+	MaxUmagMs         float64                `protobuf:"fixed64,20,opt,name=max_umag_ms,json=maxUmagMs,proto3" json:"max_umag_ms,omitempty"`
+	MaxTi             float64                `protobuf:"fixed64,21,opt,name=max_ti,json=maxTi,proto3" json:"max_ti,omitempty"`
+	MaxGammaS1        float64                `protobuf:"fixed64,22,opt,name=max_gamma_s1,json=maxGammaS1,proto3" json:"max_gamma_s1,omitempty"`
+	MaxUgustMs        float64                `protobuf:"fixed64,23,opt,name=max_ugust_ms,json=maxUgustMs,proto3" json:"max_ugust_ms,omitempty"`
+	TriggerDimensions []string               `protobuf:"bytes,30,rep,name=trigger_dimensions,json=triggerDimensions,proto3" json:"trigger_dimensions,omitempty"` // 触发 ≥ 0.6 的维度（wind_speed/turbulence/lateral_shear/gust）
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *SegmentRiskResultV3) Reset() {
+	*x = SegmentRiskResultV3{}
+	mi := &file_flight_v1_flight_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SegmentRiskResultV3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SegmentRiskResultV3) ProtoMessage() {}
+
+func (x *SegmentRiskResultV3) ProtoReflect() protoreflect.Message {
+	mi := &file_flight_v1_flight_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SegmentRiskResultV3.ProtoReflect.Descriptor instead.
+func (*SegmentRiskResultV3) Descriptor() ([]byte, []int) {
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *SegmentRiskResultV3) GetSegmentIndex() int32 {
+	if x != nil {
+		return x.SegmentIndex
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetFrom() *Waypoint {
+	if x != nil {
+		return x.From
+	}
+	return nil
+}
+
+func (x *SegmentRiskResultV3) GetTo() *Waypoint {
+	if x != nil {
+		return x.To
+	}
+	return nil
+}
+
+func (x *SegmentRiskResultV3) GetPhase() string {
+	if x != nil {
+		return x.Phase
+	}
+	return ""
+}
+
+func (x *SegmentRiskResultV3) GetDistanceM() float64 {
+	if x != nil {
+		return x.DistanceM
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRU() float64 {
+	if x != nil {
+		return x.RU
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRTi() float64 {
+	if x != nil {
+		return x.RTi
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRGamma() float64 {
+	if x != nil {
+		return x.RGamma
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRGust() float64 {
+	if x != nil {
+		return x.RGust
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRTotalMax() float64 {
+	if x != nil {
+		return x.RTotalMax
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRTotalAvg() float64 {
+	if x != nil {
+		return x.RTotalAvg
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetRiskLevel() string {
+	if x != nil {
+		return x.RiskLevel
+	}
+	return ""
+}
+
+func (x *SegmentRiskResultV3) GetMaxUmagMs() float64 {
+	if x != nil {
+		return x.MaxUmagMs
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetMaxTi() float64 {
+	if x != nil {
+		return x.MaxTi
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetMaxGammaS1() float64 {
+	if x != nil {
+		return x.MaxGammaS1
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetMaxUgustMs() float64 {
+	if x != nil {
+		return x.MaxUgustMs
+	}
+	return 0
+}
+
+func (x *SegmentRiskResultV3) GetTriggerDimensions() []string {
+	if x != nil {
+		return x.TriggerDimensions
+	}
+	return nil
+}
+
 type AssessRoutereq struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	RouteId           string                 `protobuf:"bytes,1,opt,name=route_id,json=routeId,proto3" json:"route_id,omitempty"`
@@ -1704,7 +2015,7 @@ type AssessRoutereq struct {
 
 func (x *AssessRoutereq) Reset() {
 	*x = AssessRoutereq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[19]
+	mi := &file_flight_v1_flight_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1716,7 +2027,7 @@ func (x *AssessRoutereq) String() string {
 func (*AssessRoutereq) ProtoMessage() {}
 
 func (x *AssessRoutereq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[19]
+	mi := &file_flight_v1_flight_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1729,7 +2040,7 @@ func (x *AssessRoutereq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssessRoutereq.ProtoReflect.Descriptor instead.
 func (*AssessRoutereq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{19}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *AssessRoutereq) GetRouteId() string {
@@ -1758,20 +2069,29 @@ type AssessRoutersp struct {
 	AssessmentId      string                 `protobuf:"bytes,1,opt,name=assessment_id,json=assessmentId,proto3" json:"assessment_id,omitempty"`
 	RouteId           string                 `protobuf:"bytes,2,opt,name=route_id,json=routeId,proto3" json:"route_id,omitempty"`
 	WindFieldResultId string                 `protobuf:"bytes,3,opt,name=wind_field_result_id,json=windFieldResultId,proto3" json:"wind_field_result_id,omitempty"`
-	OverallScore      float64                `protobuf:"fixed64,4,opt,name=overall_score,json=overallScore,proto3" json:"overall_score,omitempty"`                                // 综合风险分值（0-1）
-	OverallLevel      RiskLevel              `protobuf:"varint,5,opt,name=overall_level,json=overallLevel,proto3,enum=anemos.flight.v1.RiskLevel" json:"overall_level,omitempty"` // 综合风险等级
-	SegmentResults    []*SegmentRisk         `protobuf:"bytes,6,rep,name=segment_results,json=segmentResults,proto3" json:"segment_results,omitempty"`                            // 逐航段风险结果
+	OverallScore      float64                `protobuf:"fixed64,4,opt,name=overall_score,json=overallScore,proto3" json:"overall_score,omitempty"`                                // 综合风险分值（0-1）；V3 填 R_route
+	OverallLevel      RiskLevel              `protobuf:"varint,5,opt,name=overall_level,json=overallLevel,proto3,enum=anemos.flight.v1.RiskLevel" json:"overall_level,omitempty"` // 综合风险等级（V2 4 桶；V3 映射到 4 桶兼容）
+	SegmentResults    []*SegmentRisk         `protobuf:"bytes,6,rep,name=segment_results,json=segmentResults,proto3" json:"segment_results,omitempty"`                            // 逐航段风险结果（V2；V3 见 segment_results_v3）
 	Summary           *AssessmentSummary     `protobuf:"bytes,7,opt,name=summary,proto3" json:"summary,omitempty"`
 	GeneratedAt       *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=generated_at,json=generatedAt,proto3" json:"generated_at,omitempty"`
 	Decision          FlightDecision         `protobuf:"varint,9,opt,name=decision,proto3,enum=anemos.flight.v1.FlightDecision" json:"decision,omitempty"` // GO / CONDITIONAL / NO_GO 决策
-	DimensionScores   *DimensionScores       `protobuf:"bytes,10,opt,name=dimension_scores,json=dimensionScores,proto3" json:"dimension_scores,omitempty"` // 五维度综合评分
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	DimensionScores   *DimensionScores       `protobuf:"bytes,10,opt,name=dimension_scores,json=dimensionScores,proto3" json:"dimension_scores,omitempty"` // 五维度综合评分（V2；V3 见 dimension_scores_v3）
+	// ===== V3 字段（spec §6.2） =====
+	RiskMax                float64                `protobuf:"fixed64,11,opt,name=risk_max,json=riskMax,proto3" json:"risk_max,omitempty"`                                               // 全局 R_max
+	RiskAvg                float64                `protobuf:"fixed64,12,opt,name=risk_avg,json=riskAvg,proto3" json:"risk_avg,omitempty"`                                               // 全局 R_avg
+	PHigh                  float64                `protobuf:"fixed64,13,opt,name=p_high,json=pHigh,proto3" json:"p_high,omitempty"`                                                     // 高风险点占比 P_high
+	RiskLevelV3            string                 `protobuf:"bytes,14,opt,name=risk_level_v3,json=riskLevelV3,proto3" json:"risk_level_v3,omitempty"`                                   // "L1".."L5"
+	HardConstraintViolated bool                   `protobuf:"varint,15,opt,name=hard_constraint_violated,json=hardConstraintViolated,proto3" json:"hard_constraint_violated,omitempty"` // 是否触发硬约束
+	MaxUmagMs              float64                `protobuf:"fixed64,16,opt,name=max_umag_ms,json=maxUmagMs,proto3" json:"max_umag_ms,omitempty"`                                       // 最大合风速（诊断）
+	DimensionScoresV3      *DimensionScoresV3     `protobuf:"bytes,17,opt,name=dimension_scores_v3,json=dimensionScoresV3,proto3" json:"dimension_scores_v3,omitempty"`
+	SegmentResultsV3       []*SegmentRiskResultV3 `protobuf:"bytes,18,rep,name=segment_results_v3,json=segmentResultsV3,proto3" json:"segment_results_v3,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *AssessRoutersp) Reset() {
 	*x = AssessRoutersp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[20]
+	mi := &file_flight_v1_flight_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1783,7 +2103,7 @@ func (x *AssessRoutersp) String() string {
 func (*AssessRoutersp) ProtoMessage() {}
 
 func (x *AssessRoutersp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[20]
+	mi := &file_flight_v1_flight_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1796,7 +2116,7 @@ func (x *AssessRoutersp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssessRoutersp.ProtoReflect.Descriptor instead.
 func (*AssessRoutersp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{20}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *AssessRoutersp) GetAssessmentId() string {
@@ -1869,6 +2189,62 @@ func (x *AssessRoutersp) GetDimensionScores() *DimensionScores {
 	return nil
 }
 
+func (x *AssessRoutersp) GetRiskMax() float64 {
+	if x != nil {
+		return x.RiskMax
+	}
+	return 0
+}
+
+func (x *AssessRoutersp) GetRiskAvg() float64 {
+	if x != nil {
+		return x.RiskAvg
+	}
+	return 0
+}
+
+func (x *AssessRoutersp) GetPHigh() float64 {
+	if x != nil {
+		return x.PHigh
+	}
+	return 0
+}
+
+func (x *AssessRoutersp) GetRiskLevelV3() string {
+	if x != nil {
+		return x.RiskLevelV3
+	}
+	return ""
+}
+
+func (x *AssessRoutersp) GetHardConstraintViolated() bool {
+	if x != nil {
+		return x.HardConstraintViolated
+	}
+	return false
+}
+
+func (x *AssessRoutersp) GetMaxUmagMs() float64 {
+	if x != nil {
+		return x.MaxUmagMs
+	}
+	return 0
+}
+
+func (x *AssessRoutersp) GetDimensionScoresV3() *DimensionScoresV3 {
+	if x != nil {
+		return x.DimensionScoresV3
+	}
+	return nil
+}
+
+func (x *AssessRoutersp) GetSegmentResultsV3() []*SegmentRiskResultV3 {
+	if x != nil {
+		return x.SegmentResultsV3
+	}
+	return nil
+}
+
 type GetAssessmentreq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AssessmentId  string                 `protobuf:"bytes,1,opt,name=assessment_id,json=assessmentId,proto3" json:"assessment_id,omitempty"`
@@ -1878,7 +2254,7 @@ type GetAssessmentreq struct {
 
 func (x *GetAssessmentreq) Reset() {
 	*x = GetAssessmentreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[21]
+	mi := &file_flight_v1_flight_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1890,7 +2266,7 @@ func (x *GetAssessmentreq) String() string {
 func (*GetAssessmentreq) ProtoMessage() {}
 
 func (x *GetAssessmentreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[21]
+	mi := &file_flight_v1_flight_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1903,7 +2279,7 @@ func (x *GetAssessmentreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAssessmentreq.ProtoReflect.Descriptor instead.
 func (*GetAssessmentreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{21}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GetAssessmentreq) GetAssessmentId() string {
@@ -1922,7 +2298,7 @@ type DeleteAssessmentreq struct {
 
 func (x *DeleteAssessmentreq) Reset() {
 	*x = DeleteAssessmentreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[22]
+	mi := &file_flight_v1_flight_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1934,7 +2310,7 @@ func (x *DeleteAssessmentreq) String() string {
 func (*DeleteAssessmentreq) ProtoMessage() {}
 
 func (x *DeleteAssessmentreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[22]
+	mi := &file_flight_v1_flight_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1947,7 +2323,7 @@ func (x *DeleteAssessmentreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAssessmentreq.ProtoReflect.Descriptor instead.
 func (*DeleteAssessmentreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{22}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *DeleteAssessmentreq) GetAssessmentId() string {
@@ -1966,7 +2342,7 @@ type DeleteAssessmentrsp struct {
 
 func (x *DeleteAssessmentrsp) Reset() {
 	*x = DeleteAssessmentrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[23]
+	mi := &file_flight_v1_flight_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1978,7 +2354,7 @@ func (x *DeleteAssessmentrsp) String() string {
 func (*DeleteAssessmentrsp) ProtoMessage() {}
 
 func (x *DeleteAssessmentrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[23]
+	mi := &file_flight_v1_flight_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1991,7 +2367,7 @@ func (x *DeleteAssessmentrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAssessmentrsp.ProtoReflect.Descriptor instead.
 func (*DeleteAssessmentrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{23}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *DeleteAssessmentrsp) GetSuccess() bool {
@@ -2012,7 +2388,7 @@ type BatchAssessreq struct {
 
 func (x *BatchAssessreq) Reset() {
 	*x = BatchAssessreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[24]
+	mi := &file_flight_v1_flight_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2024,7 +2400,7 @@ func (x *BatchAssessreq) String() string {
 func (*BatchAssessreq) ProtoMessage() {}
 
 func (x *BatchAssessreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[24]
+	mi := &file_flight_v1_flight_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2037,7 +2413,7 @@ func (x *BatchAssessreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BatchAssessreq.ProtoReflect.Descriptor instead.
 func (*BatchAssessreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{24}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *BatchAssessreq) GetRouteIds() []string {
@@ -2070,7 +2446,7 @@ type BatchAssessrsp struct {
 
 func (x *BatchAssessrsp) Reset() {
 	*x = BatchAssessrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[25]
+	mi := &file_flight_v1_flight_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2082,7 +2458,7 @@ func (x *BatchAssessrsp) String() string {
 func (*BatchAssessrsp) ProtoMessage() {}
 
 func (x *BatchAssessrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[25]
+	mi := &file_flight_v1_flight_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2095,7 +2471,7 @@ func (x *BatchAssessrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BatchAssessrsp.ProtoReflect.Descriptor instead.
 func (*BatchAssessrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{25}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *BatchAssessrsp) GetResults() []*AssessRoutersp {
@@ -2118,7 +2494,7 @@ type OptimizationConstraints struct {
 
 func (x *OptimizationConstraints) Reset() {
 	*x = OptimizationConstraints{}
-	mi := &file_flight_v1_flight_proto_msgTypes[26]
+	mi := &file_flight_v1_flight_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2130,7 +2506,7 @@ func (x *OptimizationConstraints) String() string {
 func (*OptimizationConstraints) ProtoMessage() {}
 
 func (x *OptimizationConstraints) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[26]
+	mi := &file_flight_v1_flight_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2143,7 +2519,7 @@ func (x *OptimizationConstraints) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OptimizationConstraints.ProtoReflect.Descriptor instead.
 func (*OptimizationConstraints) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{26}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *OptimizationConstraints) GetAvoidNoFlyZones() bool {
@@ -2186,7 +2562,7 @@ type OptimizeRoutereq struct {
 
 func (x *OptimizeRoutereq) Reset() {
 	*x = OptimizeRoutereq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[27]
+	mi := &file_flight_v1_flight_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2198,7 +2574,7 @@ func (x *OptimizeRoutereq) String() string {
 func (*OptimizeRoutereq) ProtoMessage() {}
 
 func (x *OptimizeRoutereq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[27]
+	mi := &file_flight_v1_flight_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2211,7 +2587,7 @@ func (x *OptimizeRoutereq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OptimizeRoutereq.ProtoReflect.Descriptor instead.
 func (*OptimizeRoutereq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{27}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *OptimizeRoutereq) GetRouteId() string {
@@ -2255,7 +2631,7 @@ type OptimizeRoutersp struct {
 
 func (x *OptimizeRoutersp) Reset() {
 	*x = OptimizeRoutersp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[28]
+	mi := &file_flight_v1_flight_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2267,7 +2643,7 @@ func (x *OptimizeRoutersp) String() string {
 func (*OptimizeRoutersp) ProtoMessage() {}
 
 func (x *OptimizeRoutersp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[28]
+	mi := &file_flight_v1_flight_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2280,7 +2656,7 @@ func (x *OptimizeRoutersp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OptimizeRoutersp.ProtoReflect.Descriptor instead.
 func (*OptimizeRoutersp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{28}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *OptimizeRoutersp) GetOptimizationId() string {
@@ -2334,7 +2710,7 @@ type RiskComparison struct {
 
 func (x *RiskComparison) Reset() {
 	*x = RiskComparison{}
-	mi := &file_flight_v1_flight_proto_msgTypes[29]
+	mi := &file_flight_v1_flight_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2346,7 +2722,7 @@ func (x *RiskComparison) String() string {
 func (*RiskComparison) ProtoMessage() {}
 
 func (x *RiskComparison) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[29]
+	mi := &file_flight_v1_flight_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2359,7 +2735,7 @@ func (x *RiskComparison) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskComparison.ProtoReflect.Descriptor instead.
 func (*RiskComparison) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{29}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *RiskComparison) GetOriginalRiskScore() float64 {
@@ -2423,7 +2799,7 @@ type SegmentRiskDiff struct {
 
 func (x *SegmentRiskDiff) Reset() {
 	*x = SegmentRiskDiff{}
-	mi := &file_flight_v1_flight_proto_msgTypes[30]
+	mi := &file_flight_v1_flight_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2435,7 +2811,7 @@ func (x *SegmentRiskDiff) String() string {
 func (*SegmentRiskDiff) ProtoMessage() {}
 
 func (x *SegmentRiskDiff) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[30]
+	mi := &file_flight_v1_flight_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2448,7 +2824,7 @@ func (x *SegmentRiskDiff) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SegmentRiskDiff.ProtoReflect.Descriptor instead.
 func (*SegmentRiskDiff) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{30}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SegmentRiskDiff) GetSegmentIndex() int32 {
@@ -2481,7 +2857,7 @@ type GetOptimizationreq struct {
 
 func (x *GetOptimizationreq) Reset() {
 	*x = GetOptimizationreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[31]
+	mi := &file_flight_v1_flight_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2493,7 +2869,7 @@ func (x *GetOptimizationreq) String() string {
 func (*GetOptimizationreq) ProtoMessage() {}
 
 func (x *GetOptimizationreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[31]
+	mi := &file_flight_v1_flight_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2506,7 +2882,7 @@ func (x *GetOptimizationreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOptimizationreq.ProtoReflect.Descriptor instead.
 func (*GetOptimizationreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{31}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GetOptimizationreq) GetOptimizationId() string {
@@ -2525,7 +2901,7 @@ type DeleteOptimizationreq struct {
 
 func (x *DeleteOptimizationreq) Reset() {
 	*x = DeleteOptimizationreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[32]
+	mi := &file_flight_v1_flight_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2537,7 +2913,7 @@ func (x *DeleteOptimizationreq) String() string {
 func (*DeleteOptimizationreq) ProtoMessage() {}
 
 func (x *DeleteOptimizationreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[32]
+	mi := &file_flight_v1_flight_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2550,7 +2926,7 @@ func (x *DeleteOptimizationreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOptimizationreq.ProtoReflect.Descriptor instead.
 func (*DeleteOptimizationreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{32}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *DeleteOptimizationreq) GetOptimizationId() string {
@@ -2569,7 +2945,7 @@ type DeleteOptimizationrsp struct {
 
 func (x *DeleteOptimizationrsp) Reset() {
 	*x = DeleteOptimizationrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[33]
+	mi := &file_flight_v1_flight_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2581,7 +2957,7 @@ func (x *DeleteOptimizationrsp) String() string {
 func (*DeleteOptimizationrsp) ProtoMessage() {}
 
 func (x *DeleteOptimizationrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[33]
+	mi := &file_flight_v1_flight_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2594,7 +2970,7 @@ func (x *DeleteOptimizationrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOptimizationrsp.ProtoReflect.Descriptor instead.
 func (*DeleteOptimizationrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{33}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *DeleteOptimizationrsp) GetSuccess() bool {
@@ -2613,7 +2989,7 @@ type ListOptimizationsreq struct {
 
 func (x *ListOptimizationsreq) Reset() {
 	*x = ListOptimizationsreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[34]
+	mi := &file_flight_v1_flight_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2625,7 +3001,7 @@ func (x *ListOptimizationsreq) String() string {
 func (*ListOptimizationsreq) ProtoMessage() {}
 
 func (x *ListOptimizationsreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[34]
+	mi := &file_flight_v1_flight_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2638,7 +3014,7 @@ func (x *ListOptimizationsreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOptimizationsreq.ProtoReflect.Descriptor instead.
 func (*ListOptimizationsreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{34}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *ListOptimizationsreq) GetRouteId() string {
@@ -2657,7 +3033,7 @@ type ListOptimizationsrsp struct {
 
 func (x *ListOptimizationsrsp) Reset() {
 	*x = ListOptimizationsrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[35]
+	mi := &file_flight_v1_flight_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2669,7 +3045,7 @@ func (x *ListOptimizationsrsp) String() string {
 func (*ListOptimizationsrsp) ProtoMessage() {}
 
 func (x *ListOptimizationsrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[35]
+	mi := &file_flight_v1_flight_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2682,7 +3058,7 @@ func (x *ListOptimizationsrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOptimizationsrsp.ProtoReflect.Descriptor instead.
 func (*ListOptimizationsrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{35}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *ListOptimizationsrsp) GetOptimizations() []*OptimizationRecord {
@@ -2706,7 +3082,7 @@ type OptimizationRecord struct {
 
 func (x *OptimizationRecord) Reset() {
 	*x = OptimizationRecord{}
-	mi := &file_flight_v1_flight_proto_msgTypes[36]
+	mi := &file_flight_v1_flight_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2718,7 +3094,7 @@ func (x *OptimizationRecord) String() string {
 func (*OptimizationRecord) ProtoMessage() {}
 
 func (x *OptimizationRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[36]
+	mi := &file_flight_v1_flight_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2731,7 +3107,7 @@ func (x *OptimizationRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OptimizationRecord.ProtoReflect.Descriptor instead.
 func (*OptimizationRecord) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{36}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *OptimizationRecord) GetOptimizationId() string {
@@ -2792,7 +3168,7 @@ type AssessmentRecord struct {
 
 func (x *AssessmentRecord) Reset() {
 	*x = AssessmentRecord{}
-	mi := &file_flight_v1_flight_proto_msgTypes[37]
+	mi := &file_flight_v1_flight_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2804,7 +3180,7 @@ func (x *AssessmentRecord) String() string {
 func (*AssessmentRecord) ProtoMessage() {}
 
 func (x *AssessmentRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[37]
+	mi := &file_flight_v1_flight_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2817,7 +3193,7 @@ func (x *AssessmentRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssessmentRecord.ProtoReflect.Descriptor instead.
 func (*AssessmentRecord) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{37}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *AssessmentRecord) GetAssessmentId() string {
@@ -2890,7 +3266,7 @@ type ListAssessmentsreq struct {
 
 func (x *ListAssessmentsreq) Reset() {
 	*x = ListAssessmentsreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[38]
+	mi := &file_flight_v1_flight_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2902,7 +3278,7 @@ func (x *ListAssessmentsreq) String() string {
 func (*ListAssessmentsreq) ProtoMessage() {}
 
 func (x *ListAssessmentsreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[38]
+	mi := &file_flight_v1_flight_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2915,7 +3291,7 @@ func (x *ListAssessmentsreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAssessmentsreq.ProtoReflect.Descriptor instead.
 func (*ListAssessmentsreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{38}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *ListAssessmentsreq) GetRegionId() string {
@@ -2971,7 +3347,7 @@ type ListAssessmentsrsp struct {
 
 func (x *ListAssessmentsrsp) Reset() {
 	*x = ListAssessmentsrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[39]
+	mi := &file_flight_v1_flight_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2983,7 +3359,7 @@ func (x *ListAssessmentsrsp) String() string {
 func (*ListAssessmentsrsp) ProtoMessage() {}
 
 func (x *ListAssessmentsrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[39]
+	mi := &file_flight_v1_flight_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2996,7 +3372,7 @@ func (x *ListAssessmentsrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAssessmentsrsp.ProtoReflect.Descriptor instead.
 func (*ListAssessmentsrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{39}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *ListAssessmentsrsp) GetRecords() []*AssessmentRecord {
@@ -3034,7 +3410,7 @@ type RiskHeatmapCell struct {
 
 func (x *RiskHeatmapCell) Reset() {
 	*x = RiskHeatmapCell{}
-	mi := &file_flight_v1_flight_proto_msgTypes[40]
+	mi := &file_flight_v1_flight_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3046,7 +3422,7 @@ func (x *RiskHeatmapCell) String() string {
 func (*RiskHeatmapCell) ProtoMessage() {}
 
 func (x *RiskHeatmapCell) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[40]
+	mi := &file_flight_v1_flight_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3059,7 +3435,7 @@ func (x *RiskHeatmapCell) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskHeatmapCell.ProtoReflect.Descriptor instead.
 func (*RiskHeatmapCell) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{40}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *RiskHeatmapCell) GetCenter() *v1.Coordinate {
@@ -3117,7 +3493,7 @@ type RiskHeatmapLegend struct {
 
 func (x *RiskHeatmapLegend) Reset() {
 	*x = RiskHeatmapLegend{}
-	mi := &file_flight_v1_flight_proto_msgTypes[41]
+	mi := &file_flight_v1_flight_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3129,7 +3505,7 @@ func (x *RiskHeatmapLegend) String() string {
 func (*RiskHeatmapLegend) ProtoMessage() {}
 
 func (x *RiskHeatmapLegend) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[41]
+	mi := &file_flight_v1_flight_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3142,7 +3518,7 @@ func (x *RiskHeatmapLegend) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskHeatmapLegend.ProtoReflect.Descriptor instead.
 func (*RiskHeatmapLegend) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{41}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *RiskHeatmapLegend) GetLevel() RiskLevel {
@@ -3195,7 +3571,7 @@ type RiskHeatmapreq struct {
 
 func (x *RiskHeatmapreq) Reset() {
 	*x = RiskHeatmapreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[42]
+	mi := &file_flight_v1_flight_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3207,7 +3583,7 @@ func (x *RiskHeatmapreq) String() string {
 func (*RiskHeatmapreq) ProtoMessage() {}
 
 func (x *RiskHeatmapreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[42]
+	mi := &file_flight_v1_flight_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3220,7 +3596,7 @@ func (x *RiskHeatmapreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskHeatmapreq.ProtoReflect.Descriptor instead.
 func (*RiskHeatmapreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{42}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *RiskHeatmapreq) GetRegionId() string {
@@ -3289,7 +3665,7 @@ type ContinuousRiskField struct {
 
 func (x *ContinuousRiskField) Reset() {
 	*x = ContinuousRiskField{}
-	mi := &file_flight_v1_flight_proto_msgTypes[43]
+	mi := &file_flight_v1_flight_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3301,7 +3677,7 @@ func (x *ContinuousRiskField) String() string {
 func (*ContinuousRiskField) ProtoMessage() {}
 
 func (x *ContinuousRiskField) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[43]
+	mi := &file_flight_v1_flight_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3314,7 +3690,7 @@ func (x *ContinuousRiskField) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ContinuousRiskField.ProtoReflect.Descriptor instead.
 func (*ContinuousRiskField) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{43}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *ContinuousRiskField) GetWidth() int32 {
@@ -3375,7 +3751,7 @@ type RiskHeatmaprsp struct {
 
 func (x *RiskHeatmaprsp) Reset() {
 	*x = RiskHeatmaprsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[44]
+	mi := &file_flight_v1_flight_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3387,7 +3763,7 @@ func (x *RiskHeatmaprsp) String() string {
 func (*RiskHeatmaprsp) ProtoMessage() {}
 
 func (x *RiskHeatmaprsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[44]
+	mi := &file_flight_v1_flight_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3400,7 +3776,7 @@ func (x *RiskHeatmaprsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskHeatmaprsp.ProtoReflect.Descriptor instead.
 func (*RiskHeatmaprsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{44}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *RiskHeatmaprsp) GetHeatmapId() string {
@@ -3472,7 +3848,7 @@ type GenerateFlightReportreq struct {
 
 func (x *GenerateFlightReportreq) Reset() {
 	*x = GenerateFlightReportreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[45]
+	mi := &file_flight_v1_flight_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3484,7 +3860,7 @@ func (x *GenerateFlightReportreq) String() string {
 func (*GenerateFlightReportreq) ProtoMessage() {}
 
 func (x *GenerateFlightReportreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[45]
+	mi := &file_flight_v1_flight_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3497,7 +3873,7 @@ func (x *GenerateFlightReportreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerateFlightReportreq.ProtoReflect.Descriptor instead.
 func (*GenerateFlightReportreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{45}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *GenerateFlightReportreq) GetReportType() FlightReportType {
@@ -3547,7 +3923,7 @@ type GenerateFlightReportrsp struct {
 
 func (x *GenerateFlightReportrsp) Reset() {
 	*x = GenerateFlightReportrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[46]
+	mi := &file_flight_v1_flight_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3559,7 +3935,7 @@ func (x *GenerateFlightReportrsp) String() string {
 func (*GenerateFlightReportrsp) ProtoMessage() {}
 
 func (x *GenerateFlightReportrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[46]
+	mi := &file_flight_v1_flight_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3572,7 +3948,7 @@ func (x *GenerateFlightReportrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerateFlightReportrsp.ProtoReflect.Descriptor instead.
 func (*GenerateFlightReportrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{46}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *GenerateFlightReportrsp) GetReportId() string {
@@ -3615,7 +3991,7 @@ type ReportSection struct {
 
 func (x *ReportSection) Reset() {
 	*x = ReportSection{}
-	mi := &file_flight_v1_flight_proto_msgTypes[47]
+	mi := &file_flight_v1_flight_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3627,7 +4003,7 @@ func (x *ReportSection) String() string {
 func (*ReportSection) ProtoMessage() {}
 
 func (x *ReportSection) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[47]
+	mi := &file_flight_v1_flight_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3640,7 +4016,7 @@ func (x *ReportSection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportSection.ProtoReflect.Descriptor instead.
 func (*ReportSection) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{47}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ReportSection) GetTitle() string {
@@ -3676,7 +4052,7 @@ type ReportConclusion struct {
 
 func (x *ReportConclusion) Reset() {
 	*x = ReportConclusion{}
-	mi := &file_flight_v1_flight_proto_msgTypes[48]
+	mi := &file_flight_v1_flight_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3688,7 +4064,7 @@ func (x *ReportConclusion) String() string {
 func (*ReportConclusion) ProtoMessage() {}
 
 func (x *ReportConclusion) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[48]
+	mi := &file_flight_v1_flight_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3701,7 +4077,7 @@ func (x *ReportConclusion) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportConclusion.ProtoReflect.Descriptor instead.
 func (*ReportConclusion) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{48}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *ReportConclusion) GetSummary() string {
@@ -3744,7 +4120,7 @@ type AircraftPhysicalLimits struct {
 
 func (x *AircraftPhysicalLimits) Reset() {
 	*x = AircraftPhysicalLimits{}
-	mi := &file_flight_v1_flight_proto_msgTypes[49]
+	mi := &file_flight_v1_flight_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3756,7 +4132,7 @@ func (x *AircraftPhysicalLimits) String() string {
 func (*AircraftPhysicalLimits) ProtoMessage() {}
 
 func (x *AircraftPhysicalLimits) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[49]
+	mi := &file_flight_v1_flight_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3769,7 +4145,7 @@ func (x *AircraftPhysicalLimits) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AircraftPhysicalLimits.ProtoReflect.Descriptor instead.
 func (*AircraftPhysicalLimits) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{49}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *AircraftPhysicalLimits) GetUSafe() float64 {
@@ -3849,7 +4225,7 @@ type GlobalAggregation struct {
 
 func (x *GlobalAggregation) Reset() {
 	*x = GlobalAggregation{}
-	mi := &file_flight_v1_flight_proto_msgTypes[50]
+	mi := &file_flight_v1_flight_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3861,7 +4237,7 @@ func (x *GlobalAggregation) String() string {
 func (*GlobalAggregation) ProtoMessage() {}
 
 func (x *GlobalAggregation) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[50]
+	mi := &file_flight_v1_flight_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3874,7 +4250,7 @@ func (x *GlobalAggregation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GlobalAggregation.ProtoReflect.Descriptor instead.
 func (*GlobalAggregation) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{50}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *GlobalAggregation) GetAlphaMax() float64 {
@@ -3922,7 +4298,7 @@ type RiskThresholdTemplate struct {
 
 func (x *RiskThresholdTemplate) Reset() {
 	*x = RiskThresholdTemplate{}
-	mi := &file_flight_v1_flight_proto_msgTypes[51]
+	mi := &file_flight_v1_flight_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3934,7 +4310,7 @@ func (x *RiskThresholdTemplate) String() string {
 func (*RiskThresholdTemplate) ProtoMessage() {}
 
 func (x *RiskThresholdTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[51]
+	mi := &file_flight_v1_flight_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3947,7 +4323,7 @@ func (x *RiskThresholdTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskThresholdTemplate.ProtoReflect.Descriptor instead.
 func (*RiskThresholdTemplate) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{51}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *RiskThresholdTemplate) GetTemplateId() string {
@@ -4026,7 +4402,7 @@ type RiskThresholdConfig struct {
 
 func (x *RiskThresholdConfig) Reset() {
 	*x = RiskThresholdConfig{}
-	mi := &file_flight_v1_flight_proto_msgTypes[52]
+	mi := &file_flight_v1_flight_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4038,7 +4414,7 @@ func (x *RiskThresholdConfig) String() string {
 func (*RiskThresholdConfig) ProtoMessage() {}
 
 func (x *RiskThresholdConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[52]
+	mi := &file_flight_v1_flight_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4051,7 +4427,7 @@ func (x *RiskThresholdConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskThresholdConfig.ProtoReflect.Descriptor instead.
 func (*RiskThresholdConfig) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{52}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *RiskThresholdConfig) GetRiskType() RiskType {
@@ -4092,7 +4468,7 @@ type ListRiskTemplatesreq struct {
 
 func (x *ListRiskTemplatesreq) Reset() {
 	*x = ListRiskTemplatesreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[53]
+	mi := &file_flight_v1_flight_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4104,7 +4480,7 @@ func (x *ListRiskTemplatesreq) String() string {
 func (*ListRiskTemplatesreq) ProtoMessage() {}
 
 func (x *ListRiskTemplatesreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[53]
+	mi := &file_flight_v1_flight_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4117,7 +4493,7 @@ func (x *ListRiskTemplatesreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRiskTemplatesreq.ProtoReflect.Descriptor instead.
 func (*ListRiskTemplatesreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{53}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *ListRiskTemplatesreq) GetAircraftType() string {
@@ -4144,7 +4520,7 @@ type ListRiskTemplatesrsp struct {
 
 func (x *ListRiskTemplatesrsp) Reset() {
 	*x = ListRiskTemplatesrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[54]
+	mi := &file_flight_v1_flight_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4156,7 +4532,7 @@ func (x *ListRiskTemplatesrsp) String() string {
 func (*ListRiskTemplatesrsp) ProtoMessage() {}
 
 func (x *ListRiskTemplatesrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[54]
+	mi := &file_flight_v1_flight_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4169,7 +4545,7 @@ func (x *ListRiskTemplatesrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRiskTemplatesrsp.ProtoReflect.Descriptor instead.
 func (*ListRiskTemplatesrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{54}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *ListRiskTemplatesrsp) GetTemplates() []*RiskThresholdTemplate {
@@ -4195,7 +4571,7 @@ type UpsertRiskTemplatereq struct {
 
 func (x *UpsertRiskTemplatereq) Reset() {
 	*x = UpsertRiskTemplatereq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[55]
+	mi := &file_flight_v1_flight_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4207,7 +4583,7 @@ func (x *UpsertRiskTemplatereq) String() string {
 func (*UpsertRiskTemplatereq) ProtoMessage() {}
 
 func (x *UpsertRiskTemplatereq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[55]
+	mi := &file_flight_v1_flight_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4220,7 +4596,7 @@ func (x *UpsertRiskTemplatereq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpsertRiskTemplatereq.ProtoReflect.Descriptor instead.
 func (*UpsertRiskTemplatereq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{55}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *UpsertRiskTemplatereq) GetTemplate() *RiskThresholdTemplate {
@@ -4240,7 +4616,7 @@ type UpsertRiskTemplatersp struct {
 
 func (x *UpsertRiskTemplatersp) Reset() {
 	*x = UpsertRiskTemplatersp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[56]
+	mi := &file_flight_v1_flight_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4252,7 +4628,7 @@ func (x *UpsertRiskTemplatersp) String() string {
 func (*UpsertRiskTemplatersp) ProtoMessage() {}
 
 func (x *UpsertRiskTemplatersp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[56]
+	mi := &file_flight_v1_flight_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4265,7 +4641,7 @@ func (x *UpsertRiskTemplatersp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpsertRiskTemplatersp.ProtoReflect.Descriptor instead.
 func (*UpsertRiskTemplatersp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{56}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *UpsertRiskTemplatersp) GetTemplateId() string {
@@ -4292,7 +4668,7 @@ type GetRouteRiskSummaryreq struct {
 
 func (x *GetRouteRiskSummaryreq) Reset() {
 	*x = GetRouteRiskSummaryreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[57]
+	mi := &file_flight_v1_flight_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4304,7 +4680,7 @@ func (x *GetRouteRiskSummaryreq) String() string {
 func (*GetRouteRiskSummaryreq) ProtoMessage() {}
 
 func (x *GetRouteRiskSummaryreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[57]
+	mi := &file_flight_v1_flight_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4317,7 +4693,7 @@ func (x *GetRouteRiskSummaryreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRouteRiskSummaryreq.ProtoReflect.Descriptor instead.
 func (*GetRouteRiskSummaryreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{57}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *GetRouteRiskSummaryreq) GetRegionId() string {
@@ -4348,7 +4724,7 @@ type GetRouteRiskSummaryrsp struct {
 
 func (x *GetRouteRiskSummaryrsp) Reset() {
 	*x = GetRouteRiskSummaryrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[58]
+	mi := &file_flight_v1_flight_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4360,7 +4736,7 @@ func (x *GetRouteRiskSummaryrsp) String() string {
 func (*GetRouteRiskSummaryrsp) ProtoMessage() {}
 
 func (x *GetRouteRiskSummaryrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[58]
+	mi := &file_flight_v1_flight_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4373,7 +4749,7 @@ func (x *GetRouteRiskSummaryrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRouteRiskSummaryrsp.ProtoReflect.Descriptor instead.
 func (*GetRouteRiskSummaryrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{58}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *GetRouteRiskSummaryrsp) GetTotalRoutes() int32 {
@@ -4429,7 +4805,7 @@ type GetRouteWindTrendreq struct {
 
 func (x *GetRouteWindTrendreq) Reset() {
 	*x = GetRouteWindTrendreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[59]
+	mi := &file_flight_v1_flight_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4441,7 +4817,7 @@ func (x *GetRouteWindTrendreq) String() string {
 func (*GetRouteWindTrendreq) ProtoMessage() {}
 
 func (x *GetRouteWindTrendreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[59]
+	mi := &file_flight_v1_flight_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4454,7 +4830,7 @@ func (x *GetRouteWindTrendreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRouteWindTrendreq.ProtoReflect.Descriptor instead.
 func (*GetRouteWindTrendreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{59}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *GetRouteWindTrendreq) GetRouteId() string {
@@ -4489,7 +4865,7 @@ type WindTrendPoint struct {
 
 func (x *WindTrendPoint) Reset() {
 	*x = WindTrendPoint{}
-	mi := &file_flight_v1_flight_proto_msgTypes[60]
+	mi := &file_flight_v1_flight_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4501,7 +4877,7 @@ func (x *WindTrendPoint) String() string {
 func (*WindTrendPoint) ProtoMessage() {}
 
 func (x *WindTrendPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[60]
+	mi := &file_flight_v1_flight_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4514,7 +4890,7 @@ func (x *WindTrendPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WindTrendPoint.ProtoReflect.Descriptor instead.
 func (*WindTrendPoint) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{60}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *WindTrendPoint) GetTime() *timestamppb.Timestamp {
@@ -4547,7 +4923,7 @@ type GetRouteWindTrendrsp struct {
 
 func (x *GetRouteWindTrendrsp) Reset() {
 	*x = GetRouteWindTrendrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[61]
+	mi := &file_flight_v1_flight_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4559,7 +4935,7 @@ func (x *GetRouteWindTrendrsp) String() string {
 func (*GetRouteWindTrendrsp) ProtoMessage() {}
 
 func (x *GetRouteWindTrendrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[61]
+	mi := &file_flight_v1_flight_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4572,7 +4948,7 @@ func (x *GetRouteWindTrendrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRouteWindTrendrsp.ProtoReflect.Descriptor instead.
 func (*GetRouteWindTrendrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{61}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *GetRouteWindTrendrsp) GetPoints() []*WindTrendPoint {
@@ -4594,7 +4970,7 @@ type GetRouteRiskTrendreq struct {
 
 func (x *GetRouteRiskTrendreq) Reset() {
 	*x = GetRouteRiskTrendreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[62]
+	mi := &file_flight_v1_flight_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4606,7 +4982,7 @@ func (x *GetRouteRiskTrendreq) String() string {
 func (*GetRouteRiskTrendreq) ProtoMessage() {}
 
 func (x *GetRouteRiskTrendreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[62]
+	mi := &file_flight_v1_flight_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4619,7 +4995,7 @@ func (x *GetRouteRiskTrendreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRouteRiskTrendreq.ProtoReflect.Descriptor instead.
 func (*GetRouteRiskTrendreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{62}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *GetRouteRiskTrendreq) GetRegionId() string {
@@ -4660,7 +5036,7 @@ type RiskTrendPoint struct {
 
 func (x *RiskTrendPoint) Reset() {
 	*x = RiskTrendPoint{}
-	mi := &file_flight_v1_flight_proto_msgTypes[63]
+	mi := &file_flight_v1_flight_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4672,7 +5048,7 @@ func (x *RiskTrendPoint) String() string {
 func (*RiskTrendPoint) ProtoMessage() {}
 
 func (x *RiskTrendPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[63]
+	mi := &file_flight_v1_flight_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4685,7 +5061,7 @@ func (x *RiskTrendPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskTrendPoint.ProtoReflect.Descriptor instead.
 func (*RiskTrendPoint) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{63}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *RiskTrendPoint) GetTime() *timestamppb.Timestamp {
@@ -4711,7 +5087,7 @@ type GetRouteRiskTrendrsp struct {
 
 func (x *GetRouteRiskTrendrsp) Reset() {
 	*x = GetRouteRiskTrendrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[64]
+	mi := &file_flight_v1_flight_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4723,7 +5099,7 @@ func (x *GetRouteRiskTrendrsp) String() string {
 func (*GetRouteRiskTrendrsp) ProtoMessage() {}
 
 func (x *GetRouteRiskTrendrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[64]
+	mi := &file_flight_v1_flight_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4736,7 +5112,7 @@ func (x *GetRouteRiskTrendrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRouteRiskTrendrsp.ProtoReflect.Descriptor instead.
 func (*GetRouteRiskTrendrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{64}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *GetRouteRiskTrendrsp) GetPoints() []*RiskTrendPoint {
@@ -4756,7 +5132,7 @@ type AdviseAssessmentreq struct {
 
 func (x *AdviseAssessmentreq) Reset() {
 	*x = AdviseAssessmentreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[65]
+	mi := &file_flight_v1_flight_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4768,7 +5144,7 @@ func (x *AdviseAssessmentreq) String() string {
 func (*AdviseAssessmentreq) ProtoMessage() {}
 
 func (x *AdviseAssessmentreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[65]
+	mi := &file_flight_v1_flight_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4781,7 +5157,7 @@ func (x *AdviseAssessmentreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdviseAssessmentreq.ProtoReflect.Descriptor instead.
 func (*AdviseAssessmentreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{65}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *AdviseAssessmentreq) GetAssessmentId() string {
@@ -4810,7 +5186,7 @@ type AdviseAssessmentrsp struct {
 
 func (x *AdviseAssessmentrsp) Reset() {
 	*x = AdviseAssessmentrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[66]
+	mi := &file_flight_v1_flight_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4822,7 +5198,7 @@ func (x *AdviseAssessmentrsp) String() string {
 func (*AdviseAssessmentrsp) ProtoMessage() {}
 
 func (x *AdviseAssessmentrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[66]
+	mi := &file_flight_v1_flight_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4835,7 +5211,7 @@ func (x *AdviseAssessmentrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdviseAssessmentrsp.ProtoReflect.Descriptor instead.
 func (*AdviseAssessmentrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{66}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *AdviseAssessmentrsp) GetAdvice() string {
@@ -4877,7 +5253,7 @@ type AdviseComparisonreq struct {
 
 func (x *AdviseComparisonreq) Reset() {
 	*x = AdviseComparisonreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[67]
+	mi := &file_flight_v1_flight_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4889,7 +5265,7 @@ func (x *AdviseComparisonreq) String() string {
 func (*AdviseComparisonreq) ProtoMessage() {}
 
 func (x *AdviseComparisonreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[67]
+	mi := &file_flight_v1_flight_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4902,7 +5278,7 @@ func (x *AdviseComparisonreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdviseComparisonreq.ProtoReflect.Descriptor instead.
 func (*AdviseComparisonreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{67}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *AdviseComparisonreq) GetLeftAssessmentId() string {
@@ -4938,7 +5314,7 @@ type AdviseComparisonrsp struct {
 
 func (x *AdviseComparisonrsp) Reset() {
 	*x = AdviseComparisonrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[68]
+	mi := &file_flight_v1_flight_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4950,7 +5326,7 @@ func (x *AdviseComparisonrsp) String() string {
 func (*AdviseComparisonrsp) ProtoMessage() {}
 
 func (x *AdviseComparisonrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[68]
+	mi := &file_flight_v1_flight_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4963,7 +5339,7 @@ func (x *AdviseComparisonrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdviseComparisonrsp.ProtoReflect.Descriptor instead.
 func (*AdviseComparisonrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{68}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *AdviseComparisonrsp) GetAdvice() string {
@@ -5008,7 +5384,7 @@ type PredictRouteTimeseriesreq struct {
 
 func (x *PredictRouteTimeseriesreq) Reset() {
 	*x = PredictRouteTimeseriesreq{}
-	mi := &file_flight_v1_flight_proto_msgTypes[69]
+	mi := &file_flight_v1_flight_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5020,7 +5396,7 @@ func (x *PredictRouteTimeseriesreq) String() string {
 func (*PredictRouteTimeseriesreq) ProtoMessage() {}
 
 func (x *PredictRouteTimeseriesreq) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[69]
+	mi := &file_flight_v1_flight_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5033,7 +5409,7 @@ func (x *PredictRouteTimeseriesreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PredictRouteTimeseriesreq.ProtoReflect.Descriptor instead.
 func (*PredictRouteTimeseriesreq) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{69}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *PredictRouteTimeseriesreq) GetRegionId() string {
@@ -5089,7 +5465,7 @@ type PredictRouteTimeseriesrsp struct {
 
 func (x *PredictRouteTimeseriesrsp) Reset() {
 	*x = PredictRouteTimeseriesrsp{}
-	mi := &file_flight_v1_flight_proto_msgTypes[70]
+	mi := &file_flight_v1_flight_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5101,7 +5477,7 @@ func (x *PredictRouteTimeseriesrsp) String() string {
 func (*PredictRouteTimeseriesrsp) ProtoMessage() {}
 
 func (x *PredictRouteTimeseriesrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[70]
+	mi := &file_flight_v1_flight_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5114,7 +5490,7 @@ func (x *PredictRouteTimeseriesrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PredictRouteTimeseriesrsp.ProtoReflect.Descriptor instead.
 func (*PredictRouteTimeseriesrsp) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{70}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *PredictRouteTimeseriesrsp) GetGeneratedAt() *timestamppb.Timestamp {
@@ -5149,7 +5525,7 @@ type RoutePrediction struct {
 
 func (x *RoutePrediction) Reset() {
 	*x = RoutePrediction{}
-	mi := &file_flight_v1_flight_proto_msgTypes[71]
+	mi := &file_flight_v1_flight_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5161,7 +5537,7 @@ func (x *RoutePrediction) String() string {
 func (*RoutePrediction) ProtoMessage() {}
 
 func (x *RoutePrediction) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[71]
+	mi := &file_flight_v1_flight_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5174,7 +5550,7 @@ func (x *RoutePrediction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoutePrediction.ProtoReflect.Descriptor instead.
 func (*RoutePrediction) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{71}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *RoutePrediction) GetRouteId() string {
@@ -5213,7 +5589,7 @@ type RiskTimeSegment struct {
 
 func (x *RiskTimeSegment) Reset() {
 	*x = RiskTimeSegment{}
-	mi := &file_flight_v1_flight_proto_msgTypes[72]
+	mi := &file_flight_v1_flight_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5225,7 +5601,7 @@ func (x *RiskTimeSegment) String() string {
 func (*RiskTimeSegment) ProtoMessage() {}
 
 func (x *RiskTimeSegment) ProtoReflect() protoreflect.Message {
-	mi := &file_flight_v1_flight_proto_msgTypes[72]
+	mi := &file_flight_v1_flight_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5238,7 +5614,7 @@ func (x *RiskTimeSegment) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RiskTimeSegment.ProtoReflect.Descriptor instead.
 func (*RiskTimeSegment) Descriptor() ([]byte, []int) {
-	return file_flight_v1_flight_proto_rawDescGZIP(), []int{72}
+	return file_flight_v1_flight_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *RiskTimeSegment) GetStart() *timestamppb.Timestamp {
@@ -5405,11 +5781,47 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\x16critical_segment_count\x18\x04 \x01(\x05R\x14criticalSegmentCount\x12)\n" +
 	"\x10takeoff_segments\x18\x05 \x03(\x05R\x0ftakeoffSegments\x12)\n" +
 	"\x10landing_segments\x18\x06 \x03(\x05R\x0flandingSegments\x12'\n" +
-	"\x0fcruise_segments\x18\a \x03(\x05R\x0ecruiseSegments\"\x98\x01\n" +
+	"\x0fcruise_segments\x18\a \x03(\x05R\x0ecruiseSegments\"\x94\x01\n" +
+	"\x11DimensionResultV3\x12\x14\n" +
+	"\x05score\x18\x01 \x01(\x01R\x05score\x12\"\n" +
+	"\rmax_per_point\x18\x02 \x01(\x01R\vmaxPerPoint\x12\"\n" +
+	"\ravg_per_point\x18\x03 \x01(\x01R\vavgPerPoint\x12!\n" +
+	"\fmax_physical\x18\x04 \x01(\x01R\vmaxPhysical\"\x9f\x02\n" +
+	"\x11DimensionScoresV3\x12B\n" +
+	"\n" +
+	"wind_speed\x18\x01 \x01(\v2#.anemos.flight.v1.DimensionResultV3R\twindSpeed\x12C\n" +
+	"\n" +
+	"turbulence\x18\x02 \x01(\v2#.anemos.flight.v1.DimensionResultV3R\n" +
+	"turbulence\x12H\n" +
+	"\rlateral_shear\x18\x03 \x01(\v2#.anemos.flight.v1.DimensionResultV3R\flateralShear\x127\n" +
+	"\x04gust\x18\x04 \x01(\v2#.anemos.flight.v1.DimensionResultV3R\x04gust\"\xa8\x04\n" +
+	"\x13SegmentRiskResultV3\x12#\n" +
+	"\rsegment_index\x18\x01 \x01(\x05R\fsegmentIndex\x12.\n" +
+	"\x04from\x18\x02 \x01(\v2\x1a.anemos.flight.v1.WaypointR\x04from\x12*\n" +
+	"\x02to\x18\x03 \x01(\v2\x1a.anemos.flight.v1.WaypointR\x02to\x12\x14\n" +
+	"\x05phase\x18\x04 \x01(\tR\x05phase\x12\x1d\n" +
+	"\n" +
+	"distance_m\x18\x05 \x01(\x01R\tdistanceM\x12\x0f\n" +
+	"\x03r_u\x18\x06 \x01(\x01R\x02rU\x12\x11\n" +
+	"\x04r_ti\x18\a \x01(\x01R\x03rTi\x12\x17\n" +
+	"\ar_gamma\x18\b \x01(\x01R\x06rGamma\x12\x15\n" +
+	"\x06r_gust\x18\t \x01(\x01R\x05rGust\x12\x1e\n" +
+	"\vr_total_max\x18\n" +
+	" \x01(\x01R\trTotalMax\x12\x1e\n" +
+	"\vr_total_avg\x18\v \x01(\x01R\trTotalAvg\x12\x1d\n" +
+	"\n" +
+	"risk_level\x18\f \x01(\tR\triskLevel\x12\x1e\n" +
+	"\vmax_umag_ms\x18\x14 \x01(\x01R\tmaxUmagMs\x12\x15\n" +
+	"\x06max_ti\x18\x15 \x01(\x01R\x05maxTi\x12 \n" +
+	"\fmax_gamma_s1\x18\x16 \x01(\x01R\n" +
+	"maxGammaS1\x12 \n" +
+	"\fmax_ugust_ms\x18\x17 \x01(\x01R\n" +
+	"maxUgustMs\x12-\n" +
+	"\x12trigger_dimensions\x18\x1e \x03(\tR\x11triggerDimensions\"\x98\x01\n" +
 	"\x0eAssessRoutereq\x12\x19\n" +
 	"\broute_id\x18\x01 \x01(\tR\arouteId\x12/\n" +
 	"\x14wind_field_result_id\x18\x02 \x01(\tR\x11windFieldResultId\x12:\n" +
-	"\x06params\x18\x03 \x01(\v2\".anemos.flight.v1.AssessmentParamsR\x06params\"\xba\x04\n" +
+	"\x06params\x18\x03 \x01(\v2\".anemos.flight.v1.AssessmentParamsR\x06params\"\xaf\a\n" +
 	"\x0eAssessRoutersp\x12#\n" +
 	"\rassessment_id\x18\x01 \x01(\tR\fassessmentId\x12\x19\n" +
 	"\broute_id\x18\x02 \x01(\tR\arouteId\x12/\n" +
@@ -5421,7 +5833,15 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\fgenerated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\vgeneratedAt\x12<\n" +
 	"\bdecision\x18\t \x01(\x0e2 .anemos.flight.v1.FlightDecisionR\bdecision\x12L\n" +
 	"\x10dimension_scores\x18\n" +
-	" \x01(\v2!.anemos.flight.v1.DimensionScoresR\x0fdimensionScores\"7\n" +
+	" \x01(\v2!.anemos.flight.v1.DimensionScoresR\x0fdimensionScores\x12\x19\n" +
+	"\brisk_max\x18\v \x01(\x01R\ariskMax\x12\x19\n" +
+	"\brisk_avg\x18\f \x01(\x01R\ariskAvg\x12\x15\n" +
+	"\x06p_high\x18\r \x01(\x01R\x05pHigh\x12\"\n" +
+	"\rrisk_level_v3\x18\x0e \x01(\tR\vriskLevelV3\x128\n" +
+	"\x18hard_constraint_violated\x18\x0f \x01(\bR\x16hardConstraintViolated\x12\x1e\n" +
+	"\vmax_umag_ms\x18\x10 \x01(\x01R\tmaxUmagMs\x12S\n" +
+	"\x13dimension_scores_v3\x18\x11 \x01(\v2#.anemos.flight.v1.DimensionScoresV3R\x11dimensionScoresV3\x12S\n" +
+	"\x12segment_results_v3\x18\x12 \x03(\v2%.anemos.flight.v1.SegmentRiskResultV3R\x10segmentResultsV3\"7\n" +
 	"\x10GetAssessmentreq\x12#\n" +
 	"\rassessment_id\x18\x01 \x01(\tR\fassessmentId\":\n" +
 	"\x13DeleteAssessmentreq\x12#\n" +
@@ -5780,7 +6200,7 @@ func file_flight_v1_flight_proto_rawDescGZIP() []byte {
 }
 
 var file_flight_v1_flight_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
-var file_flight_v1_flight_proto_msgTypes = make([]protoimpl.MessageInfo, 73)
+var file_flight_v1_flight_proto_msgTypes = make([]protoimpl.MessageInfo, 76)
 var file_flight_v1_flight_proto_goTypes = []any{
 	(RiskType)(0),                     // 0: anemos.flight.v1.RiskType
 	(FlightPhase)(0),                  // 1: anemos.flight.v1.FlightPhase
@@ -5807,77 +6227,80 @@ var file_flight_v1_flight_proto_goTypes = []any{
 	(*AssessmentParams)(nil),          // 22: anemos.flight.v1.AssessmentParams
 	(*SegmentRisk)(nil),               // 23: anemos.flight.v1.SegmentRisk
 	(*AssessmentSummary)(nil),         // 24: anemos.flight.v1.AssessmentSummary
-	(*AssessRoutereq)(nil),            // 25: anemos.flight.v1.AssessRoutereq
-	(*AssessRoutersp)(nil),            // 26: anemos.flight.v1.AssessRoutersp
-	(*GetAssessmentreq)(nil),          // 27: anemos.flight.v1.GetAssessmentreq
-	(*DeleteAssessmentreq)(nil),       // 28: anemos.flight.v1.DeleteAssessmentreq
-	(*DeleteAssessmentrsp)(nil),       // 29: anemos.flight.v1.DeleteAssessmentrsp
-	(*BatchAssessreq)(nil),            // 30: anemos.flight.v1.BatchAssessreq
-	(*BatchAssessrsp)(nil),            // 31: anemos.flight.v1.BatchAssessrsp
-	(*OptimizationConstraints)(nil),   // 32: anemos.flight.v1.OptimizationConstraints
-	(*OptimizeRoutereq)(nil),          // 33: anemos.flight.v1.OptimizeRoutereq
-	(*OptimizeRoutersp)(nil),          // 34: anemos.flight.v1.OptimizeRoutersp
-	(*RiskComparison)(nil),            // 35: anemos.flight.v1.RiskComparison
-	(*SegmentRiskDiff)(nil),           // 36: anemos.flight.v1.SegmentRiskDiff
-	(*GetOptimizationreq)(nil),        // 37: anemos.flight.v1.GetOptimizationreq
-	(*DeleteOptimizationreq)(nil),     // 38: anemos.flight.v1.DeleteOptimizationreq
-	(*DeleteOptimizationrsp)(nil),     // 39: anemos.flight.v1.DeleteOptimizationrsp
-	(*ListOptimizationsreq)(nil),      // 40: anemos.flight.v1.ListOptimizationsreq
-	(*ListOptimizationsrsp)(nil),      // 41: anemos.flight.v1.ListOptimizationsrsp
-	(*OptimizationRecord)(nil),        // 42: anemos.flight.v1.OptimizationRecord
-	(*AssessmentRecord)(nil),          // 43: anemos.flight.v1.AssessmentRecord
-	(*ListAssessmentsreq)(nil),        // 44: anemos.flight.v1.ListAssessmentsreq
-	(*ListAssessmentsrsp)(nil),        // 45: anemos.flight.v1.ListAssessmentsrsp
-	(*RiskHeatmapCell)(nil),           // 46: anemos.flight.v1.RiskHeatmapCell
-	(*RiskHeatmapLegend)(nil),         // 47: anemos.flight.v1.RiskHeatmapLegend
-	(*RiskHeatmapreq)(nil),            // 48: anemos.flight.v1.RiskHeatmapreq
-	(*ContinuousRiskField)(nil),       // 49: anemos.flight.v1.ContinuousRiskField
-	(*RiskHeatmaprsp)(nil),            // 50: anemos.flight.v1.RiskHeatmaprsp
-	(*GenerateFlightReportreq)(nil),   // 51: anemos.flight.v1.GenerateFlightReportreq
-	(*GenerateFlightReportrsp)(nil),   // 52: anemos.flight.v1.GenerateFlightReportrsp
-	(*ReportSection)(nil),             // 53: anemos.flight.v1.ReportSection
-	(*ReportConclusion)(nil),          // 54: anemos.flight.v1.ReportConclusion
-	(*AircraftPhysicalLimits)(nil),    // 55: anemos.flight.v1.AircraftPhysicalLimits
-	(*GlobalAggregation)(nil),         // 56: anemos.flight.v1.GlobalAggregation
-	(*RiskThresholdTemplate)(nil),     // 57: anemos.flight.v1.RiskThresholdTemplate
-	(*RiskThresholdConfig)(nil),       // 58: anemos.flight.v1.RiskThresholdConfig
-	(*ListRiskTemplatesreq)(nil),      // 59: anemos.flight.v1.ListRiskTemplatesreq
-	(*ListRiskTemplatesrsp)(nil),      // 60: anemos.flight.v1.ListRiskTemplatesrsp
-	(*UpsertRiskTemplatereq)(nil),     // 61: anemos.flight.v1.UpsertRiskTemplatereq
-	(*UpsertRiskTemplatersp)(nil),     // 62: anemos.flight.v1.UpsertRiskTemplatersp
-	(*GetRouteRiskSummaryreq)(nil),    // 63: anemos.flight.v1.GetRouteRiskSummaryreq
-	(*GetRouteRiskSummaryrsp)(nil),    // 64: anemos.flight.v1.GetRouteRiskSummaryrsp
-	(*GetRouteWindTrendreq)(nil),      // 65: anemos.flight.v1.GetRouteWindTrendreq
-	(*WindTrendPoint)(nil),            // 66: anemos.flight.v1.WindTrendPoint
-	(*GetRouteWindTrendrsp)(nil),      // 67: anemos.flight.v1.GetRouteWindTrendrsp
-	(*GetRouteRiskTrendreq)(nil),      // 68: anemos.flight.v1.GetRouteRiskTrendreq
-	(*RiskTrendPoint)(nil),            // 69: anemos.flight.v1.RiskTrendPoint
-	(*GetRouteRiskTrendrsp)(nil),      // 70: anemos.flight.v1.GetRouteRiskTrendrsp
-	(*AdviseAssessmentreq)(nil),       // 71: anemos.flight.v1.AdviseAssessmentreq
-	(*AdviseAssessmentrsp)(nil),       // 72: anemos.flight.v1.AdviseAssessmentrsp
-	(*AdviseComparisonreq)(nil),       // 73: anemos.flight.v1.AdviseComparisonreq
-	(*AdviseComparisonrsp)(nil),       // 74: anemos.flight.v1.AdviseComparisonrsp
-	(*PredictRouteTimeseriesreq)(nil), // 75: anemos.flight.v1.PredictRouteTimeseriesreq
-	(*PredictRouteTimeseriesrsp)(nil), // 76: anemos.flight.v1.PredictRouteTimeseriesrsp
-	(*RoutePrediction)(nil),           // 77: anemos.flight.v1.RoutePrediction
-	(*RiskTimeSegment)(nil),           // 78: anemos.flight.v1.RiskTimeSegment
-	(*timestamppb.Timestamp)(nil),     // 79: google.protobuf.Timestamp
-	(*v1.Paginationreq)(nil),          // 80: anemos.common.v1.Paginationreq
-	(*v1.Paginationrsp)(nil),          // 81: anemos.common.v1.Paginationrsp
-	(*v1.Coordinate)(nil),             // 82: anemos.common.v1.Coordinate
-	(*v1.BoundingBox)(nil),            // 83: anemos.common.v1.BoundingBox
-	(*v1.TimeRange)(nil),              // 84: anemos.common.v1.TimeRange
+	(*DimensionResultV3)(nil),         // 25: anemos.flight.v1.DimensionResultV3
+	(*DimensionScoresV3)(nil),         // 26: anemos.flight.v1.DimensionScoresV3
+	(*SegmentRiskResultV3)(nil),       // 27: anemos.flight.v1.SegmentRiskResultV3
+	(*AssessRoutereq)(nil),            // 28: anemos.flight.v1.AssessRoutereq
+	(*AssessRoutersp)(nil),            // 29: anemos.flight.v1.AssessRoutersp
+	(*GetAssessmentreq)(nil),          // 30: anemos.flight.v1.GetAssessmentreq
+	(*DeleteAssessmentreq)(nil),       // 31: anemos.flight.v1.DeleteAssessmentreq
+	(*DeleteAssessmentrsp)(nil),       // 32: anemos.flight.v1.DeleteAssessmentrsp
+	(*BatchAssessreq)(nil),            // 33: anemos.flight.v1.BatchAssessreq
+	(*BatchAssessrsp)(nil),            // 34: anemos.flight.v1.BatchAssessrsp
+	(*OptimizationConstraints)(nil),   // 35: anemos.flight.v1.OptimizationConstraints
+	(*OptimizeRoutereq)(nil),          // 36: anemos.flight.v1.OptimizeRoutereq
+	(*OptimizeRoutersp)(nil),          // 37: anemos.flight.v1.OptimizeRoutersp
+	(*RiskComparison)(nil),            // 38: anemos.flight.v1.RiskComparison
+	(*SegmentRiskDiff)(nil),           // 39: anemos.flight.v1.SegmentRiskDiff
+	(*GetOptimizationreq)(nil),        // 40: anemos.flight.v1.GetOptimizationreq
+	(*DeleteOptimizationreq)(nil),     // 41: anemos.flight.v1.DeleteOptimizationreq
+	(*DeleteOptimizationrsp)(nil),     // 42: anemos.flight.v1.DeleteOptimizationrsp
+	(*ListOptimizationsreq)(nil),      // 43: anemos.flight.v1.ListOptimizationsreq
+	(*ListOptimizationsrsp)(nil),      // 44: anemos.flight.v1.ListOptimizationsrsp
+	(*OptimizationRecord)(nil),        // 45: anemos.flight.v1.OptimizationRecord
+	(*AssessmentRecord)(nil),          // 46: anemos.flight.v1.AssessmentRecord
+	(*ListAssessmentsreq)(nil),        // 47: anemos.flight.v1.ListAssessmentsreq
+	(*ListAssessmentsrsp)(nil),        // 48: anemos.flight.v1.ListAssessmentsrsp
+	(*RiskHeatmapCell)(nil),           // 49: anemos.flight.v1.RiskHeatmapCell
+	(*RiskHeatmapLegend)(nil),         // 50: anemos.flight.v1.RiskHeatmapLegend
+	(*RiskHeatmapreq)(nil),            // 51: anemos.flight.v1.RiskHeatmapreq
+	(*ContinuousRiskField)(nil),       // 52: anemos.flight.v1.ContinuousRiskField
+	(*RiskHeatmaprsp)(nil),            // 53: anemos.flight.v1.RiskHeatmaprsp
+	(*GenerateFlightReportreq)(nil),   // 54: anemos.flight.v1.GenerateFlightReportreq
+	(*GenerateFlightReportrsp)(nil),   // 55: anemos.flight.v1.GenerateFlightReportrsp
+	(*ReportSection)(nil),             // 56: anemos.flight.v1.ReportSection
+	(*ReportConclusion)(nil),          // 57: anemos.flight.v1.ReportConclusion
+	(*AircraftPhysicalLimits)(nil),    // 58: anemos.flight.v1.AircraftPhysicalLimits
+	(*GlobalAggregation)(nil),         // 59: anemos.flight.v1.GlobalAggregation
+	(*RiskThresholdTemplate)(nil),     // 60: anemos.flight.v1.RiskThresholdTemplate
+	(*RiskThresholdConfig)(nil),       // 61: anemos.flight.v1.RiskThresholdConfig
+	(*ListRiskTemplatesreq)(nil),      // 62: anemos.flight.v1.ListRiskTemplatesreq
+	(*ListRiskTemplatesrsp)(nil),      // 63: anemos.flight.v1.ListRiskTemplatesrsp
+	(*UpsertRiskTemplatereq)(nil),     // 64: anemos.flight.v1.UpsertRiskTemplatereq
+	(*UpsertRiskTemplatersp)(nil),     // 65: anemos.flight.v1.UpsertRiskTemplatersp
+	(*GetRouteRiskSummaryreq)(nil),    // 66: anemos.flight.v1.GetRouteRiskSummaryreq
+	(*GetRouteRiskSummaryrsp)(nil),    // 67: anemos.flight.v1.GetRouteRiskSummaryrsp
+	(*GetRouteWindTrendreq)(nil),      // 68: anemos.flight.v1.GetRouteWindTrendreq
+	(*WindTrendPoint)(nil),            // 69: anemos.flight.v1.WindTrendPoint
+	(*GetRouteWindTrendrsp)(nil),      // 70: anemos.flight.v1.GetRouteWindTrendrsp
+	(*GetRouteRiskTrendreq)(nil),      // 71: anemos.flight.v1.GetRouteRiskTrendreq
+	(*RiskTrendPoint)(nil),            // 72: anemos.flight.v1.RiskTrendPoint
+	(*GetRouteRiskTrendrsp)(nil),      // 73: anemos.flight.v1.GetRouteRiskTrendrsp
+	(*AdviseAssessmentreq)(nil),       // 74: anemos.flight.v1.AdviseAssessmentreq
+	(*AdviseAssessmentrsp)(nil),       // 75: anemos.flight.v1.AdviseAssessmentrsp
+	(*AdviseComparisonreq)(nil),       // 76: anemos.flight.v1.AdviseComparisonreq
+	(*AdviseComparisonrsp)(nil),       // 77: anemos.flight.v1.AdviseComparisonrsp
+	(*PredictRouteTimeseriesreq)(nil), // 78: anemos.flight.v1.PredictRouteTimeseriesreq
+	(*PredictRouteTimeseriesrsp)(nil), // 79: anemos.flight.v1.PredictRouteTimeseriesrsp
+	(*RoutePrediction)(nil),           // 80: anemos.flight.v1.RoutePrediction
+	(*RiskTimeSegment)(nil),           // 81: anemos.flight.v1.RiskTimeSegment
+	(*timestamppb.Timestamp)(nil),     // 82: google.protobuf.Timestamp
+	(*v1.Paginationreq)(nil),          // 83: anemos.common.v1.Paginationreq
+	(*v1.Paginationrsp)(nil),          // 84: anemos.common.v1.Paginationrsp
+	(*v1.Coordinate)(nil),             // 85: anemos.common.v1.Coordinate
+	(*v1.BoundingBox)(nil),            // 86: anemos.common.v1.BoundingBox
+	(*v1.TimeRange)(nil),              // 87: anemos.common.v1.TimeRange
 }
 var file_flight_v1_flight_proto_depIdxs = []int32{
 	6,   // 0: anemos.flight.v1.Route.waypoints:type_name -> anemos.flight.v1.Waypoint
-	79,  // 1: anemos.flight.v1.Route.created_at:type_name -> google.protobuf.Timestamp
-	79,  // 2: anemos.flight.v1.Route.updated_at:type_name -> google.protobuf.Timestamp
+	82,  // 1: anemos.flight.v1.Route.created_at:type_name -> google.protobuf.Timestamp
+	82,  // 2: anemos.flight.v1.Route.updated_at:type_name -> google.protobuf.Timestamp
 	6,   // 3: anemos.flight.v1.CreateRoutereq.waypoints:type_name -> anemos.flight.v1.Waypoint
 	7,   // 4: anemos.flight.v1.CreateRoutersp.route:type_name -> anemos.flight.v1.Route
 	7,   // 5: anemos.flight.v1.GetRoutersp.route:type_name -> anemos.flight.v1.Route
-	80,  // 6: anemos.flight.v1.ListRoutesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	83,  // 6: anemos.flight.v1.ListRoutesreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	7,   // 7: anemos.flight.v1.ListRoutesrsp.routes:type_name -> anemos.flight.v1.Route
-	81,  // 8: anemos.flight.v1.ListRoutesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	84,  // 8: anemos.flight.v1.ListRoutesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	6,   // 9: anemos.flight.v1.UpdateRoutereq.waypoints:type_name -> anemos.flight.v1.Waypoint
 	7,   // 10: anemos.flight.v1.UpdateRoutersp.route:type_name -> anemos.flight.v1.Route
 	20,  // 11: anemos.flight.v1.DimensionScores.crosswind:type_name -> anemos.flight.v1.DimensionScore
@@ -5890,128 +6313,136 @@ var file_flight_v1_flight_proto_depIdxs = []int32{
 	6,   // 18: anemos.flight.v1.SegmentRisk.to_waypoint:type_name -> anemos.flight.v1.Waypoint
 	3,   // 19: anemos.flight.v1.SegmentRisk.risk_level:type_name -> anemos.flight.v1.RiskLevel
 	1,   // 20: anemos.flight.v1.SegmentRisk.phase:type_name -> anemos.flight.v1.FlightPhase
-	22,  // 21: anemos.flight.v1.AssessRoutereq.params:type_name -> anemos.flight.v1.AssessmentParams
-	3,   // 22: anemos.flight.v1.AssessRoutersp.overall_level:type_name -> anemos.flight.v1.RiskLevel
-	23,  // 23: anemos.flight.v1.AssessRoutersp.segment_results:type_name -> anemos.flight.v1.SegmentRisk
-	24,  // 24: anemos.flight.v1.AssessRoutersp.summary:type_name -> anemos.flight.v1.AssessmentSummary
-	79,  // 25: anemos.flight.v1.AssessRoutersp.generated_at:type_name -> google.protobuf.Timestamp
-	2,   // 26: anemos.flight.v1.AssessRoutersp.decision:type_name -> anemos.flight.v1.FlightDecision
-	21,  // 27: anemos.flight.v1.AssessRoutersp.dimension_scores:type_name -> anemos.flight.v1.DimensionScores
-	22,  // 28: anemos.flight.v1.BatchAssessreq.params:type_name -> anemos.flight.v1.AssessmentParams
-	26,  // 29: anemos.flight.v1.BatchAssessrsp.results:type_name -> anemos.flight.v1.AssessRoutersp
-	4,   // 30: anemos.flight.v1.OptimizeRoutereq.objective:type_name -> anemos.flight.v1.OptimizationObjective
-	32,  // 31: anemos.flight.v1.OptimizeRoutereq.constraints:type_name -> anemos.flight.v1.OptimizationConstraints
-	7,   // 32: anemos.flight.v1.OptimizeRoutersp.recommended_route:type_name -> anemos.flight.v1.Route
-	35,  // 33: anemos.flight.v1.OptimizeRoutersp.comparison:type_name -> anemos.flight.v1.RiskComparison
-	79,  // 34: anemos.flight.v1.OptimizeRoutersp.generated_at:type_name -> google.protobuf.Timestamp
-	36,  // 35: anemos.flight.v1.RiskComparison.segment_diffs:type_name -> anemos.flight.v1.SegmentRiskDiff
-	42,  // 36: anemos.flight.v1.ListOptimizationsrsp.optimizations:type_name -> anemos.flight.v1.OptimizationRecord
-	35,  // 37: anemos.flight.v1.OptimizationRecord.comparison:type_name -> anemos.flight.v1.RiskComparison
-	79,  // 38: anemos.flight.v1.OptimizationRecord.generated_at:type_name -> google.protobuf.Timestamp
-	79,  // 39: anemos.flight.v1.AssessmentRecord.assessed_at:type_name -> google.protobuf.Timestamp
-	79,  // 40: anemos.flight.v1.ListAssessmentsreq.start_time:type_name -> google.protobuf.Timestamp
-	79,  // 41: anemos.flight.v1.ListAssessmentsreq.end_time:type_name -> google.protobuf.Timestamp
-	43,  // 42: anemos.flight.v1.ListAssessmentsrsp.records:type_name -> anemos.flight.v1.AssessmentRecord
-	82,  // 43: anemos.flight.v1.RiskHeatmapCell.center:type_name -> anemos.common.v1.Coordinate
-	3,   // 44: anemos.flight.v1.RiskHeatmapCell.risk_level:type_name -> anemos.flight.v1.RiskLevel
-	0,   // 45: anemos.flight.v1.RiskHeatmapCell.main_factor:type_name -> anemos.flight.v1.RiskType
-	3,   // 46: anemos.flight.v1.RiskHeatmapLegend.level:type_name -> anemos.flight.v1.RiskLevel
-	0,   // 47: anemos.flight.v1.RiskHeatmapreq.risk_type:type_name -> anemos.flight.v1.RiskType
-	83,  // 48: anemos.flight.v1.ContinuousRiskField.extent:type_name -> anemos.common.v1.BoundingBox
-	0,   // 49: anemos.flight.v1.RiskHeatmaprsp.risk_type:type_name -> anemos.flight.v1.RiskType
-	47,  // 50: anemos.flight.v1.RiskHeatmaprsp.legend:type_name -> anemos.flight.v1.RiskHeatmapLegend
-	46,  // 51: anemos.flight.v1.RiskHeatmaprsp.cells:type_name -> anemos.flight.v1.RiskHeatmapCell
-	79,  // 52: anemos.flight.v1.RiskHeatmaprsp.generated_at:type_name -> google.protobuf.Timestamp
-	49,  // 53: anemos.flight.v1.RiskHeatmaprsp.continuous_field:type_name -> anemos.flight.v1.ContinuousRiskField
-	5,   // 54: anemos.flight.v1.GenerateFlightReportreq.report_type:type_name -> anemos.flight.v1.FlightReportType
-	84,  // 55: anemos.flight.v1.GenerateFlightReportreq.time_range:type_name -> anemos.common.v1.TimeRange
-	5,   // 56: anemos.flight.v1.GenerateFlightReportrsp.report_type:type_name -> anemos.flight.v1.FlightReportType
-	53,  // 57: anemos.flight.v1.GenerateFlightReportrsp.sections:type_name -> anemos.flight.v1.ReportSection
-	54,  // 58: anemos.flight.v1.GenerateFlightReportrsp.conclusion:type_name -> anemos.flight.v1.ReportConclusion
-	58,  // 59: anemos.flight.v1.RiskThresholdTemplate.thresholds:type_name -> anemos.flight.v1.RiskThresholdConfig
-	79,  // 60: anemos.flight.v1.RiskThresholdTemplate.created_at:type_name -> google.protobuf.Timestamp
-	79,  // 61: anemos.flight.v1.RiskThresholdTemplate.updated_at:type_name -> google.protobuf.Timestamp
-	55,  // 62: anemos.flight.v1.RiskThresholdTemplate.physical:type_name -> anemos.flight.v1.AircraftPhysicalLimits
-	56,  // 63: anemos.flight.v1.RiskThresholdTemplate.aggregation:type_name -> anemos.flight.v1.GlobalAggregation
-	0,   // 64: anemos.flight.v1.RiskThresholdConfig.risk_type:type_name -> anemos.flight.v1.RiskType
-	80,  // 65: anemos.flight.v1.ListRiskTemplatesreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	57,  // 66: anemos.flight.v1.ListRiskTemplatesrsp.templates:type_name -> anemos.flight.v1.RiskThresholdTemplate
-	81,  // 67: anemos.flight.v1.ListRiskTemplatesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	57,  // 68: anemos.flight.v1.UpsertRiskTemplatereq.template:type_name -> anemos.flight.v1.RiskThresholdTemplate
-	0,   // 69: anemos.flight.v1.GetRouteRiskSummaryreq.risk_type:type_name -> anemos.flight.v1.RiskType
-	79,  // 70: anemos.flight.v1.GetRouteWindTrendreq.center_time:type_name -> google.protobuf.Timestamp
-	79,  // 71: anemos.flight.v1.WindTrendPoint.time:type_name -> google.protobuf.Timestamp
-	66,  // 72: anemos.flight.v1.GetRouteWindTrendrsp.points:type_name -> anemos.flight.v1.WindTrendPoint
-	79,  // 73: anemos.flight.v1.GetRouteRiskTrendreq.center_time:type_name -> google.protobuf.Timestamp
-	0,   // 74: anemos.flight.v1.GetRouteRiskTrendreq.risk_type:type_name -> anemos.flight.v1.RiskType
-	79,  // 75: anemos.flight.v1.RiskTrendPoint.time:type_name -> google.protobuf.Timestamp
-	69,  // 76: anemos.flight.v1.GetRouteRiskTrendrsp.points:type_name -> anemos.flight.v1.RiskTrendPoint
-	79,  // 77: anemos.flight.v1.AdviseAssessmentrsp.generated_at:type_name -> google.protobuf.Timestamp
-	79,  // 78: anemos.flight.v1.AdviseComparisonrsp.generated_at:type_name -> google.protobuf.Timestamp
-	79,  // 79: anemos.flight.v1.PredictRouteTimeseriesreq.time_range_start:type_name -> google.protobuf.Timestamp
-	79,  // 80: anemos.flight.v1.PredictRouteTimeseriesreq.time_range_end:type_name -> google.protobuf.Timestamp
-	79,  // 81: anemos.flight.v1.PredictRouteTimeseriesrsp.generated_at:type_name -> google.protobuf.Timestamp
-	77,  // 82: anemos.flight.v1.PredictRouteTimeseriesrsp.predictions:type_name -> anemos.flight.v1.RoutePrediction
-	79,  // 83: anemos.flight.v1.PredictRouteTimeseriesrsp.missing_samples:type_name -> google.protobuf.Timestamp
-	78,  // 84: anemos.flight.v1.RoutePrediction.segments:type_name -> anemos.flight.v1.RiskTimeSegment
-	79,  // 85: anemos.flight.v1.RiskTimeSegment.start:type_name -> google.protobuf.Timestamp
-	79,  // 86: anemos.flight.v1.RiskTimeSegment.end:type_name -> google.protobuf.Timestamp
-	79,  // 87: anemos.flight.v1.RiskTimeSegment.peak_time:type_name -> google.protobuf.Timestamp
-	8,   // 88: anemos.flight.v1.FlightService.CreateRoute:input_type -> anemos.flight.v1.CreateRoutereq
-	10,  // 89: anemos.flight.v1.FlightService.GetRoute:input_type -> anemos.flight.v1.GetRoutereq
-	12,  // 90: anemos.flight.v1.FlightService.ListRoutes:input_type -> anemos.flight.v1.ListRoutesreq
-	14,  // 91: anemos.flight.v1.FlightService.UpdateRoute:input_type -> anemos.flight.v1.UpdateRoutereq
-	16,  // 92: anemos.flight.v1.FlightService.ArchiveRoute:input_type -> anemos.flight.v1.ArchiveRoutereq
-	18,  // 93: anemos.flight.v1.FlightService.DeleteRoute:input_type -> anemos.flight.v1.DeleteRoutereq
-	25,  // 94: anemos.flight.v1.FlightService.AssessRoute:input_type -> anemos.flight.v1.AssessRoutereq
-	30,  // 95: anemos.flight.v1.FlightService.BatchAssess:input_type -> anemos.flight.v1.BatchAssessreq
-	33,  // 96: anemos.flight.v1.FlightService.OptimizeRoute:input_type -> anemos.flight.v1.OptimizeRoutereq
-	40,  // 97: anemos.flight.v1.FlightService.ListOptimizations:input_type -> anemos.flight.v1.ListOptimizationsreq
-	37,  // 98: anemos.flight.v1.FlightService.GetOptimization:input_type -> anemos.flight.v1.GetOptimizationreq
-	38,  // 99: anemos.flight.v1.FlightService.DeleteOptimization:input_type -> anemos.flight.v1.DeleteOptimizationreq
-	27,  // 100: anemos.flight.v1.FlightService.GetAssessment:input_type -> anemos.flight.v1.GetAssessmentreq
-	28,  // 101: anemos.flight.v1.FlightService.DeleteAssessment:input_type -> anemos.flight.v1.DeleteAssessmentreq
-	44,  // 102: anemos.flight.v1.FlightService.ListAssessments:input_type -> anemos.flight.v1.ListAssessmentsreq
-	51,  // 103: anemos.flight.v1.FlightService.GenerateFlightReport:input_type -> anemos.flight.v1.GenerateFlightReportreq
-	48,  // 104: anemos.flight.v1.FlightService.GenerateRiskHeatmap:input_type -> anemos.flight.v1.RiskHeatmapreq
-	59,  // 105: anemos.flight.v1.FlightService.ListRiskTemplates:input_type -> anemos.flight.v1.ListRiskTemplatesreq
-	61,  // 106: anemos.flight.v1.FlightService.UpsertRiskTemplate:input_type -> anemos.flight.v1.UpsertRiskTemplatereq
-	75,  // 107: anemos.flight.v1.FlightService.PredictRouteTimeseries:input_type -> anemos.flight.v1.PredictRouteTimeseriesreq
-	63,  // 108: anemos.flight.v1.FlightService.GetRouteRiskSummary:input_type -> anemos.flight.v1.GetRouteRiskSummaryreq
-	65,  // 109: anemos.flight.v1.FlightService.GetRouteWindTrend:input_type -> anemos.flight.v1.GetRouteWindTrendreq
-	68,  // 110: anemos.flight.v1.FlightService.GetRouteRiskTrend:input_type -> anemos.flight.v1.GetRouteRiskTrendreq
-	71,  // 111: anemos.flight.v1.FlightService.AdviseAssessment:input_type -> anemos.flight.v1.AdviseAssessmentreq
-	73,  // 112: anemos.flight.v1.FlightService.AdviseComparison:input_type -> anemos.flight.v1.AdviseComparisonreq
-	9,   // 113: anemos.flight.v1.FlightService.CreateRoute:output_type -> anemos.flight.v1.CreateRoutersp
-	11,  // 114: anemos.flight.v1.FlightService.GetRoute:output_type -> anemos.flight.v1.GetRoutersp
-	13,  // 115: anemos.flight.v1.FlightService.ListRoutes:output_type -> anemos.flight.v1.ListRoutesrsp
-	15,  // 116: anemos.flight.v1.FlightService.UpdateRoute:output_type -> anemos.flight.v1.UpdateRoutersp
-	17,  // 117: anemos.flight.v1.FlightService.ArchiveRoute:output_type -> anemos.flight.v1.ArchiveRoutersp
-	19,  // 118: anemos.flight.v1.FlightService.DeleteRoute:output_type -> anemos.flight.v1.DeleteRoutersp
-	26,  // 119: anemos.flight.v1.FlightService.AssessRoute:output_type -> anemos.flight.v1.AssessRoutersp
-	31,  // 120: anemos.flight.v1.FlightService.BatchAssess:output_type -> anemos.flight.v1.BatchAssessrsp
-	34,  // 121: anemos.flight.v1.FlightService.OptimizeRoute:output_type -> anemos.flight.v1.OptimizeRoutersp
-	41,  // 122: anemos.flight.v1.FlightService.ListOptimizations:output_type -> anemos.flight.v1.ListOptimizationsrsp
-	34,  // 123: anemos.flight.v1.FlightService.GetOptimization:output_type -> anemos.flight.v1.OptimizeRoutersp
-	39,  // 124: anemos.flight.v1.FlightService.DeleteOptimization:output_type -> anemos.flight.v1.DeleteOptimizationrsp
-	26,  // 125: anemos.flight.v1.FlightService.GetAssessment:output_type -> anemos.flight.v1.AssessRoutersp
-	29,  // 126: anemos.flight.v1.FlightService.DeleteAssessment:output_type -> anemos.flight.v1.DeleteAssessmentrsp
-	45,  // 127: anemos.flight.v1.FlightService.ListAssessments:output_type -> anemos.flight.v1.ListAssessmentsrsp
-	52,  // 128: anemos.flight.v1.FlightService.GenerateFlightReport:output_type -> anemos.flight.v1.GenerateFlightReportrsp
-	50,  // 129: anemos.flight.v1.FlightService.GenerateRiskHeatmap:output_type -> anemos.flight.v1.RiskHeatmaprsp
-	60,  // 130: anemos.flight.v1.FlightService.ListRiskTemplates:output_type -> anemos.flight.v1.ListRiskTemplatesrsp
-	62,  // 131: anemos.flight.v1.FlightService.UpsertRiskTemplate:output_type -> anemos.flight.v1.UpsertRiskTemplatersp
-	76,  // 132: anemos.flight.v1.FlightService.PredictRouteTimeseries:output_type -> anemos.flight.v1.PredictRouteTimeseriesrsp
-	64,  // 133: anemos.flight.v1.FlightService.GetRouteRiskSummary:output_type -> anemos.flight.v1.GetRouteRiskSummaryrsp
-	67,  // 134: anemos.flight.v1.FlightService.GetRouteWindTrend:output_type -> anemos.flight.v1.GetRouteWindTrendrsp
-	70,  // 135: anemos.flight.v1.FlightService.GetRouteRiskTrend:output_type -> anemos.flight.v1.GetRouteRiskTrendrsp
-	72,  // 136: anemos.flight.v1.FlightService.AdviseAssessment:output_type -> anemos.flight.v1.AdviseAssessmentrsp
-	74,  // 137: anemos.flight.v1.FlightService.AdviseComparison:output_type -> anemos.flight.v1.AdviseComparisonrsp
-	113, // [113:138] is the sub-list for method output_type
-	88,  // [88:113] is the sub-list for method input_type
-	88,  // [88:88] is the sub-list for extension type_name
-	88,  // [88:88] is the sub-list for extension extendee
-	0,   // [0:88] is the sub-list for field type_name
+	25,  // 21: anemos.flight.v1.DimensionScoresV3.wind_speed:type_name -> anemos.flight.v1.DimensionResultV3
+	25,  // 22: anemos.flight.v1.DimensionScoresV3.turbulence:type_name -> anemos.flight.v1.DimensionResultV3
+	25,  // 23: anemos.flight.v1.DimensionScoresV3.lateral_shear:type_name -> anemos.flight.v1.DimensionResultV3
+	25,  // 24: anemos.flight.v1.DimensionScoresV3.gust:type_name -> anemos.flight.v1.DimensionResultV3
+	6,   // 25: anemos.flight.v1.SegmentRiskResultV3.from:type_name -> anemos.flight.v1.Waypoint
+	6,   // 26: anemos.flight.v1.SegmentRiskResultV3.to:type_name -> anemos.flight.v1.Waypoint
+	22,  // 27: anemos.flight.v1.AssessRoutereq.params:type_name -> anemos.flight.v1.AssessmentParams
+	3,   // 28: anemos.flight.v1.AssessRoutersp.overall_level:type_name -> anemos.flight.v1.RiskLevel
+	23,  // 29: anemos.flight.v1.AssessRoutersp.segment_results:type_name -> anemos.flight.v1.SegmentRisk
+	24,  // 30: anemos.flight.v1.AssessRoutersp.summary:type_name -> anemos.flight.v1.AssessmentSummary
+	82,  // 31: anemos.flight.v1.AssessRoutersp.generated_at:type_name -> google.protobuf.Timestamp
+	2,   // 32: anemos.flight.v1.AssessRoutersp.decision:type_name -> anemos.flight.v1.FlightDecision
+	21,  // 33: anemos.flight.v1.AssessRoutersp.dimension_scores:type_name -> anemos.flight.v1.DimensionScores
+	26,  // 34: anemos.flight.v1.AssessRoutersp.dimension_scores_v3:type_name -> anemos.flight.v1.DimensionScoresV3
+	27,  // 35: anemos.flight.v1.AssessRoutersp.segment_results_v3:type_name -> anemos.flight.v1.SegmentRiskResultV3
+	22,  // 36: anemos.flight.v1.BatchAssessreq.params:type_name -> anemos.flight.v1.AssessmentParams
+	29,  // 37: anemos.flight.v1.BatchAssessrsp.results:type_name -> anemos.flight.v1.AssessRoutersp
+	4,   // 38: anemos.flight.v1.OptimizeRoutereq.objective:type_name -> anemos.flight.v1.OptimizationObjective
+	35,  // 39: anemos.flight.v1.OptimizeRoutereq.constraints:type_name -> anemos.flight.v1.OptimizationConstraints
+	7,   // 40: anemos.flight.v1.OptimizeRoutersp.recommended_route:type_name -> anemos.flight.v1.Route
+	38,  // 41: anemos.flight.v1.OptimizeRoutersp.comparison:type_name -> anemos.flight.v1.RiskComparison
+	82,  // 42: anemos.flight.v1.OptimizeRoutersp.generated_at:type_name -> google.protobuf.Timestamp
+	39,  // 43: anemos.flight.v1.RiskComparison.segment_diffs:type_name -> anemos.flight.v1.SegmentRiskDiff
+	45,  // 44: anemos.flight.v1.ListOptimizationsrsp.optimizations:type_name -> anemos.flight.v1.OptimizationRecord
+	38,  // 45: anemos.flight.v1.OptimizationRecord.comparison:type_name -> anemos.flight.v1.RiskComparison
+	82,  // 46: anemos.flight.v1.OptimizationRecord.generated_at:type_name -> google.protobuf.Timestamp
+	82,  // 47: anemos.flight.v1.AssessmentRecord.assessed_at:type_name -> google.protobuf.Timestamp
+	82,  // 48: anemos.flight.v1.ListAssessmentsreq.start_time:type_name -> google.protobuf.Timestamp
+	82,  // 49: anemos.flight.v1.ListAssessmentsreq.end_time:type_name -> google.protobuf.Timestamp
+	46,  // 50: anemos.flight.v1.ListAssessmentsrsp.records:type_name -> anemos.flight.v1.AssessmentRecord
+	85,  // 51: anemos.flight.v1.RiskHeatmapCell.center:type_name -> anemos.common.v1.Coordinate
+	3,   // 52: anemos.flight.v1.RiskHeatmapCell.risk_level:type_name -> anemos.flight.v1.RiskLevel
+	0,   // 53: anemos.flight.v1.RiskHeatmapCell.main_factor:type_name -> anemos.flight.v1.RiskType
+	3,   // 54: anemos.flight.v1.RiskHeatmapLegend.level:type_name -> anemos.flight.v1.RiskLevel
+	0,   // 55: anemos.flight.v1.RiskHeatmapreq.risk_type:type_name -> anemos.flight.v1.RiskType
+	86,  // 56: anemos.flight.v1.ContinuousRiskField.extent:type_name -> anemos.common.v1.BoundingBox
+	0,   // 57: anemos.flight.v1.RiskHeatmaprsp.risk_type:type_name -> anemos.flight.v1.RiskType
+	50,  // 58: anemos.flight.v1.RiskHeatmaprsp.legend:type_name -> anemos.flight.v1.RiskHeatmapLegend
+	49,  // 59: anemos.flight.v1.RiskHeatmaprsp.cells:type_name -> anemos.flight.v1.RiskHeatmapCell
+	82,  // 60: anemos.flight.v1.RiskHeatmaprsp.generated_at:type_name -> google.protobuf.Timestamp
+	52,  // 61: anemos.flight.v1.RiskHeatmaprsp.continuous_field:type_name -> anemos.flight.v1.ContinuousRiskField
+	5,   // 62: anemos.flight.v1.GenerateFlightReportreq.report_type:type_name -> anemos.flight.v1.FlightReportType
+	87,  // 63: anemos.flight.v1.GenerateFlightReportreq.time_range:type_name -> anemos.common.v1.TimeRange
+	5,   // 64: anemos.flight.v1.GenerateFlightReportrsp.report_type:type_name -> anemos.flight.v1.FlightReportType
+	56,  // 65: anemos.flight.v1.GenerateFlightReportrsp.sections:type_name -> anemos.flight.v1.ReportSection
+	57,  // 66: anemos.flight.v1.GenerateFlightReportrsp.conclusion:type_name -> anemos.flight.v1.ReportConclusion
+	61,  // 67: anemos.flight.v1.RiskThresholdTemplate.thresholds:type_name -> anemos.flight.v1.RiskThresholdConfig
+	82,  // 68: anemos.flight.v1.RiskThresholdTemplate.created_at:type_name -> google.protobuf.Timestamp
+	82,  // 69: anemos.flight.v1.RiskThresholdTemplate.updated_at:type_name -> google.protobuf.Timestamp
+	58,  // 70: anemos.flight.v1.RiskThresholdTemplate.physical:type_name -> anemos.flight.v1.AircraftPhysicalLimits
+	59,  // 71: anemos.flight.v1.RiskThresholdTemplate.aggregation:type_name -> anemos.flight.v1.GlobalAggregation
+	0,   // 72: anemos.flight.v1.RiskThresholdConfig.risk_type:type_name -> anemos.flight.v1.RiskType
+	83,  // 73: anemos.flight.v1.ListRiskTemplatesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	60,  // 74: anemos.flight.v1.ListRiskTemplatesrsp.templates:type_name -> anemos.flight.v1.RiskThresholdTemplate
+	84,  // 75: anemos.flight.v1.ListRiskTemplatesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	60,  // 76: anemos.flight.v1.UpsertRiskTemplatereq.template:type_name -> anemos.flight.v1.RiskThresholdTemplate
+	0,   // 77: anemos.flight.v1.GetRouteRiskSummaryreq.risk_type:type_name -> anemos.flight.v1.RiskType
+	82,  // 78: anemos.flight.v1.GetRouteWindTrendreq.center_time:type_name -> google.protobuf.Timestamp
+	82,  // 79: anemos.flight.v1.WindTrendPoint.time:type_name -> google.protobuf.Timestamp
+	69,  // 80: anemos.flight.v1.GetRouteWindTrendrsp.points:type_name -> anemos.flight.v1.WindTrendPoint
+	82,  // 81: anemos.flight.v1.GetRouteRiskTrendreq.center_time:type_name -> google.protobuf.Timestamp
+	0,   // 82: anemos.flight.v1.GetRouteRiskTrendreq.risk_type:type_name -> anemos.flight.v1.RiskType
+	82,  // 83: anemos.flight.v1.RiskTrendPoint.time:type_name -> google.protobuf.Timestamp
+	72,  // 84: anemos.flight.v1.GetRouteRiskTrendrsp.points:type_name -> anemos.flight.v1.RiskTrendPoint
+	82,  // 85: anemos.flight.v1.AdviseAssessmentrsp.generated_at:type_name -> google.protobuf.Timestamp
+	82,  // 86: anemos.flight.v1.AdviseComparisonrsp.generated_at:type_name -> google.protobuf.Timestamp
+	82,  // 87: anemos.flight.v1.PredictRouteTimeseriesreq.time_range_start:type_name -> google.protobuf.Timestamp
+	82,  // 88: anemos.flight.v1.PredictRouteTimeseriesreq.time_range_end:type_name -> google.protobuf.Timestamp
+	82,  // 89: anemos.flight.v1.PredictRouteTimeseriesrsp.generated_at:type_name -> google.protobuf.Timestamp
+	80,  // 90: anemos.flight.v1.PredictRouteTimeseriesrsp.predictions:type_name -> anemos.flight.v1.RoutePrediction
+	82,  // 91: anemos.flight.v1.PredictRouteTimeseriesrsp.missing_samples:type_name -> google.protobuf.Timestamp
+	81,  // 92: anemos.flight.v1.RoutePrediction.segments:type_name -> anemos.flight.v1.RiskTimeSegment
+	82,  // 93: anemos.flight.v1.RiskTimeSegment.start:type_name -> google.protobuf.Timestamp
+	82,  // 94: anemos.flight.v1.RiskTimeSegment.end:type_name -> google.protobuf.Timestamp
+	82,  // 95: anemos.flight.v1.RiskTimeSegment.peak_time:type_name -> google.protobuf.Timestamp
+	8,   // 96: anemos.flight.v1.FlightService.CreateRoute:input_type -> anemos.flight.v1.CreateRoutereq
+	10,  // 97: anemos.flight.v1.FlightService.GetRoute:input_type -> anemos.flight.v1.GetRoutereq
+	12,  // 98: anemos.flight.v1.FlightService.ListRoutes:input_type -> anemos.flight.v1.ListRoutesreq
+	14,  // 99: anemos.flight.v1.FlightService.UpdateRoute:input_type -> anemos.flight.v1.UpdateRoutereq
+	16,  // 100: anemos.flight.v1.FlightService.ArchiveRoute:input_type -> anemos.flight.v1.ArchiveRoutereq
+	18,  // 101: anemos.flight.v1.FlightService.DeleteRoute:input_type -> anemos.flight.v1.DeleteRoutereq
+	28,  // 102: anemos.flight.v1.FlightService.AssessRoute:input_type -> anemos.flight.v1.AssessRoutereq
+	33,  // 103: anemos.flight.v1.FlightService.BatchAssess:input_type -> anemos.flight.v1.BatchAssessreq
+	36,  // 104: anemos.flight.v1.FlightService.OptimizeRoute:input_type -> anemos.flight.v1.OptimizeRoutereq
+	43,  // 105: anemos.flight.v1.FlightService.ListOptimizations:input_type -> anemos.flight.v1.ListOptimizationsreq
+	40,  // 106: anemos.flight.v1.FlightService.GetOptimization:input_type -> anemos.flight.v1.GetOptimizationreq
+	41,  // 107: anemos.flight.v1.FlightService.DeleteOptimization:input_type -> anemos.flight.v1.DeleteOptimizationreq
+	30,  // 108: anemos.flight.v1.FlightService.GetAssessment:input_type -> anemos.flight.v1.GetAssessmentreq
+	31,  // 109: anemos.flight.v1.FlightService.DeleteAssessment:input_type -> anemos.flight.v1.DeleteAssessmentreq
+	47,  // 110: anemos.flight.v1.FlightService.ListAssessments:input_type -> anemos.flight.v1.ListAssessmentsreq
+	54,  // 111: anemos.flight.v1.FlightService.GenerateFlightReport:input_type -> anemos.flight.v1.GenerateFlightReportreq
+	51,  // 112: anemos.flight.v1.FlightService.GenerateRiskHeatmap:input_type -> anemos.flight.v1.RiskHeatmapreq
+	62,  // 113: anemos.flight.v1.FlightService.ListRiskTemplates:input_type -> anemos.flight.v1.ListRiskTemplatesreq
+	64,  // 114: anemos.flight.v1.FlightService.UpsertRiskTemplate:input_type -> anemos.flight.v1.UpsertRiskTemplatereq
+	78,  // 115: anemos.flight.v1.FlightService.PredictRouteTimeseries:input_type -> anemos.flight.v1.PredictRouteTimeseriesreq
+	66,  // 116: anemos.flight.v1.FlightService.GetRouteRiskSummary:input_type -> anemos.flight.v1.GetRouteRiskSummaryreq
+	68,  // 117: anemos.flight.v1.FlightService.GetRouteWindTrend:input_type -> anemos.flight.v1.GetRouteWindTrendreq
+	71,  // 118: anemos.flight.v1.FlightService.GetRouteRiskTrend:input_type -> anemos.flight.v1.GetRouteRiskTrendreq
+	74,  // 119: anemos.flight.v1.FlightService.AdviseAssessment:input_type -> anemos.flight.v1.AdviseAssessmentreq
+	76,  // 120: anemos.flight.v1.FlightService.AdviseComparison:input_type -> anemos.flight.v1.AdviseComparisonreq
+	9,   // 121: anemos.flight.v1.FlightService.CreateRoute:output_type -> anemos.flight.v1.CreateRoutersp
+	11,  // 122: anemos.flight.v1.FlightService.GetRoute:output_type -> anemos.flight.v1.GetRoutersp
+	13,  // 123: anemos.flight.v1.FlightService.ListRoutes:output_type -> anemos.flight.v1.ListRoutesrsp
+	15,  // 124: anemos.flight.v1.FlightService.UpdateRoute:output_type -> anemos.flight.v1.UpdateRoutersp
+	17,  // 125: anemos.flight.v1.FlightService.ArchiveRoute:output_type -> anemos.flight.v1.ArchiveRoutersp
+	19,  // 126: anemos.flight.v1.FlightService.DeleteRoute:output_type -> anemos.flight.v1.DeleteRoutersp
+	29,  // 127: anemos.flight.v1.FlightService.AssessRoute:output_type -> anemos.flight.v1.AssessRoutersp
+	34,  // 128: anemos.flight.v1.FlightService.BatchAssess:output_type -> anemos.flight.v1.BatchAssessrsp
+	37,  // 129: anemos.flight.v1.FlightService.OptimizeRoute:output_type -> anemos.flight.v1.OptimizeRoutersp
+	44,  // 130: anemos.flight.v1.FlightService.ListOptimizations:output_type -> anemos.flight.v1.ListOptimizationsrsp
+	37,  // 131: anemos.flight.v1.FlightService.GetOptimization:output_type -> anemos.flight.v1.OptimizeRoutersp
+	42,  // 132: anemos.flight.v1.FlightService.DeleteOptimization:output_type -> anemos.flight.v1.DeleteOptimizationrsp
+	29,  // 133: anemos.flight.v1.FlightService.GetAssessment:output_type -> anemos.flight.v1.AssessRoutersp
+	32,  // 134: anemos.flight.v1.FlightService.DeleteAssessment:output_type -> anemos.flight.v1.DeleteAssessmentrsp
+	48,  // 135: anemos.flight.v1.FlightService.ListAssessments:output_type -> anemos.flight.v1.ListAssessmentsrsp
+	55,  // 136: anemos.flight.v1.FlightService.GenerateFlightReport:output_type -> anemos.flight.v1.GenerateFlightReportrsp
+	53,  // 137: anemos.flight.v1.FlightService.GenerateRiskHeatmap:output_type -> anemos.flight.v1.RiskHeatmaprsp
+	63,  // 138: anemos.flight.v1.FlightService.ListRiskTemplates:output_type -> anemos.flight.v1.ListRiskTemplatesrsp
+	65,  // 139: anemos.flight.v1.FlightService.UpsertRiskTemplate:output_type -> anemos.flight.v1.UpsertRiskTemplatersp
+	79,  // 140: anemos.flight.v1.FlightService.PredictRouteTimeseries:output_type -> anemos.flight.v1.PredictRouteTimeseriesrsp
+	67,  // 141: anemos.flight.v1.FlightService.GetRouteRiskSummary:output_type -> anemos.flight.v1.GetRouteRiskSummaryrsp
+	70,  // 142: anemos.flight.v1.FlightService.GetRouteWindTrend:output_type -> anemos.flight.v1.GetRouteWindTrendrsp
+	73,  // 143: anemos.flight.v1.FlightService.GetRouteRiskTrend:output_type -> anemos.flight.v1.GetRouteRiskTrendrsp
+	75,  // 144: anemos.flight.v1.FlightService.AdviseAssessment:output_type -> anemos.flight.v1.AdviseAssessmentrsp
+	77,  // 145: anemos.flight.v1.FlightService.AdviseComparison:output_type -> anemos.flight.v1.AdviseComparisonrsp
+	121, // [121:146] is the sub-list for method output_type
+	96,  // [96:121] is the sub-list for method input_type
+	96,  // [96:96] is the sub-list for extension type_name
+	96,  // [96:96] is the sub-list for extension extendee
+	0,   // [0:96] is the sub-list for field type_name
 }
 
 func init() { file_flight_v1_flight_proto_init() }
@@ -6025,7 +6456,7 @@ func file_flight_v1_flight_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_flight_v1_flight_proto_rawDesc), len(file_flight_v1_flight_proto_rawDesc)),
 			NumEnums:      6,
-			NumMessages:   73,
+			NumMessages:   76,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

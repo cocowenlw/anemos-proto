@@ -241,6 +241,47 @@ message AssessmentSummary {
   repeated int32 cruise_segments = 7;                  // 巡航航段索引
 }
 
+// ===========================
+// V3 评估输出（spec §6.2）
+// ===========================
+
+// V3 单维度结果
+message DimensionResultV3 {
+  double score         = 1;   // 维度聚合分（按维度自己的聚合规则，0-1）
+  double max_per_point = 2;   // 该维度逐点最大
+  double avg_per_point = 3;   // 该维度逐点平均
+  double max_physical  = 4;   // 物理峰值（U_gust m/s / TI / γ⊥ s⁻¹ / Umag m/s）
+}
+
+// V3 四维聚合
+message DimensionScoresV3 {
+  DimensionResultV3 wind_speed    = 1;   // R_U
+  DimensionResultV3 turbulence    = 2;   // R_TI
+  DimensionResultV3 lateral_shear = 3;   // R_γ
+  DimensionResultV3 gust          = 4;   // R_gust
+}
+
+// V3 段结果
+message SegmentRiskResultV3 {
+  int32 segment_index   = 1;
+  Waypoint from         = 2;
+  Waypoint to           = 3;
+  string phase          = 4;   // "takeoff" / "cruise" / "landing"
+  double distance_m     = 5;
+  double r_u            = 6;
+  double r_ti           = 7;
+  double r_gamma        = 8;
+  double r_gust         = 9;
+  double r_total_max    = 10;
+  double r_total_avg    = 11;
+  string risk_level     = 12;  // "L1".."L5"
+  double max_umag_ms    = 20;
+  double max_ti         = 21;
+  double max_gamma_s1   = 22;
+  double max_ugust_ms   = 23;
+  repeated string trigger_dimensions = 30;   // 触发 ≥ 0.6 的维度（wind_speed/turbulence/lateral_shear/gust）
+}
+
 message AssessRoutereq {
   string route_id = 1;
   string wind_field_result_id = 2;
@@ -250,13 +291,23 @@ message AssessRoutersp {
   string assessment_id = 1;
   string route_id = 2;
   string wind_field_result_id = 3;
-  double overall_score = 4;                            // 综合风险分值（0-1）
-  RiskLevel overall_level = 5;                         // 综合风险等级
-  repeated SegmentRisk segment_results = 6;            // 逐航段风险结果
+  double overall_score = 4;                            // 综合风险分值（0-1）；V3 填 R_route
+  RiskLevel overall_level = 5;                         // 综合风险等级（V2 4 桶；V3 映射到 4 桶兼容）
+  repeated SegmentRisk segment_results = 6;            // 逐航段风险结果（V2；V3 见 segment_results_v3）
   AssessmentSummary summary = 7;
   google.protobuf.Timestamp generated_at = 8;
   FlightDecision decision = 9;                         // GO / CONDITIONAL / NO_GO 决策
-  DimensionScores dimension_scores = 10;               // 五维度综合评分
+  DimensionScores dimension_scores = 10;               // 五维度综合评分（V2；V3 见 dimension_scores_v3）
+
+  // ===== V3 字段（spec §6.2） =====
+  double  risk_max                            = 11;    // 全局 R_max
+  double  risk_avg                            = 12;    // 全局 R_avg
+  double  p_high                              = 13;    // 高风险点占比 P_high
+  string  risk_level_v3                       = 14;    // "L1".."L5"
+  bool    hard_constraint_violated            = 15;    // 是否触发硬约束
+  double  max_umag_ms                         = 16;    // 最大合风速（诊断）
+  DimensionScoresV3 dimension_scores_v3       = 17;
+  repeated SegmentRiskResultV3 segment_results_v3 = 18;
 }
 
 message GetAssessmentreq {
