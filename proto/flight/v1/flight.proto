@@ -291,13 +291,13 @@ message AssessRoutersp {
   string assessment_id = 1;
   string route_id = 2;
   string wind_field_result_id = 3;
-  double overall_score = 4;                            // 综合风险分值（0-1）；V3 填 R_route
-  RiskLevel overall_level = 5;                         // 综合风险等级（V2 4 桶；V3 映射到 4 桶兼容）
-  repeated SegmentRisk segment_results = 6;            // 逐航段风险结果（V2；V3 见 segment_results_v3）
+  double overall_score = 4 [deprecated = true];        // V3 起被 risk_max 取代；wire 兼容仍填 R_route
+  RiskLevel overall_level = 5 [deprecated = true];     // V3 起被 risk_level_v3 取代；wire 兼容仍填映射 4 桶
+  repeated SegmentRisk segment_results = 6 [deprecated = true]; // V3 起被 segment_results_v3 取代
   AssessmentSummary summary = 7;
   google.protobuf.Timestamp generated_at = 8;
   FlightDecision decision = 9;                         // GO / CONDITIONAL / NO_GO 决策
-  DimensionScores dimension_scores = 10;               // 五维度综合评分（V2；V3 见 dimension_scores_v3）
+  DimensionScores dimension_scores = 10 [deprecated = true]; // V3 起被 dimension_scores_v3 取代
 
   // ===== V3 字段（spec §6.2） =====
   double  risk_max                            = 11;    // 全局 R_max

@@ -2069,13 +2069,17 @@ type AssessRoutersp struct {
 	AssessmentId      string                 `protobuf:"bytes,1,opt,name=assessment_id,json=assessmentId,proto3" json:"assessment_id,omitempty"`
 	RouteId           string                 `protobuf:"bytes,2,opt,name=route_id,json=routeId,proto3" json:"route_id,omitempty"`
 	WindFieldResultId string                 `protobuf:"bytes,3,opt,name=wind_field_result_id,json=windFieldResultId,proto3" json:"wind_field_result_id,omitempty"`
-	OverallScore      float64                `protobuf:"fixed64,4,opt,name=overall_score,json=overallScore,proto3" json:"overall_score,omitempty"`                                // 综合风险分值（0-1）；V3 填 R_route
-	OverallLevel      RiskLevel              `protobuf:"varint,5,opt,name=overall_level,json=overallLevel,proto3,enum=anemos.flight.v1.RiskLevel" json:"overall_level,omitempty"` // 综合风险等级（V2 4 桶；V3 映射到 4 桶兼容）
-	SegmentResults    []*SegmentRisk         `protobuf:"bytes,6,rep,name=segment_results,json=segmentResults,proto3" json:"segment_results,omitempty"`                            // 逐航段风险结果（V2；V3 见 segment_results_v3）
-	Summary           *AssessmentSummary     `protobuf:"bytes,7,opt,name=summary,proto3" json:"summary,omitempty"`
-	GeneratedAt       *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=generated_at,json=generatedAt,proto3" json:"generated_at,omitempty"`
-	Decision          FlightDecision         `protobuf:"varint,9,opt,name=decision,proto3,enum=anemos.flight.v1.FlightDecision" json:"decision,omitempty"` // GO / CONDITIONAL / NO_GO 决策
-	DimensionScores   *DimensionScores       `protobuf:"bytes,10,opt,name=dimension_scores,json=dimensionScores,proto3" json:"dimension_scores,omitempty"` // 五维度综合评分（V2；V3 见 dimension_scores_v3）
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	OverallScore float64 `protobuf:"fixed64,4,opt,name=overall_score,json=overallScore,proto3" json:"overall_score,omitempty"` // V3 起被 risk_max 取代；wire 兼容仍填 R_route
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	OverallLevel RiskLevel `protobuf:"varint,5,opt,name=overall_level,json=overallLevel,proto3,enum=anemos.flight.v1.RiskLevel" json:"overall_level,omitempty"` // V3 起被 risk_level_v3 取代；wire 兼容仍填映射 4 桶
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	SegmentResults []*SegmentRisk         `protobuf:"bytes,6,rep,name=segment_results,json=segmentResults,proto3" json:"segment_results,omitempty"` // V3 起被 segment_results_v3 取代
+	Summary        *AssessmentSummary     `protobuf:"bytes,7,opt,name=summary,proto3" json:"summary,omitempty"`
+	GeneratedAt    *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=generated_at,json=generatedAt,proto3" json:"generated_at,omitempty"`
+	Decision       FlightDecision         `protobuf:"varint,9,opt,name=decision,proto3,enum=anemos.flight.v1.FlightDecision" json:"decision,omitempty"` // GO / CONDITIONAL / NO_GO 决策
+	// Deprecated: Marked as deprecated in flight/v1/flight.proto.
+	DimensionScores *DimensionScores `protobuf:"bytes,10,opt,name=dimension_scores,json=dimensionScores,proto3" json:"dimension_scores,omitempty"` // V3 起被 dimension_scores_v3 取代
 	// ===== V3 字段（spec §6.2） =====
 	RiskMax                float64                `protobuf:"fixed64,11,opt,name=risk_max,json=riskMax,proto3" json:"risk_max,omitempty"`                                               // 全局 R_max
 	RiskAvg                float64                `protobuf:"fixed64,12,opt,name=risk_avg,json=riskAvg,proto3" json:"risk_avg,omitempty"`                                               // 全局 R_avg
@@ -2140,6 +2144,7 @@ func (x *AssessRoutersp) GetWindFieldResultId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in flight/v1/flight.proto.
 func (x *AssessRoutersp) GetOverallScore() float64 {
 	if x != nil {
 		return x.OverallScore
@@ -2147,6 +2152,7 @@ func (x *AssessRoutersp) GetOverallScore() float64 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in flight/v1/flight.proto.
 func (x *AssessRoutersp) GetOverallLevel() RiskLevel {
 	if x != nil {
 		return x.OverallLevel
@@ -2154,6 +2160,7 @@ func (x *AssessRoutersp) GetOverallLevel() RiskLevel {
 	return RiskLevel_RISK_LEVEL_UNSPECIFIED
 }
 
+// Deprecated: Marked as deprecated in flight/v1/flight.proto.
 func (x *AssessRoutersp) GetSegmentResults() []*SegmentRisk {
 	if x != nil {
 		return x.SegmentResults
@@ -2182,6 +2189,7 @@ func (x *AssessRoutersp) GetDecision() FlightDecision {
 	return FlightDecision_FLIGHT_DECISION_UNSPECIFIED
 }
 
+// Deprecated: Marked as deprecated in flight/v1/flight.proto.
 func (x *AssessRoutersp) GetDimensionScores() *DimensionScores {
 	if x != nil {
 		return x.DimensionScores
@@ -5821,19 +5829,19 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\x0eAssessRoutereq\x12\x19\n" +
 	"\broute_id\x18\x01 \x01(\tR\arouteId\x12/\n" +
 	"\x14wind_field_result_id\x18\x02 \x01(\tR\x11windFieldResultId\x12:\n" +
-	"\x06params\x18\x03 \x01(\v2\".anemos.flight.v1.AssessmentParamsR\x06params\"\xaf\a\n" +
+	"\x06params\x18\x03 \x01(\v2\".anemos.flight.v1.AssessmentParamsR\x06params\"\xbf\a\n" +
 	"\x0eAssessRoutersp\x12#\n" +
 	"\rassessment_id\x18\x01 \x01(\tR\fassessmentId\x12\x19\n" +
 	"\broute_id\x18\x02 \x01(\tR\arouteId\x12/\n" +
-	"\x14wind_field_result_id\x18\x03 \x01(\tR\x11windFieldResultId\x12#\n" +
-	"\roverall_score\x18\x04 \x01(\x01R\foverallScore\x12@\n" +
-	"\roverall_level\x18\x05 \x01(\x0e2\x1b.anemos.flight.v1.RiskLevelR\foverallLevel\x12F\n" +
-	"\x0fsegment_results\x18\x06 \x03(\v2\x1d.anemos.flight.v1.SegmentRiskR\x0esegmentResults\x12=\n" +
+	"\x14wind_field_result_id\x18\x03 \x01(\tR\x11windFieldResultId\x12'\n" +
+	"\roverall_score\x18\x04 \x01(\x01B\x02\x18\x01R\foverallScore\x12D\n" +
+	"\roverall_level\x18\x05 \x01(\x0e2\x1b.anemos.flight.v1.RiskLevelB\x02\x18\x01R\foverallLevel\x12J\n" +
+	"\x0fsegment_results\x18\x06 \x03(\v2\x1d.anemos.flight.v1.SegmentRiskB\x02\x18\x01R\x0esegmentResults\x12=\n" +
 	"\asummary\x18\a \x01(\v2#.anemos.flight.v1.AssessmentSummaryR\asummary\x12=\n" +
 	"\fgenerated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\vgeneratedAt\x12<\n" +
-	"\bdecision\x18\t \x01(\x0e2 .anemos.flight.v1.FlightDecisionR\bdecision\x12L\n" +
+	"\bdecision\x18\t \x01(\x0e2 .anemos.flight.v1.FlightDecisionR\bdecision\x12P\n" +
 	"\x10dimension_scores\x18\n" +
-	" \x01(\v2!.anemos.flight.v1.DimensionScoresR\x0fdimensionScores\x12\x19\n" +
+	" \x01(\v2!.anemos.flight.v1.DimensionScoresB\x02\x18\x01R\x0fdimensionScores\x12\x19\n" +
 	"\brisk_max\x18\v \x01(\x01R\ariskMax\x12\x19\n" +
 	"\brisk_avg\x18\f \x01(\x01R\ariskAvg\x12\x15\n" +
 	"\x06p_high\x18\r \x01(\x01R\x05pHigh\x12\"\n" +
