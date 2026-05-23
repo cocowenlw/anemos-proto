@@ -214,9 +214,10 @@ type RiskLevel int32
 const (
 	RiskLevel_RISK_LEVEL_UNSPECIFIED RiskLevel = 0
 	RiskLevel_RISK_LEVEL_LOW         RiskLevel = 1
-	RiskLevel_RISK_LEVEL_MEDIUM      RiskLevel = 2
-	RiskLevel_RISK_LEVEL_HIGH        RiskLevel = 3
-	RiskLevel_RISK_LEVEL_CRITICAL    RiskLevel = 4
+	RiskLevel_RISK_LEVEL_LOW_MID     RiskLevel = 2
+	RiskLevel_RISK_LEVEL_MEDIUM      RiskLevel = 3
+	RiskLevel_RISK_LEVEL_HIGH        RiskLevel = 4
+	RiskLevel_RISK_LEVEL_NO_FLY      RiskLevel = 5
 )
 
 // Enum value maps for RiskLevel.
@@ -224,16 +225,18 @@ var (
 	RiskLevel_name = map[int32]string{
 		0: "RISK_LEVEL_UNSPECIFIED",
 		1: "RISK_LEVEL_LOW",
-		2: "RISK_LEVEL_MEDIUM",
-		3: "RISK_LEVEL_HIGH",
-		4: "RISK_LEVEL_CRITICAL",
+		2: "RISK_LEVEL_LOW_MID",
+		3: "RISK_LEVEL_MEDIUM",
+		4: "RISK_LEVEL_HIGH",
+		5: "RISK_LEVEL_NO_FLY",
 	}
 	RiskLevel_value = map[string]int32{
 		"RISK_LEVEL_UNSPECIFIED": 0,
 		"RISK_LEVEL_LOW":         1,
-		"RISK_LEVEL_MEDIUM":      2,
-		"RISK_LEVEL_HIGH":        3,
-		"RISK_LEVEL_CRITICAL":    4,
+		"RISK_LEVEL_LOW_MID":     2,
+		"RISK_LEVEL_MEDIUM":      3,
+		"RISK_LEVEL_HIGH":        4,
+		"RISK_LEVEL_NO_FLY":      5,
 	}
 )
 
@@ -6150,13 +6153,14 @@ const file_flight_v1_flight_proto_rawDesc = "" +
 	"\x1bFLIGHT_DECISION_UNSPECIFIED\x10\x00\x12\x16\n" +
 	"\x12FLIGHT_DECISION_GO\x10\x01\x12\x1f\n" +
 	"\x1bFLIGHT_DECISION_CONDITIONAL\x10\x02\x12\x19\n" +
-	"\x15FLIGHT_DECISION_NO_GO\x10\x03*\x80\x01\n" +
+	"\x15FLIGHT_DECISION_NO_GO\x10\x03*\x96\x01\n" +
 	"\tRiskLevel\x12\x1a\n" +
 	"\x16RISK_LEVEL_UNSPECIFIED\x10\x00\x12\x12\n" +
-	"\x0eRISK_LEVEL_LOW\x10\x01\x12\x15\n" +
-	"\x11RISK_LEVEL_MEDIUM\x10\x02\x12\x13\n" +
-	"\x0fRISK_LEVEL_HIGH\x10\x03\x12\x17\n" +
-	"\x13RISK_LEVEL_CRITICAL\x10\x04*\xac\x01\n" +
+	"\x0eRISK_LEVEL_LOW\x10\x01\x12\x16\n" +
+	"\x12RISK_LEVEL_LOW_MID\x10\x02\x12\x15\n" +
+	"\x11RISK_LEVEL_MEDIUM\x10\x03\x12\x13\n" +
+	"\x0fRISK_LEVEL_HIGH\x10\x04\x12\x15\n" +
+	"\x11RISK_LEVEL_NO_FLY\x10\x05*\xac\x01\n" +
 	"\x15OptimizationObjective\x12&\n" +
 	"\"OPTIMIZATION_OBJECTIVE_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dOPTIMIZATION_OBJECTIVE_SAFEST\x10\x01\x12#\n" +

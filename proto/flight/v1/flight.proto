@@ -192,9 +192,10 @@ message DimensionScores {
 enum RiskLevel {
   RISK_LEVEL_UNSPECIFIED = 0;
   RISK_LEVEL_LOW = 1;
-  RISK_LEVEL_MEDIUM = 2;
-  RISK_LEVEL_HIGH = 3;
-  RISK_LEVEL_CRITICAL = 4;
+  RISK_LEVEL_LOW_MID = 2;
+  RISK_LEVEL_MEDIUM = 3;
+  RISK_LEVEL_HIGH = 4;
+  RISK_LEVEL_NO_FLY = 5;
 }
 
 // 评估参数
