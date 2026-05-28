@@ -493,6 +493,20 @@ message ContinuousRiskField {
   double value_max = 6;                                // 值域上限
 }
 
+// 物理量聚合统计（核心结论卡片展示用）
+// 按 risk_type 给出该维度底层物理量在整张网格上的均值/峰值（非归一化风险分）。
+// 例：WIND_SPEED → Umag (m/s)，TURBULENCE → TI (无量纲)，
+//     WINDSHEAR → ‖J‖_F (s⁻¹)，GUST → U_gust (m/s)。
+// COMPOSITE 无单一物理单位，不填此字段（前端回退展示归一化综合分）。
+message RiskFieldStats {
+  string physical_label = 1;                           // 物理量名称，如 "风速" / "湍流强度" / "侧向切变" / "阵风风速"
+  string physical_unit = 2;                            // 单位，如 "m/s" / "" / "s⁻¹"
+  double physical_avg = 3;                             // 全网格平均
+  double physical_max = 4;                             // 全网格峰值
+  double safe_threshold = 5;                           // 安全阈值（0 表示不适用）
+  double danger_threshold = 6;                         // 危险/上限阈值（0 表示不适用）
+}
+
 message RiskHeatmaprsp {
   string heatmap_id = 1;
   string wind_field_result_id = 2;
@@ -502,6 +516,7 @@ message RiskHeatmaprsp {
   repeated RiskHeatmapCell cells = 6;                  // 离散模式（legacy：crosswind/turbulence/composite）填充
   google.protobuf.Timestamp generated_at = 7;
   ContinuousRiskField continuous_field = 8;            // 连续模式（风切变）填充，替代 cells
+  RiskFieldStats field_stats = 9;                      // 物理量聚合统计（continuous 模式；COMPOSITE 不填）
 }
 
 // ===========================
