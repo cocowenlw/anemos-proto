@@ -39,6 +39,7 @@ const (
 	DataAssetService_GetMeteoSnapshot_FullMethodName         = "/anemos.data_asset.v1.DataAssetService/GetMeteoSnapshot"
 	DataAssetService_GetMeteoSnapshotsByRange_FullMethodName = "/anemos.data_asset.v1.DataAssetService/GetMeteoSnapshotsByRange"
 	DataAssetService_QueryMeteoTimeseries_FullMethodName     = "/anemos.data_asset.v1.DataAssetService/QueryMeteoTimeseries"
+	DataAssetService_QueryMeteoByPoints_FullMethodName       = "/anemos.data_asset.v1.DataAssetService/QueryMeteoByPoints"
 	DataAssetService_ListCFDCases_FullMethodName             = "/anemos.data_asset.v1.DataAssetService/ListCFDCases"
 	DataAssetService_RegisterCFDCase_FullMethodName          = "/anemos.data_asset.v1.DataAssetService/RegisterCFDCase"
 	DataAssetService_IngestObservation_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/IngestObservation"
@@ -76,6 +77,7 @@ type DataAssetServiceClient interface {
 	GetMeteoSnapshot(ctx context.Context, in *GetMeteoSnapshotreq, opts ...grpc.CallOption) (*GetMeteoSnapshotrsp, error)
 	GetMeteoSnapshotsByRange(ctx context.Context, in *GetMeteoSnapshotsByRangeRequest, opts ...grpc.CallOption) (*GetMeteoSnapshotsByRangeResponse, error)
 	QueryMeteoTimeseries(ctx context.Context, in *QueryMeteoTimeseriesreq, opts ...grpc.CallOption) (*QueryMeteoTimeseriesrsp, error)
+	QueryMeteoByPoints(ctx context.Context, in *QueryMeteoByPointsreq, opts ...grpc.CallOption) (*QueryMeteoByPointsrsp, error)
 	// ----- CFD 仿真库 -----
 	ListCFDCases(ctx context.Context, in *ListCFDCasesreq, opts ...grpc.CallOption) (*ListCFDCasesrsp, error)
 	RegisterCFDCase(ctx context.Context, in *RegisterCFDCasereq, opts ...grpc.CallOption) (*RegisterCFDCasersp, error)
@@ -293,6 +295,16 @@ func (c *dataAssetServiceClient) QueryMeteoTimeseries(ctx context.Context, in *Q
 	return out, nil
 }
 
+func (c *dataAssetServiceClient) QueryMeteoByPoints(ctx context.Context, in *QueryMeteoByPointsreq, opts ...grpc.CallOption) (*QueryMeteoByPointsrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryMeteoByPointsrsp)
+	err := c.cc.Invoke(ctx, DataAssetService_QueryMeteoByPoints_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *dataAssetServiceClient) ListCFDCases(ctx context.Context, in *ListCFDCasesreq, opts ...grpc.CallOption) (*ListCFDCasesrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListCFDCasesrsp)
@@ -373,6 +385,7 @@ type DataAssetServiceServer interface {
 	GetMeteoSnapshot(context.Context, *GetMeteoSnapshotreq) (*GetMeteoSnapshotrsp, error)
 	GetMeteoSnapshotsByRange(context.Context, *GetMeteoSnapshotsByRangeRequest) (*GetMeteoSnapshotsByRangeResponse, error)
 	QueryMeteoTimeseries(context.Context, *QueryMeteoTimeseriesreq) (*QueryMeteoTimeseriesrsp, error)
+	QueryMeteoByPoints(context.Context, *QueryMeteoByPointsreq) (*QueryMeteoByPointsrsp, error)
 	// ----- CFD 仿真库 -----
 	ListCFDCases(context.Context, *ListCFDCasesreq) (*ListCFDCasesrsp, error)
 	RegisterCFDCase(context.Context, *RegisterCFDCasereq) (*RegisterCFDCasersp, error)
@@ -449,6 +462,9 @@ func (UnimplementedDataAssetServiceServer) GetMeteoSnapshotsByRange(context.Cont
 }
 func (UnimplementedDataAssetServiceServer) QueryMeteoTimeseries(context.Context, *QueryMeteoTimeseriesreq) (*QueryMeteoTimeseriesrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method QueryMeteoTimeseries not implemented")
+}
+func (UnimplementedDataAssetServiceServer) QueryMeteoByPoints(context.Context, *QueryMeteoByPointsreq) (*QueryMeteoByPointsrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method QueryMeteoByPoints not implemented")
 }
 func (UnimplementedDataAssetServiceServer) ListCFDCases(context.Context, *ListCFDCasesreq) (*ListCFDCasesrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListCFDCases not implemented")
@@ -846,6 +862,24 @@ func _DataAssetService_QueryMeteoTimeseries_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataAssetService_QueryMeteoByPoints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMeteoByPointsreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataAssetServiceServer).QueryMeteoByPoints(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataAssetService_QueryMeteoByPoints_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataAssetServiceServer).QueryMeteoByPoints(ctx, req.(*QueryMeteoByPointsreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DataAssetService_ListCFDCases_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListCFDCasesreq)
 	if err := dec(in); err != nil {
@@ -1022,6 +1056,10 @@ var DataAssetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryMeteoTimeseries",
 			Handler:    _DataAssetService_QueryMeteoTimeseries_Handler,
+		},
+		{
+			MethodName: "QueryMeteoByPoints",
+			Handler:    _DataAssetService_QueryMeteoByPoints_Handler,
 		},
 		{
 			MethodName: "ListCFDCases",

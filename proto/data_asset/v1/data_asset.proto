@@ -43,6 +43,7 @@ service DataAssetService {
   rpc GetMeteoSnapshot(GetMeteoSnapshotreq) returns (GetMeteoSnapshotrsp);           // 获取背景气象快照
   rpc GetMeteoSnapshotsByRange(GetMeteoSnapshotsByRangeRequest) returns (GetMeteoSnapshotsByRangeResponse); // 按时间范围批量获取气象快照
   rpc QueryMeteoTimeseries(QueryMeteoTimeseriesreq) returns (QueryMeteoTimeseriesrsp); // 查询气象时序数据
+  rpc QueryMeteoByPoints(QueryMeteoByPointsreq) returns (QueryMeteoByPointsrsp); // 按经纬度点批量查询气象（9×9 边界条件用）
 
   // ----- CFD 仿真库 -----
   rpc ListCFDCases(ListCFDCasesreq) returns (ListCFDCasesrsp);                       // 检索 CFD 工况
@@ -363,6 +364,22 @@ message QueryMeteoTimeseriesreq {
 message QueryMeteoTimeseriesrsp {
   repeated MeteoTimeseriesPoint data_points = 1;
   string source = 2;
+}
+
+message QueryMeteoByPointsreq {
+  string region_id = 1;                                   // 关联区域（provider 调用上下文）
+  repeated anemos.common.v1.Coordinate points = 2;        // 查询点（如 81 个）
+  google.protobuf.Timestamp forecast_time = 3;            // 目标预报时刻；为空=最接近当前
+}
+
+message MeteoPointWind {
+  anemos.common.v1.Coordinate point = 1;
+  double wind_u = 2;                                      // 东向 (m/s, 10m)
+  double wind_v = 3;                                      // 北向 (m/s, 10m)
+}
+
+message QueryMeteoByPointsrsp {
+  repeated MeteoPointWind results = 1;                    // 与 req.points 等长同序
 }
 
 // ===========================

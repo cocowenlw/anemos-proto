@@ -3122,6 +3122,170 @@ func (x *QueryMeteoTimeseriesrsp) GetSource() string {
 	return ""
 }
 
+type QueryMeteoByPointsreq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RegionId      string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`             // 关联区域（provider 调用上下文）
+	Points        []*v1.Coordinate       `protobuf:"bytes,2,rep,name=points,proto3" json:"points,omitempty"`                                 // 查询点（如 81 个）
+	ForecastTime  *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=forecast_time,json=forecastTime,proto3" json:"forecast_time,omitempty"` // 目标预报时刻；为空=最接近当前
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *QueryMeteoByPointsreq) Reset() {
+	*x = QueryMeteoByPointsreq{}
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[50]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueryMeteoByPointsreq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryMeteoByPointsreq) ProtoMessage() {}
+
+func (x *QueryMeteoByPointsreq) ProtoReflect() protoreflect.Message {
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[50]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueryMeteoByPointsreq.ProtoReflect.Descriptor instead.
+func (*QueryMeteoByPointsreq) Descriptor() ([]byte, []int) {
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{50}
+}
+
+func (x *QueryMeteoByPointsreq) GetRegionId() string {
+	if x != nil {
+		return x.RegionId
+	}
+	return ""
+}
+
+func (x *QueryMeteoByPointsreq) GetPoints() []*v1.Coordinate {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
+func (x *QueryMeteoByPointsreq) GetForecastTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ForecastTime
+	}
+	return nil
+}
+
+type MeteoPointWind struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Point         *v1.Coordinate         `protobuf:"bytes,1,opt,name=point,proto3" json:"point,omitempty"`
+	WindU         float64                `protobuf:"fixed64,2,opt,name=wind_u,json=windU,proto3" json:"wind_u,omitempty"` // 东向 (m/s, 10m)
+	WindV         float64                `protobuf:"fixed64,3,opt,name=wind_v,json=windV,proto3" json:"wind_v,omitempty"` // 北向 (m/s, 10m)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MeteoPointWind) Reset() {
+	*x = MeteoPointWind{}
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[51]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MeteoPointWind) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MeteoPointWind) ProtoMessage() {}
+
+func (x *MeteoPointWind) ProtoReflect() protoreflect.Message {
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[51]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MeteoPointWind.ProtoReflect.Descriptor instead.
+func (*MeteoPointWind) Descriptor() ([]byte, []int) {
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{51}
+}
+
+func (x *MeteoPointWind) GetPoint() *v1.Coordinate {
+	if x != nil {
+		return x.Point
+	}
+	return nil
+}
+
+func (x *MeteoPointWind) GetWindU() float64 {
+	if x != nil {
+		return x.WindU
+	}
+	return 0
+}
+
+func (x *MeteoPointWind) GetWindV() float64 {
+	if x != nil {
+		return x.WindV
+	}
+	return 0
+}
+
+type QueryMeteoByPointsrsp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Results       []*MeteoPointWind      `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"` // 与 req.points 等长同序
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *QueryMeteoByPointsrsp) Reset() {
+	*x = QueryMeteoByPointsrsp{}
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[52]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueryMeteoByPointsrsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryMeteoByPointsrsp) ProtoMessage() {}
+
+func (x *QueryMeteoByPointsrsp) ProtoReflect() protoreflect.Message {
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[52]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueryMeteoByPointsrsp.ProtoReflect.Descriptor instead.
+func (*QueryMeteoByPointsrsp) Descriptor() ([]byte, []int) {
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{52}
+}
+
+func (x *QueryMeteoByPointsrsp) GetResults() []*MeteoPointWind {
+	if x != nil {
+		return x.Results
+	}
+	return nil
+}
+
 type CFDCase struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	CaseId           string                 `protobuf:"bytes,1,opt,name=case_id,json=caseId,proto3" json:"case_id,omitempty"`
@@ -3143,7 +3307,7 @@ type CFDCase struct {
 
 func (x *CFDCase) Reset() {
 	*x = CFDCase{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[50]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3155,7 +3319,7 @@ func (x *CFDCase) String() string {
 func (*CFDCase) ProtoMessage() {}
 
 func (x *CFDCase) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[50]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3168,7 +3332,7 @@ func (x *CFDCase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CFDCase.ProtoReflect.Descriptor instead.
 func (*CFDCase) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{50}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *CFDCase) GetCaseId() string {
@@ -3278,7 +3442,7 @@ type ListCFDCasesreq struct {
 
 func (x *ListCFDCasesreq) Reset() {
 	*x = ListCFDCasesreq{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[51]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3290,7 +3454,7 @@ func (x *ListCFDCasesreq) String() string {
 func (*ListCFDCasesreq) ProtoMessage() {}
 
 func (x *ListCFDCasesreq) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[51]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3303,7 +3467,7 @@ func (x *ListCFDCasesreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCFDCasesreq.ProtoReflect.Descriptor instead.
 func (*ListCFDCasesreq) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{51}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *ListCFDCasesreq) GetRegionId() string {
@@ -3372,7 +3536,7 @@ type ListCFDCasesrsp struct {
 
 func (x *ListCFDCasesrsp) Reset() {
 	*x = ListCFDCasesrsp{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[52]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3384,7 +3548,7 @@ func (x *ListCFDCasesrsp) String() string {
 func (*ListCFDCasesrsp) ProtoMessage() {}
 
 func (x *ListCFDCasesrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[52]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3397,7 +3561,7 @@ func (x *ListCFDCasesrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCFDCasesrsp.ProtoReflect.Descriptor instead.
 func (*ListCFDCasesrsp) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{52}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *ListCFDCasesrsp) GetCases() []*CFDCase {
@@ -3423,7 +3587,7 @@ type RegisterCFDCasereq struct {
 
 func (x *RegisterCFDCasereq) Reset() {
 	*x = RegisterCFDCasereq{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[53]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3435,7 +3599,7 @@ func (x *RegisterCFDCasereq) String() string {
 func (*RegisterCFDCasereq) ProtoMessage() {}
 
 func (x *RegisterCFDCasereq) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[53]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3448,7 +3612,7 @@ func (x *RegisterCFDCasereq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterCFDCasereq.ProtoReflect.Descriptor instead.
 func (*RegisterCFDCasereq) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{53}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *RegisterCFDCasereq) GetCaseData() *CFDCase {
@@ -3468,7 +3632,7 @@ type RegisterCFDCasersp struct {
 
 func (x *RegisterCFDCasersp) Reset() {
 	*x = RegisterCFDCasersp{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[54]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3480,7 +3644,7 @@ func (x *RegisterCFDCasersp) String() string {
 func (*RegisterCFDCasersp) ProtoMessage() {}
 
 func (x *RegisterCFDCasersp) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[54]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3493,7 +3657,7 @@ func (x *RegisterCFDCasersp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterCFDCasersp.ProtoReflect.Descriptor instead.
 func (*RegisterCFDCasersp) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{54}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *RegisterCFDCasersp) GetCaseId() string {
@@ -3525,7 +3689,7 @@ type Observation struct {
 
 func (x *Observation) Reset() {
 	*x = Observation{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[55]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3537,7 +3701,7 @@ func (x *Observation) String() string {
 func (*Observation) ProtoMessage() {}
 
 func (x *Observation) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[55]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3550,7 +3714,7 @@ func (x *Observation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Observation.ProtoReflect.Descriptor instead.
 func (*Observation) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{55}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *Observation) GetObservationId() string {
@@ -3614,7 +3778,7 @@ type ObservationMeasurements struct {
 
 func (x *ObservationMeasurements) Reset() {
 	*x = ObservationMeasurements{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[56]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3626,7 +3790,7 @@ func (x *ObservationMeasurements) String() string {
 func (*ObservationMeasurements) ProtoMessage() {}
 
 func (x *ObservationMeasurements) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[56]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3639,7 +3803,7 @@ func (x *ObservationMeasurements) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ObservationMeasurements.ProtoReflect.Descriptor instead.
 func (*ObservationMeasurements) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{56}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *ObservationMeasurements) GetWindSpeed() float64 {
@@ -3685,7 +3849,7 @@ type IngestObservationreq struct {
 
 func (x *IngestObservationreq) Reset() {
 	*x = IngestObservationreq{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[57]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3697,7 +3861,7 @@ func (x *IngestObservationreq) String() string {
 func (*IngestObservationreq) ProtoMessage() {}
 
 func (x *IngestObservationreq) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[57]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3710,7 +3874,7 @@ func (x *IngestObservationreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IngestObservationreq.ProtoReflect.Descriptor instead.
 func (*IngestObservationreq) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{57}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *IngestObservationreq) GetRegionId() string {
@@ -3776,7 +3940,7 @@ type IngestObservationrsp struct {
 
 func (x *IngestObservationrsp) Reset() {
 	*x = IngestObservationrsp{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[58]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3788,7 +3952,7 @@ func (x *IngestObservationrsp) String() string {
 func (*IngestObservationrsp) ProtoMessage() {}
 
 func (x *IngestObservationrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[58]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3801,7 +3965,7 @@ func (x *IngestObservationrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IngestObservationrsp.ProtoReflect.Descriptor instead.
 func (*IngestObservationrsp) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{58}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *IngestObservationrsp) GetIngestId() string {
@@ -3857,7 +4021,7 @@ type AssimilationTrigger struct {
 
 func (x *AssimilationTrigger) Reset() {
 	*x = AssimilationTrigger{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[59]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3869,7 +4033,7 @@ func (x *AssimilationTrigger) String() string {
 func (*AssimilationTrigger) ProtoMessage() {}
 
 func (x *AssimilationTrigger) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[59]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3882,7 +4046,7 @@ func (x *AssimilationTrigger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssimilationTrigger.ProtoReflect.Descriptor instead.
 func (*AssimilationTrigger) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{59}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *AssimilationTrigger) GetTriggered() bool {
@@ -3919,7 +4083,7 @@ type QueryObservationsreq struct {
 
 func (x *QueryObservationsreq) Reset() {
 	*x = QueryObservationsreq{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[60]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3931,7 +4095,7 @@ func (x *QueryObservationsreq) String() string {
 func (*QueryObservationsreq) ProtoMessage() {}
 
 func (x *QueryObservationsreq) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[60]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3944,7 +4108,7 @@ func (x *QueryObservationsreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryObservationsreq.ProtoReflect.Descriptor instead.
 func (*QueryObservationsreq) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{60}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *QueryObservationsreq) GetRegionId() string {
@@ -3992,7 +4156,7 @@ type QueryObservationsrsp struct {
 
 func (x *QueryObservationsrsp) Reset() {
 	*x = QueryObservationsrsp{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[61]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4004,7 +4168,7 @@ func (x *QueryObservationsrsp) String() string {
 func (*QueryObservationsrsp) ProtoMessage() {}
 
 func (x *QueryObservationsrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[61]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4017,7 +4181,7 @@ func (x *QueryObservationsrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryObservationsrsp.ProtoReflect.Descriptor instead.
 func (*QueryObservationsrsp) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{61}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *QueryObservationsrsp) GetObservations() []*Observation {
@@ -4044,7 +4208,7 @@ type GetLatestObsByStationreq struct {
 
 func (x *GetLatestObsByStationreq) Reset() {
 	*x = GetLatestObsByStationreq{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[62]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4056,7 +4220,7 @@ func (x *GetLatestObsByStationreq) String() string {
 func (*GetLatestObsByStationreq) ProtoMessage() {}
 
 func (x *GetLatestObsByStationreq) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[62]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4069,7 +4233,7 @@ func (x *GetLatestObsByStationreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestObsByStationreq.ProtoReflect.Descriptor instead.
 func (*GetLatestObsByStationreq) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{62}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *GetLatestObsByStationreq) GetRegionId() string {
@@ -4089,7 +4253,7 @@ type GetLatestObsByStationrsp struct {
 
 func (x *GetLatestObsByStationrsp) Reset() {
 	*x = GetLatestObsByStationrsp{}
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[63]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4101,7 +4265,7 @@ func (x *GetLatestObsByStationrsp) String() string {
 func (*GetLatestObsByStationrsp) ProtoMessage() {}
 
 func (x *GetLatestObsByStationrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_data_asset_v1_data_asset_proto_msgTypes[63]
+	mi := &file_data_asset_v1_data_asset_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4114,7 +4278,7 @@ func (x *GetLatestObsByStationrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestObsByStationrsp.ProtoReflect.Descriptor instead.
 func (*GetLatestObsByStationrsp) Descriptor() ([]byte, []int) {
-	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{63}
+	return file_data_asset_v1_data_asset_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *GetLatestObsByStationrsp) GetObservations() []*Observation {
@@ -4397,7 +4561,17 @@ const file_data_asset_v1_data_asset_proto_rawDesc = "" +
 	"\x17QueryMeteoTimeseriesrsp\x12K\n" +
 	"\vdata_points\x18\x01 \x03(\v2*.anemos.data_asset.v1.MeteoTimeseriesPointR\n" +
 	"dataPoints\x12\x16\n" +
-	"\x06source\x18\x02 \x01(\tR\x06source\"\xde\x03\n" +
+	"\x06source\x18\x02 \x01(\tR\x06source\"\xab\x01\n" +
+	"\x15QueryMeteoByPointsreq\x12\x1b\n" +
+	"\tregion_id\x18\x01 \x01(\tR\bregionId\x124\n" +
+	"\x06points\x18\x02 \x03(\v2\x1c.anemos.common.v1.CoordinateR\x06points\x12?\n" +
+	"\rforecast_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\fforecastTime\"r\n" +
+	"\x0eMeteoPointWind\x122\n" +
+	"\x05point\x18\x01 \x01(\v2\x1c.anemos.common.v1.CoordinateR\x05point\x12\x15\n" +
+	"\x06wind_u\x18\x02 \x01(\x01R\x05windU\x12\x15\n" +
+	"\x06wind_v\x18\x03 \x01(\x01R\x05windV\"W\n" +
+	"\x15QueryMeteoByPointsrsp\x12>\n" +
+	"\aresults\x18\x01 \x03(\v2$.anemos.data_asset.v1.MeteoPointWindR\aresults\"\xde\x03\n" +
 	"\aCFDCase\x12\x17\n" +
 	"\acase_id\x18\x01 \x01(\tR\x06caseId\x12\x1b\n" +
 	"\tregion_id\x18\x02 \x01(\tR\bregionId\x12\x19\n" +
@@ -4503,7 +4677,7 @@ const file_data_asset_v1_data_asset_proto_rawDesc = "" +
 	"\x18OBSERVATION_SOURCE_RADAR\x10\x01\x1a\x02\b\x01\x12\x1c\n" +
 	"\x18OBSERVATION_SOURCE_LIDAR\x10\x02\x12!\n" +
 	"\x1dOBSERVATION_SOURCE_ANEMOMETER\x10\x03\x12\x1a\n" +
-	"\x16OBSERVATION_SOURCE_UAV\x10\x042\xde\x14\n" +
+	"\x16OBSERVATION_SOURCE_UAV\x10\x042\xce\x15\n" +
 	"\x10DataAssetService\x12J\n" +
 	"\x06GetDEM\x12\x1f.anemos.data_asset.v1.GetDEMreq\x1a\x1f.anemos.data_asset.v1.GetDEMrsp\x12_\n" +
 	"\rListDEMAssets\x12&.anemos.data_asset.v1.ListDEMAssetsreq\x1a&.anemos.data_asset.v1.ListDEMAssetsrsp\x12S\n" +
@@ -4524,7 +4698,8 @@ const file_data_asset_v1_data_asset_proto_rawDesc = "" +
 	"\x0eQueryElevation\x12'.anemos.data_asset.v1.QueryElevationreq\x1a'.anemos.data_asset.v1.QueryElevationrsp\x12h\n" +
 	"\x10GetMeteoSnapshot\x12).anemos.data_asset.v1.GetMeteoSnapshotreq\x1a).anemos.data_asset.v1.GetMeteoSnapshotrsp\x12\x89\x01\n" +
 	"\x18GetMeteoSnapshotsByRange\x125.anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest\x1a6.anemos.data_asset.v1.GetMeteoSnapshotsByRangeResponse\x12t\n" +
-	"\x14QueryMeteoTimeseries\x12-.anemos.data_asset.v1.QueryMeteoTimeseriesreq\x1a-.anemos.data_asset.v1.QueryMeteoTimeseriesrsp\x12\\\n" +
+	"\x14QueryMeteoTimeseries\x12-.anemos.data_asset.v1.QueryMeteoTimeseriesreq\x1a-.anemos.data_asset.v1.QueryMeteoTimeseriesrsp\x12n\n" +
+	"\x12QueryMeteoByPoints\x12+.anemos.data_asset.v1.QueryMeteoByPointsreq\x1a+.anemos.data_asset.v1.QueryMeteoByPointsrsp\x12\\\n" +
 	"\fListCFDCases\x12%.anemos.data_asset.v1.ListCFDCasesreq\x1a%.anemos.data_asset.v1.ListCFDCasesrsp\x12e\n" +
 	"\x0fRegisterCFDCase\x12(.anemos.data_asset.v1.RegisterCFDCasereq\x1a(.anemos.data_asset.v1.RegisterCFDCasersp\x12k\n" +
 	"\x11IngestObservation\x12*.anemos.data_asset.v1.IngestObservationreq\x1a*.anemos.data_asset.v1.IngestObservationrsp\x12k\n" +
@@ -4544,7 +4719,7 @@ func file_data_asset_v1_data_asset_proto_rawDescGZIP() []byte {
 }
 
 var file_data_asset_v1_data_asset_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_data_asset_v1_data_asset_proto_msgTypes = make([]protoimpl.MessageInfo, 65)
+var file_data_asset_v1_data_asset_proto_msgTypes = make([]protoimpl.MessageInfo, 68)
 var file_data_asset_v1_data_asset_proto_goTypes = []any{
 	(ObservationSourceType)(0),               // 0: anemos.data_asset.v1.ObservationSourceType
 	(*DEMAsset)(nil),                         // 1: anemos.data_asset.v1.DEMAsset
@@ -4597,164 +4772,173 @@ var file_data_asset_v1_data_asset_proto_goTypes = []any{
 	(*MeteoTimeseriesPoint)(nil),             // 48: anemos.data_asset.v1.MeteoTimeseriesPoint
 	(*QueryMeteoTimeseriesreq)(nil),          // 49: anemos.data_asset.v1.QueryMeteoTimeseriesreq
 	(*QueryMeteoTimeseriesrsp)(nil),          // 50: anemos.data_asset.v1.QueryMeteoTimeseriesrsp
-	(*CFDCase)(nil),                          // 51: anemos.data_asset.v1.CFDCase
-	(*ListCFDCasesreq)(nil),                  // 52: anemos.data_asset.v1.ListCFDCasesreq
-	(*ListCFDCasesrsp)(nil),                  // 53: anemos.data_asset.v1.ListCFDCasesrsp
-	(*RegisterCFDCasereq)(nil),               // 54: anemos.data_asset.v1.RegisterCFDCasereq
-	(*RegisterCFDCasersp)(nil),               // 55: anemos.data_asset.v1.RegisterCFDCasersp
-	(*Observation)(nil),                      // 56: anemos.data_asset.v1.Observation
-	(*ObservationMeasurements)(nil),          // 57: anemos.data_asset.v1.ObservationMeasurements
-	(*IngestObservationreq)(nil),             // 58: anemos.data_asset.v1.IngestObservationreq
-	(*IngestObservationrsp)(nil),             // 59: anemos.data_asset.v1.IngestObservationrsp
-	(*AssimilationTrigger)(nil),              // 60: anemos.data_asset.v1.AssimilationTrigger
-	(*QueryObservationsreq)(nil),             // 61: anemos.data_asset.v1.QueryObservationsreq
-	(*QueryObservationsrsp)(nil),             // 62: anemos.data_asset.v1.QueryObservationsrsp
-	(*GetLatestObsByStationreq)(nil),         // 63: anemos.data_asset.v1.GetLatestObsByStationreq
-	(*GetLatestObsByStationrsp)(nil),         // 64: anemos.data_asset.v1.GetLatestObsByStationrsp
-	nil,                                      // 65: anemos.data_asset.v1.Building.AttributesEntry
-	(*v1.BoundingBox)(nil),                   // 66: anemos.common.v1.BoundingBox
-	(*timestamppb.Timestamp)(nil),            // 67: google.protobuf.Timestamp
-	(*v1.Paginationreq)(nil),                 // 68: anemos.common.v1.Paginationreq
-	(*v1.Paginationrsp)(nil),                 // 69: anemos.common.v1.Paginationrsp
-	(*v1.Polygon)(nil),                       // 70: anemos.common.v1.Polygon
-	(*v1.TimeRange)(nil),                     // 71: anemos.common.v1.TimeRange
-	(*v1.Coordinate)(nil),                    // 72: anemos.common.v1.Coordinate
-	(*v1.Coordinate3D)(nil),                  // 73: anemos.common.v1.Coordinate3D
+	(*QueryMeteoByPointsreq)(nil),            // 51: anemos.data_asset.v1.QueryMeteoByPointsreq
+	(*MeteoPointWind)(nil),                   // 52: anemos.data_asset.v1.MeteoPointWind
+	(*QueryMeteoByPointsrsp)(nil),            // 53: anemos.data_asset.v1.QueryMeteoByPointsrsp
+	(*CFDCase)(nil),                          // 54: anemos.data_asset.v1.CFDCase
+	(*ListCFDCasesreq)(nil),                  // 55: anemos.data_asset.v1.ListCFDCasesreq
+	(*ListCFDCasesrsp)(nil),                  // 56: anemos.data_asset.v1.ListCFDCasesrsp
+	(*RegisterCFDCasereq)(nil),               // 57: anemos.data_asset.v1.RegisterCFDCasereq
+	(*RegisterCFDCasersp)(nil),               // 58: anemos.data_asset.v1.RegisterCFDCasersp
+	(*Observation)(nil),                      // 59: anemos.data_asset.v1.Observation
+	(*ObservationMeasurements)(nil),          // 60: anemos.data_asset.v1.ObservationMeasurements
+	(*IngestObservationreq)(nil),             // 61: anemos.data_asset.v1.IngestObservationreq
+	(*IngestObservationrsp)(nil),             // 62: anemos.data_asset.v1.IngestObservationrsp
+	(*AssimilationTrigger)(nil),              // 63: anemos.data_asset.v1.AssimilationTrigger
+	(*QueryObservationsreq)(nil),             // 64: anemos.data_asset.v1.QueryObservationsreq
+	(*QueryObservationsrsp)(nil),             // 65: anemos.data_asset.v1.QueryObservationsrsp
+	(*GetLatestObsByStationreq)(nil),         // 66: anemos.data_asset.v1.GetLatestObsByStationreq
+	(*GetLatestObsByStationrsp)(nil),         // 67: anemos.data_asset.v1.GetLatestObsByStationrsp
+	nil,                                      // 68: anemos.data_asset.v1.Building.AttributesEntry
+	(*v1.BoundingBox)(nil),                   // 69: anemos.common.v1.BoundingBox
+	(*timestamppb.Timestamp)(nil),            // 70: google.protobuf.Timestamp
+	(*v1.Paginationreq)(nil),                 // 71: anemos.common.v1.Paginationreq
+	(*v1.Paginationrsp)(nil),                 // 72: anemos.common.v1.Paginationrsp
+	(*v1.Polygon)(nil),                       // 73: anemos.common.v1.Polygon
+	(*v1.TimeRange)(nil),                     // 74: anemos.common.v1.TimeRange
+	(*v1.Coordinate)(nil),                    // 75: anemos.common.v1.Coordinate
+	(*v1.Coordinate3D)(nil),                  // 76: anemos.common.v1.Coordinate3D
 }
 var file_data_asset_v1_data_asset_proto_depIdxs = []int32{
-	66,  // 0: anemos.data_asset.v1.DEMAsset.coverage:type_name -> anemos.common.v1.BoundingBox
-	67,  // 1: anemos.data_asset.v1.DEMAsset.created_at:type_name -> google.protobuf.Timestamp
-	67,  // 2: anemos.data_asset.v1.DEMAsset.updated_at:type_name -> google.protobuf.Timestamp
+	69,  // 0: anemos.data_asset.v1.DEMAsset.coverage:type_name -> anemos.common.v1.BoundingBox
+	70,  // 1: anemos.data_asset.v1.DEMAsset.created_at:type_name -> google.protobuf.Timestamp
+	70,  // 2: anemos.data_asset.v1.DEMAsset.updated_at:type_name -> google.protobuf.Timestamp
 	1,   // 3: anemos.data_asset.v1.GetDEMrsp.asset:type_name -> anemos.data_asset.v1.DEMAsset
-	68,  // 4: anemos.data_asset.v1.ListDEMAssetsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	71,  // 4: anemos.data_asset.v1.ListDEMAssetsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	1,   // 5: anemos.data_asset.v1.ListDEMAssetsrsp.assets:type_name -> anemos.data_asset.v1.DEMAsset
-	69,  // 6: anemos.data_asset.v1.ListDEMAssetsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	66,  // 7: anemos.data_asset.v1.ImportDEMreq.coverage:type_name -> anemos.common.v1.BoundingBox
+	72,  // 6: anemos.data_asset.v1.ListDEMAssetsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	69,  // 7: anemos.data_asset.v1.ImportDEMreq.coverage:type_name -> anemos.common.v1.BoundingBox
 	1,   // 8: anemos.data_asset.v1.UpdateDEMAssetrsp.asset:type_name -> anemos.data_asset.v1.DEMAsset
 	1,   // 9: anemos.data_asset.v1.ActivateDEMVersionrsp.asset:type_name -> anemos.data_asset.v1.DEMAsset
-	70,  // 10: anemos.data_asset.v1.Building.footprint:type_name -> anemos.common.v1.Polygon
-	65,  // 11: anemos.data_asset.v1.Building.attributes:type_name -> anemos.data_asset.v1.Building.AttributesEntry
-	66,  // 12: anemos.data_asset.v1.BuildingVersion.coverage:type_name -> anemos.common.v1.BoundingBox
-	67,  // 13: anemos.data_asset.v1.BuildingVersion.created_at:type_name -> google.protobuf.Timestamp
-	67,  // 14: anemos.data_asset.v1.BuildingVersion.activated_at:type_name -> google.protobuf.Timestamp
-	68,  // 15: anemos.data_asset.v1.ListBuildingsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	73,  // 10: anemos.data_asset.v1.Building.footprint:type_name -> anemos.common.v1.Polygon
+	68,  // 11: anemos.data_asset.v1.Building.attributes:type_name -> anemos.data_asset.v1.Building.AttributesEntry
+	69,  // 12: anemos.data_asset.v1.BuildingVersion.coverage:type_name -> anemos.common.v1.BoundingBox
+	70,  // 13: anemos.data_asset.v1.BuildingVersion.created_at:type_name -> google.protobuf.Timestamp
+	70,  // 14: anemos.data_asset.v1.BuildingVersion.activated_at:type_name -> google.protobuf.Timestamp
+	71,  // 15: anemos.data_asset.v1.ListBuildingsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	16,  // 16: anemos.data_asset.v1.ListBuildingsrsp.buildings:type_name -> anemos.data_asset.v1.Building
-	69,  // 17: anemos.data_asset.v1.ListBuildingsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	68,  // 18: anemos.data_asset.v1.ListBuildingVersionsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	72,  // 17: anemos.data_asset.v1.ListBuildingsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	71,  // 18: anemos.data_asset.v1.ListBuildingVersionsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	17,  // 19: anemos.data_asset.v1.ListBuildingVersionsrsp.versions:type_name -> anemos.data_asset.v1.BuildingVersion
-	69,  // 20: anemos.data_asset.v1.ListBuildingVersionsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	70,  // 21: anemos.data_asset.v1.NoFlyZone.boundary:type_name -> anemos.common.v1.Polygon
-	67,  // 22: anemos.data_asset.v1.NoFlyZone.effective_from:type_name -> google.protobuf.Timestamp
-	67,  // 23: anemos.data_asset.v1.NoFlyZone.effective_to:type_name -> google.protobuf.Timestamp
+	72,  // 20: anemos.data_asset.v1.ListBuildingVersionsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	73,  // 21: anemos.data_asset.v1.NoFlyZone.boundary:type_name -> anemos.common.v1.Polygon
+	70,  // 22: anemos.data_asset.v1.NoFlyZone.effective_from:type_name -> google.protobuf.Timestamp
+	70,  // 23: anemos.data_asset.v1.NoFlyZone.effective_to:type_name -> google.protobuf.Timestamp
 	26,  // 24: anemos.data_asset.v1.NoFlyZoneSet.zones:type_name -> anemos.data_asset.v1.NoFlyZone
-	67,  // 25: anemos.data_asset.v1.NoFlyZoneSet.created_at:type_name -> google.protobuf.Timestamp
-	67,  // 26: anemos.data_asset.v1.ImportNoFlyZoneSetreq.effective_from:type_name -> google.protobuf.Timestamp
-	67,  // 27: anemos.data_asset.v1.ImportNoFlyZoneSetreq.effective_to:type_name -> google.protobuf.Timestamp
-	67,  // 28: anemos.data_asset.v1.GetNoFlyZoneSetreq.query_time:type_name -> google.protobuf.Timestamp
+	70,  // 25: anemos.data_asset.v1.NoFlyZoneSet.created_at:type_name -> google.protobuf.Timestamp
+	70,  // 26: anemos.data_asset.v1.ImportNoFlyZoneSetreq.effective_from:type_name -> google.protobuf.Timestamp
+	70,  // 27: anemos.data_asset.v1.ImportNoFlyZoneSetreq.effective_to:type_name -> google.protobuf.Timestamp
+	70,  // 28: anemos.data_asset.v1.GetNoFlyZoneSetreq.query_time:type_name -> google.protobuf.Timestamp
 	27,  // 29: anemos.data_asset.v1.GetNoFlyZoneSetrsp.zone_set:type_name -> anemos.data_asset.v1.NoFlyZoneSet
-	68,  // 30: anemos.data_asset.v1.ListNoFlyZoneSetsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	71,  // 30: anemos.data_asset.v1.ListNoFlyZoneSetsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	27,  // 31: anemos.data_asset.v1.ListNoFlyZoneSetsrsp.zone_sets:type_name -> anemos.data_asset.v1.NoFlyZoneSet
-	69,  // 32: anemos.data_asset.v1.ListNoFlyZoneSetsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	67,  // 33: anemos.data_asset.v1.ImportJob.created_at:type_name -> google.protobuf.Timestamp
-	67,  // 34: anemos.data_asset.v1.ImportJob.finished_at:type_name -> google.protobuf.Timestamp
-	71,  // 35: anemos.data_asset.v1.ListImportJobsreq.time_range:type_name -> anemos.common.v1.TimeRange
-	68,  // 36: anemos.data_asset.v1.ListImportJobsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	72,  // 32: anemos.data_asset.v1.ListNoFlyZoneSetsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	70,  // 33: anemos.data_asset.v1.ImportJob.created_at:type_name -> google.protobuf.Timestamp
+	70,  // 34: anemos.data_asset.v1.ImportJob.finished_at:type_name -> google.protobuf.Timestamp
+	74,  // 35: anemos.data_asset.v1.ListImportJobsreq.time_range:type_name -> anemos.common.v1.TimeRange
+	71,  // 36: anemos.data_asset.v1.ListImportJobsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	34,  // 37: anemos.data_asset.v1.ListImportJobsrsp.jobs:type_name -> anemos.data_asset.v1.ImportJob
-	69,  // 38: anemos.data_asset.v1.ListImportJobsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	72,  // 38: anemos.data_asset.v1.ListImportJobsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	34,  // 39: anemos.data_asset.v1.GetImportJobrsp.job:type_name -> anemos.data_asset.v1.ImportJob
-	72,  // 40: anemos.data_asset.v1.ElevationPoint.coordinate:type_name -> anemos.common.v1.Coordinate
-	72,  // 41: anemos.data_asset.v1.QueryElevationreq.points:type_name -> anemos.common.v1.Coordinate
+	75,  // 40: anemos.data_asset.v1.ElevationPoint.coordinate:type_name -> anemos.common.v1.Coordinate
+	75,  // 41: anemos.data_asset.v1.QueryElevationreq.points:type_name -> anemos.common.v1.Coordinate
 	39,  // 42: anemos.data_asset.v1.QueryElevationrsp.results:type_name -> anemos.data_asset.v1.ElevationPoint
-	66,  // 43: anemos.data_asset.v1.MeteoSnapshot.coverage:type_name -> anemos.common.v1.BoundingBox
-	67,  // 44: anemos.data_asset.v1.MeteoSnapshot.forecast_time:type_name -> google.protobuf.Timestamp
-	67,  // 45: anemos.data_asset.v1.MeteoSnapshot.issued_at:type_name -> google.protobuf.Timestamp
+	69,  // 43: anemos.data_asset.v1.MeteoSnapshot.coverage:type_name -> anemos.common.v1.BoundingBox
+	70,  // 44: anemos.data_asset.v1.MeteoSnapshot.forecast_time:type_name -> google.protobuf.Timestamp
+	70,  // 45: anemos.data_asset.v1.MeteoSnapshot.issued_at:type_name -> google.protobuf.Timestamp
 	43,  // 46: anemos.data_asset.v1.MeteoSnapshot.fields:type_name -> anemos.data_asset.v1.MeteoFields
-	67,  // 47: anemos.data_asset.v1.GetMeteoSnapshotreq.query_time:type_name -> google.protobuf.Timestamp
-	67,  // 48: anemos.data_asset.v1.GetMeteoSnapshotreq.at_forecast_time:type_name -> google.protobuf.Timestamp
+	70,  // 47: anemos.data_asset.v1.GetMeteoSnapshotreq.query_time:type_name -> google.protobuf.Timestamp
+	70,  // 48: anemos.data_asset.v1.GetMeteoSnapshotreq.at_forecast_time:type_name -> google.protobuf.Timestamp
 	42,  // 49: anemos.data_asset.v1.GetMeteoSnapshotrsp.snapshot:type_name -> anemos.data_asset.v1.MeteoSnapshot
-	67,  // 50: anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest.start:type_name -> google.protobuf.Timestamp
-	67,  // 51: anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest.end:type_name -> google.protobuf.Timestamp
+	70,  // 50: anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest.start:type_name -> google.protobuf.Timestamp
+	70,  // 51: anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest.end:type_name -> google.protobuf.Timestamp
 	42,  // 52: anemos.data_asset.v1.GetMeteoSnapshotsByRangeResponse.snapshots:type_name -> anemos.data_asset.v1.MeteoSnapshot
-	67,  // 53: anemos.data_asset.v1.MeteoTimeseriesPoint.time:type_name -> google.protobuf.Timestamp
+	70,  // 53: anemos.data_asset.v1.MeteoTimeseriesPoint.time:type_name -> google.protobuf.Timestamp
 	43,  // 54: anemos.data_asset.v1.MeteoTimeseriesPoint.fields:type_name -> anemos.data_asset.v1.MeteoFields
-	71,  // 55: anemos.data_asset.v1.QueryMeteoTimeseriesreq.time_range:type_name -> anemos.common.v1.TimeRange
+	74,  // 55: anemos.data_asset.v1.QueryMeteoTimeseriesreq.time_range:type_name -> anemos.common.v1.TimeRange
 	48,  // 56: anemos.data_asset.v1.QueryMeteoTimeseriesrsp.data_points:type_name -> anemos.data_asset.v1.MeteoTimeseriesPoint
-	67,  // 57: anemos.data_asset.v1.CFDCase.created_at:type_name -> google.protobuf.Timestamp
-	68,  // 58: anemos.data_asset.v1.ListCFDCasesreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	51,  // 59: anemos.data_asset.v1.ListCFDCasesrsp.cases:type_name -> anemos.data_asset.v1.CFDCase
-	69,  // 60: anemos.data_asset.v1.ListCFDCasesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	51,  // 61: anemos.data_asset.v1.RegisterCFDCasereq.case_data:type_name -> anemos.data_asset.v1.CFDCase
-	67,  // 62: anemos.data_asset.v1.Observation.observed_at:type_name -> google.protobuf.Timestamp
-	73,  // 63: anemos.data_asset.v1.Observation.location:type_name -> anemos.common.v1.Coordinate3D
-	57,  // 64: anemos.data_asset.v1.Observation.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
-	0,   // 65: anemos.data_asset.v1.Observation.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
-	67,  // 66: anemos.data_asset.v1.IngestObservationreq.observed_at:type_name -> google.protobuf.Timestamp
-	73,  // 67: anemos.data_asset.v1.IngestObservationreq.location:type_name -> anemos.common.v1.Coordinate3D
-	57,  // 68: anemos.data_asset.v1.IngestObservationreq.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
-	0,   // 69: anemos.data_asset.v1.IngestObservationreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
-	60,  // 70: anemos.data_asset.v1.IngestObservationrsp.assimilation:type_name -> anemos.data_asset.v1.AssimilationTrigger
-	67,  // 71: anemos.data_asset.v1.IngestObservationrsp.received_at:type_name -> google.protobuf.Timestamp
-	71,  // 72: anemos.data_asset.v1.QueryObservationsreq.time_range:type_name -> anemos.common.v1.TimeRange
-	0,   // 73: anemos.data_asset.v1.QueryObservationsreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
-	68,  // 74: anemos.data_asset.v1.QueryObservationsreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	56,  // 75: anemos.data_asset.v1.QueryObservationsrsp.observations:type_name -> anemos.data_asset.v1.Observation
-	69,  // 76: anemos.data_asset.v1.QueryObservationsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	56,  // 77: anemos.data_asset.v1.GetLatestObsByStationrsp.observations:type_name -> anemos.data_asset.v1.Observation
-	2,   // 78: anemos.data_asset.v1.DataAssetService.GetDEM:input_type -> anemos.data_asset.v1.GetDEMreq
-	4,   // 79: anemos.data_asset.v1.DataAssetService.ListDEMAssets:input_type -> anemos.data_asset.v1.ListDEMAssetsreq
-	6,   // 80: anemos.data_asset.v1.DataAssetService.ImportDEM:input_type -> anemos.data_asset.v1.ImportDEMreq
-	8,   // 81: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:input_type -> anemos.data_asset.v1.UpdateDEMAssetreq
-	10,  // 82: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:input_type -> anemos.data_asset.v1.ActivateDEMVersionreq
-	12,  // 83: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:input_type -> anemos.data_asset.v1.ArchiveDEMAssetreq
-	14,  // 84: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:input_type -> anemos.data_asset.v1.DeleteDEMAssetreq
-	18,  // 85: anemos.data_asset.v1.DataAssetService.ImportBuildings:input_type -> anemos.data_asset.v1.ImportBuildingsreq
-	20,  // 86: anemos.data_asset.v1.DataAssetService.ListBuildings:input_type -> anemos.data_asset.v1.ListBuildingsreq
-	22,  // 87: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:input_type -> anemos.data_asset.v1.ListBuildingVersionsreq
-	24,  // 88: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:input_type -> anemos.data_asset.v1.ActivateBuildingVersionreq
-	28,  // 89: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:input_type -> anemos.data_asset.v1.ImportNoFlyZoneSetreq
-	30,  // 90: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:input_type -> anemos.data_asset.v1.GetNoFlyZoneSetreq
-	32,  // 91: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:input_type -> anemos.data_asset.v1.ListNoFlyZoneSetsreq
-	35,  // 92: anemos.data_asset.v1.DataAssetService.ListImportJobs:input_type -> anemos.data_asset.v1.ListImportJobsreq
-	37,  // 93: anemos.data_asset.v1.DataAssetService.GetImportJob:input_type -> anemos.data_asset.v1.GetImportJobreq
-	40,  // 94: anemos.data_asset.v1.DataAssetService.QueryElevation:input_type -> anemos.data_asset.v1.QueryElevationreq
-	44,  // 95: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:input_type -> anemos.data_asset.v1.GetMeteoSnapshotreq
-	46,  // 96: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshotsByRange:input_type -> anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest
-	49,  // 97: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:input_type -> anemos.data_asset.v1.QueryMeteoTimeseriesreq
-	52,  // 98: anemos.data_asset.v1.DataAssetService.ListCFDCases:input_type -> anemos.data_asset.v1.ListCFDCasesreq
-	54,  // 99: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:input_type -> anemos.data_asset.v1.RegisterCFDCasereq
-	58,  // 100: anemos.data_asset.v1.DataAssetService.IngestObservation:input_type -> anemos.data_asset.v1.IngestObservationreq
-	61,  // 101: anemos.data_asset.v1.DataAssetService.QueryObservations:input_type -> anemos.data_asset.v1.QueryObservationsreq
-	63,  // 102: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:input_type -> anemos.data_asset.v1.GetLatestObsByStationreq
-	3,   // 103: anemos.data_asset.v1.DataAssetService.GetDEM:output_type -> anemos.data_asset.v1.GetDEMrsp
-	5,   // 104: anemos.data_asset.v1.DataAssetService.ListDEMAssets:output_type -> anemos.data_asset.v1.ListDEMAssetsrsp
-	7,   // 105: anemos.data_asset.v1.DataAssetService.ImportDEM:output_type -> anemos.data_asset.v1.ImportDEMrsp
-	9,   // 106: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:output_type -> anemos.data_asset.v1.UpdateDEMAssetrsp
-	11,  // 107: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:output_type -> anemos.data_asset.v1.ActivateDEMVersionrsp
-	13,  // 108: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:output_type -> anemos.data_asset.v1.ArchiveDEMAssetrsp
-	15,  // 109: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:output_type -> anemos.data_asset.v1.DeleteDEMAssetrsp
-	19,  // 110: anemos.data_asset.v1.DataAssetService.ImportBuildings:output_type -> anemos.data_asset.v1.ImportBuildingsrsp
-	21,  // 111: anemos.data_asset.v1.DataAssetService.ListBuildings:output_type -> anemos.data_asset.v1.ListBuildingsrsp
-	23,  // 112: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:output_type -> anemos.data_asset.v1.ListBuildingVersionsrsp
-	25,  // 113: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:output_type -> anemos.data_asset.v1.ActivateBuildingVersionrsp
-	29,  // 114: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:output_type -> anemos.data_asset.v1.ImportNoFlyZoneSetrsp
-	31,  // 115: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:output_type -> anemos.data_asset.v1.GetNoFlyZoneSetrsp
-	33,  // 116: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:output_type -> anemos.data_asset.v1.ListNoFlyZoneSetsrsp
-	36,  // 117: anemos.data_asset.v1.DataAssetService.ListImportJobs:output_type -> anemos.data_asset.v1.ListImportJobsrsp
-	38,  // 118: anemos.data_asset.v1.DataAssetService.GetImportJob:output_type -> anemos.data_asset.v1.GetImportJobrsp
-	41,  // 119: anemos.data_asset.v1.DataAssetService.QueryElevation:output_type -> anemos.data_asset.v1.QueryElevationrsp
-	45,  // 120: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:output_type -> anemos.data_asset.v1.GetMeteoSnapshotrsp
-	47,  // 121: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshotsByRange:output_type -> anemos.data_asset.v1.GetMeteoSnapshotsByRangeResponse
-	50,  // 122: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:output_type -> anemos.data_asset.v1.QueryMeteoTimeseriesrsp
-	53,  // 123: anemos.data_asset.v1.DataAssetService.ListCFDCases:output_type -> anemos.data_asset.v1.ListCFDCasesrsp
-	55,  // 124: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:output_type -> anemos.data_asset.v1.RegisterCFDCasersp
-	59,  // 125: anemos.data_asset.v1.DataAssetService.IngestObservation:output_type -> anemos.data_asset.v1.IngestObservationrsp
-	62,  // 126: anemos.data_asset.v1.DataAssetService.QueryObservations:output_type -> anemos.data_asset.v1.QueryObservationsrsp
-	64,  // 127: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:output_type -> anemos.data_asset.v1.GetLatestObsByStationrsp
-	103, // [103:128] is the sub-list for method output_type
-	78,  // [78:103] is the sub-list for method input_type
-	78,  // [78:78] is the sub-list for extension type_name
-	78,  // [78:78] is the sub-list for extension extendee
-	0,   // [0:78] is the sub-list for field type_name
+	75,  // 57: anemos.data_asset.v1.QueryMeteoByPointsreq.points:type_name -> anemos.common.v1.Coordinate
+	70,  // 58: anemos.data_asset.v1.QueryMeteoByPointsreq.forecast_time:type_name -> google.protobuf.Timestamp
+	75,  // 59: anemos.data_asset.v1.MeteoPointWind.point:type_name -> anemos.common.v1.Coordinate
+	52,  // 60: anemos.data_asset.v1.QueryMeteoByPointsrsp.results:type_name -> anemos.data_asset.v1.MeteoPointWind
+	70,  // 61: anemos.data_asset.v1.CFDCase.created_at:type_name -> google.protobuf.Timestamp
+	71,  // 62: anemos.data_asset.v1.ListCFDCasesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	54,  // 63: anemos.data_asset.v1.ListCFDCasesrsp.cases:type_name -> anemos.data_asset.v1.CFDCase
+	72,  // 64: anemos.data_asset.v1.ListCFDCasesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	54,  // 65: anemos.data_asset.v1.RegisterCFDCasereq.case_data:type_name -> anemos.data_asset.v1.CFDCase
+	70,  // 66: anemos.data_asset.v1.Observation.observed_at:type_name -> google.protobuf.Timestamp
+	76,  // 67: anemos.data_asset.v1.Observation.location:type_name -> anemos.common.v1.Coordinate3D
+	60,  // 68: anemos.data_asset.v1.Observation.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
+	0,   // 69: anemos.data_asset.v1.Observation.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
+	70,  // 70: anemos.data_asset.v1.IngestObservationreq.observed_at:type_name -> google.protobuf.Timestamp
+	76,  // 71: anemos.data_asset.v1.IngestObservationreq.location:type_name -> anemos.common.v1.Coordinate3D
+	60,  // 72: anemos.data_asset.v1.IngestObservationreq.measurements:type_name -> anemos.data_asset.v1.ObservationMeasurements
+	0,   // 73: anemos.data_asset.v1.IngestObservationreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
+	63,  // 74: anemos.data_asset.v1.IngestObservationrsp.assimilation:type_name -> anemos.data_asset.v1.AssimilationTrigger
+	70,  // 75: anemos.data_asset.v1.IngestObservationrsp.received_at:type_name -> google.protobuf.Timestamp
+	74,  // 76: anemos.data_asset.v1.QueryObservationsreq.time_range:type_name -> anemos.common.v1.TimeRange
+	0,   // 77: anemos.data_asset.v1.QueryObservationsreq.source_type:type_name -> anemos.data_asset.v1.ObservationSourceType
+	71,  // 78: anemos.data_asset.v1.QueryObservationsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	59,  // 79: anemos.data_asset.v1.QueryObservationsrsp.observations:type_name -> anemos.data_asset.v1.Observation
+	72,  // 80: anemos.data_asset.v1.QueryObservationsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	59,  // 81: anemos.data_asset.v1.GetLatestObsByStationrsp.observations:type_name -> anemos.data_asset.v1.Observation
+	2,   // 82: anemos.data_asset.v1.DataAssetService.GetDEM:input_type -> anemos.data_asset.v1.GetDEMreq
+	4,   // 83: anemos.data_asset.v1.DataAssetService.ListDEMAssets:input_type -> anemos.data_asset.v1.ListDEMAssetsreq
+	6,   // 84: anemos.data_asset.v1.DataAssetService.ImportDEM:input_type -> anemos.data_asset.v1.ImportDEMreq
+	8,   // 85: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:input_type -> anemos.data_asset.v1.UpdateDEMAssetreq
+	10,  // 86: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:input_type -> anemos.data_asset.v1.ActivateDEMVersionreq
+	12,  // 87: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:input_type -> anemos.data_asset.v1.ArchiveDEMAssetreq
+	14,  // 88: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:input_type -> anemos.data_asset.v1.DeleteDEMAssetreq
+	18,  // 89: anemos.data_asset.v1.DataAssetService.ImportBuildings:input_type -> anemos.data_asset.v1.ImportBuildingsreq
+	20,  // 90: anemos.data_asset.v1.DataAssetService.ListBuildings:input_type -> anemos.data_asset.v1.ListBuildingsreq
+	22,  // 91: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:input_type -> anemos.data_asset.v1.ListBuildingVersionsreq
+	24,  // 92: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:input_type -> anemos.data_asset.v1.ActivateBuildingVersionreq
+	28,  // 93: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:input_type -> anemos.data_asset.v1.ImportNoFlyZoneSetreq
+	30,  // 94: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:input_type -> anemos.data_asset.v1.GetNoFlyZoneSetreq
+	32,  // 95: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:input_type -> anemos.data_asset.v1.ListNoFlyZoneSetsreq
+	35,  // 96: anemos.data_asset.v1.DataAssetService.ListImportJobs:input_type -> anemos.data_asset.v1.ListImportJobsreq
+	37,  // 97: anemos.data_asset.v1.DataAssetService.GetImportJob:input_type -> anemos.data_asset.v1.GetImportJobreq
+	40,  // 98: anemos.data_asset.v1.DataAssetService.QueryElevation:input_type -> anemos.data_asset.v1.QueryElevationreq
+	44,  // 99: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:input_type -> anemos.data_asset.v1.GetMeteoSnapshotreq
+	46,  // 100: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshotsByRange:input_type -> anemos.data_asset.v1.GetMeteoSnapshotsByRangeRequest
+	49,  // 101: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:input_type -> anemos.data_asset.v1.QueryMeteoTimeseriesreq
+	51,  // 102: anemos.data_asset.v1.DataAssetService.QueryMeteoByPoints:input_type -> anemos.data_asset.v1.QueryMeteoByPointsreq
+	55,  // 103: anemos.data_asset.v1.DataAssetService.ListCFDCases:input_type -> anemos.data_asset.v1.ListCFDCasesreq
+	57,  // 104: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:input_type -> anemos.data_asset.v1.RegisterCFDCasereq
+	61,  // 105: anemos.data_asset.v1.DataAssetService.IngestObservation:input_type -> anemos.data_asset.v1.IngestObservationreq
+	64,  // 106: anemos.data_asset.v1.DataAssetService.QueryObservations:input_type -> anemos.data_asset.v1.QueryObservationsreq
+	66,  // 107: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:input_type -> anemos.data_asset.v1.GetLatestObsByStationreq
+	3,   // 108: anemos.data_asset.v1.DataAssetService.GetDEM:output_type -> anemos.data_asset.v1.GetDEMrsp
+	5,   // 109: anemos.data_asset.v1.DataAssetService.ListDEMAssets:output_type -> anemos.data_asset.v1.ListDEMAssetsrsp
+	7,   // 110: anemos.data_asset.v1.DataAssetService.ImportDEM:output_type -> anemos.data_asset.v1.ImportDEMrsp
+	9,   // 111: anemos.data_asset.v1.DataAssetService.UpdateDEMAsset:output_type -> anemos.data_asset.v1.UpdateDEMAssetrsp
+	11,  // 112: anemos.data_asset.v1.DataAssetService.ActivateDEMVersion:output_type -> anemos.data_asset.v1.ActivateDEMVersionrsp
+	13,  // 113: anemos.data_asset.v1.DataAssetService.ArchiveDEMAsset:output_type -> anemos.data_asset.v1.ArchiveDEMAssetrsp
+	15,  // 114: anemos.data_asset.v1.DataAssetService.DeleteDEMAsset:output_type -> anemos.data_asset.v1.DeleteDEMAssetrsp
+	19,  // 115: anemos.data_asset.v1.DataAssetService.ImportBuildings:output_type -> anemos.data_asset.v1.ImportBuildingsrsp
+	21,  // 116: anemos.data_asset.v1.DataAssetService.ListBuildings:output_type -> anemos.data_asset.v1.ListBuildingsrsp
+	23,  // 117: anemos.data_asset.v1.DataAssetService.ListBuildingVersions:output_type -> anemos.data_asset.v1.ListBuildingVersionsrsp
+	25,  // 118: anemos.data_asset.v1.DataAssetService.ActivateBuildingVersion:output_type -> anemos.data_asset.v1.ActivateBuildingVersionrsp
+	29,  // 119: anemos.data_asset.v1.DataAssetService.ImportNoFlyZoneSet:output_type -> anemos.data_asset.v1.ImportNoFlyZoneSetrsp
+	31,  // 120: anemos.data_asset.v1.DataAssetService.GetNoFlyZoneSet:output_type -> anemos.data_asset.v1.GetNoFlyZoneSetrsp
+	33,  // 121: anemos.data_asset.v1.DataAssetService.ListNoFlyZoneSets:output_type -> anemos.data_asset.v1.ListNoFlyZoneSetsrsp
+	36,  // 122: anemos.data_asset.v1.DataAssetService.ListImportJobs:output_type -> anemos.data_asset.v1.ListImportJobsrsp
+	38,  // 123: anemos.data_asset.v1.DataAssetService.GetImportJob:output_type -> anemos.data_asset.v1.GetImportJobrsp
+	41,  // 124: anemos.data_asset.v1.DataAssetService.QueryElevation:output_type -> anemos.data_asset.v1.QueryElevationrsp
+	45,  // 125: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshot:output_type -> anemos.data_asset.v1.GetMeteoSnapshotrsp
+	47,  // 126: anemos.data_asset.v1.DataAssetService.GetMeteoSnapshotsByRange:output_type -> anemos.data_asset.v1.GetMeteoSnapshotsByRangeResponse
+	50,  // 127: anemos.data_asset.v1.DataAssetService.QueryMeteoTimeseries:output_type -> anemos.data_asset.v1.QueryMeteoTimeseriesrsp
+	53,  // 128: anemos.data_asset.v1.DataAssetService.QueryMeteoByPoints:output_type -> anemos.data_asset.v1.QueryMeteoByPointsrsp
+	56,  // 129: anemos.data_asset.v1.DataAssetService.ListCFDCases:output_type -> anemos.data_asset.v1.ListCFDCasesrsp
+	58,  // 130: anemos.data_asset.v1.DataAssetService.RegisterCFDCase:output_type -> anemos.data_asset.v1.RegisterCFDCasersp
+	62,  // 131: anemos.data_asset.v1.DataAssetService.IngestObservation:output_type -> anemos.data_asset.v1.IngestObservationrsp
+	65,  // 132: anemos.data_asset.v1.DataAssetService.QueryObservations:output_type -> anemos.data_asset.v1.QueryObservationsrsp
+	67,  // 133: anemos.data_asset.v1.DataAssetService.GetLatestObsByStation:output_type -> anemos.data_asset.v1.GetLatestObsByStationrsp
+	108, // [108:134] is the sub-list for method output_type
+	82,  // [82:108] is the sub-list for method input_type
+	82,  // [82:82] is the sub-list for extension type_name
+	82,  // [82:82] is the sub-list for extension extendee
+	0,   // [0:82] is the sub-list for field type_name
 }
 
 func init() { file_data_asset_v1_data_asset_proto_init() }
@@ -4768,7 +4952,7 @@ func file_data_asset_v1_data_asset_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_data_asset_v1_data_asset_proto_rawDesc), len(file_data_asset_v1_data_asset_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   65,
+			NumMessages:   68,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
