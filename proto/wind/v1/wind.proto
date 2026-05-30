@@ -159,6 +159,11 @@ message SliceMetadata {
   int32 width = 1;                                     // 横向数据点数（列数）
   int32 height_count = 2;                              // 纵向数据点数（行数）
   anemos.common.v1.BoundingBox extent = 3;             // 数据覆盖范围（BFF 据此 + width × height_count 计算每个点的 lon/lat）
+  // 逐格地面海拔（ASL，米），行主序，row0=最小纬度(南)/col0=最小经度(西)，与 extent 同域。
+  // 前端据此把切片层贴着地形渲染（本地地形 + 离地高度）。仅有 DEM 的后端(fuxicfd)填充。
+  repeated double terrain_grid = 4;
+  int32 terrain_rows = 5;                              // terrain_grid 行数（纬度方向）
+  int32 terrain_cols = 6;                              // terrain_grid 列数（经度方向）
 }
 
 // 风速矢量
