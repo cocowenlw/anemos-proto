@@ -40,6 +40,7 @@ const (
 	FlightService_UpsertRiskTemplate_FullMethodName     = "/anemos.flight.v1.FlightService/UpsertRiskTemplate"
 	FlightService_PredictRouteTimeseries_FullMethodName = "/anemos.flight.v1.FlightService/PredictRouteTimeseries"
 	FlightService_GetRouteRiskSummary_FullMethodName    = "/anemos.flight.v1.FlightService/GetRouteRiskSummary"
+	FlightService_ListRouteRiskLevels_FullMethodName    = "/anemos.flight.v1.FlightService/ListRouteRiskLevels"
 	FlightService_GetRouteWindTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteWindTrend"
 	FlightService_GetRouteRiskTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteRiskTrend"
 	FlightService_AdviseAssessment_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseAssessment"
@@ -77,6 +78,8 @@ type FlightServiceClient interface {
 	PredictRouteTimeseries(ctx context.Context, in *PredictRouteTimeseriesreq, opts ...grpc.CallOption) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
 	GetRouteRiskSummary(ctx context.Context, in *GetRouteRiskSummaryreq, opts ...grpc.CallOption) (*GetRouteRiskSummaryrsp, error)
+	// ----- 航线管理列表：每条航线最近一次评估的等级/评分/主因子 -----
+	ListRouteRiskLevels(ctx context.Context, in *ListRouteRiskLevelsreq, opts ...grpc.CallOption) (*ListRouteRiskLevelsrsp, error)
 	// ----- 单航线24h风速趋势 -----
 	GetRouteWindTrend(ctx context.Context, in *GetRouteWindTrendreq, opts ...grpc.CallOption) (*GetRouteWindTrendrsp, error)
 	// ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
@@ -304,6 +307,16 @@ func (c *flightServiceClient) GetRouteRiskSummary(ctx context.Context, in *GetRo
 	return out, nil
 }
 
+func (c *flightServiceClient) ListRouteRiskLevels(ctx context.Context, in *ListRouteRiskLevelsreq, opts ...grpc.CallOption) (*ListRouteRiskLevelsrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListRouteRiskLevelsrsp)
+	err := c.cc.Invoke(ctx, FlightService_ListRouteRiskLevels_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *flightServiceClient) GetRouteWindTrend(ctx context.Context, in *GetRouteWindTrendreq, opts ...grpc.CallOption) (*GetRouteWindTrendrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetRouteWindTrendrsp)
@@ -375,6 +388,8 @@ type FlightServiceServer interface {
 	PredictRouteTimeseries(context.Context, *PredictRouteTimeseriesreq) (*PredictRouteTimeseriesrsp, error)
 	// ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
 	GetRouteRiskSummary(context.Context, *GetRouteRiskSummaryreq) (*GetRouteRiskSummaryrsp, error)
+	// ----- 航线管理列表：每条航线最近一次评估的等级/评分/主因子 -----
+	ListRouteRiskLevels(context.Context, *ListRouteRiskLevelsreq) (*ListRouteRiskLevelsrsp, error)
 	// ----- 单航线24h风速趋势 -----
 	GetRouteWindTrend(context.Context, *GetRouteWindTrendreq) (*GetRouteWindTrendrsp, error)
 	// ----- 区域24h影响航线趋势（风险分析 Tab 的 TrendChart） -----
@@ -454,6 +469,9 @@ func (UnimplementedFlightServiceServer) PredictRouteTimeseries(context.Context, 
 }
 func (UnimplementedFlightServiceServer) GetRouteRiskSummary(context.Context, *GetRouteRiskSummaryreq) (*GetRouteRiskSummaryrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRouteRiskSummary not implemented")
+}
+func (UnimplementedFlightServiceServer) ListRouteRiskLevels(context.Context, *ListRouteRiskLevelsreq) (*ListRouteRiskLevelsrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListRouteRiskLevels not implemented")
 }
 func (UnimplementedFlightServiceServer) GetRouteWindTrend(context.Context, *GetRouteWindTrendreq) (*GetRouteWindTrendrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRouteWindTrend not implemented")
@@ -866,6 +884,24 @@ func _FlightService_GetRouteRiskSummary_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FlightService_ListRouteRiskLevels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRouteRiskLevelsreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FlightServiceServer).ListRouteRiskLevels(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FlightService_ListRouteRiskLevels_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlightServiceServer).ListRouteRiskLevels(ctx, req.(*ListRouteRiskLevelsreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FlightService_GetRouteWindTrend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRouteWindTrendreq)
 	if err := dec(in); err != nil {
@@ -1028,6 +1064,10 @@ var FlightService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRouteRiskSummary",
 			Handler:    _FlightService_GetRouteRiskSummary_Handler,
+		},
+		{
+			MethodName: "ListRouteRiskLevels",
+			Handler:    _FlightService_ListRouteRiskLevels_Handler,
 		},
 		{
 			MethodName: "GetRouteWindTrend",

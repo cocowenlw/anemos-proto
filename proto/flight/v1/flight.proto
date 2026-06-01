@@ -45,6 +45,9 @@ service FlightService {
   // ----- 航线风险概览（综合态势 Tab 的 RiskSummaryCard） -----
   rpc GetRouteRiskSummary(GetRouteRiskSummaryreq) returns (GetRouteRiskSummaryrsp);
 
+  // ----- 航线管理列表：每条航线最近一次评估的等级/评分/主因子 -----
+  rpc ListRouteRiskLevels(ListRouteRiskLevelsreq) returns (ListRouteRiskLevelsrsp);
+
   // ----- 单航线24h风速趋势 -----
   rpc GetRouteWindTrend(GetRouteWindTrendreq) returns (GetRouteWindTrendrsp);
 
@@ -645,6 +648,30 @@ message GetRouteRiskSummaryrsp {
   int32 medium_count = 4;                              // RISK_LEVEL_MEDIUM
   int32 low_count = 5;                                 // RISK_LEVEL_LOW
   int32 unknown_count = 6;                             // 无评估的航线
+}
+
+// ===========================
+// 航线管理列表：每条航线的风险标签
+// ===========================
+//
+// 按 region_id 返回该区域内每条 active 航线**最近一次评估**的等级 / 综合评分 / 主因子。
+// 复用 LatestLevelsByRegion（LATERAL JOIN 取最新评估）。尚无评估的航线：
+// risk_level=UNSPECIFIED、risk_score=0、main_factor=UNSPECIFIED。
+// 主因子 = V3 四维评分（风速/湍流/侧切变/阵风）中的最大者。
+
+message ListRouteRiskLevelsreq {
+  string region_id = 1;                                // 受管区域 ID
+}
+
+message RouteRiskLevel {
+  string route_id = 1;
+  RiskLevel risk_level = 2;                            // 最近一次评估的综合等级；无评估为 UNSPECIFIED
+  double risk_score = 3;                               // 综合评分 R_route（0-1）
+  RiskType main_factor = 4;                            // 主因子（四维评分最大者）；无评估为 UNSPECIFIED
+}
+
+message ListRouteRiskLevelsrsp {
+  repeated RouteRiskLevel items = 1;
 }
 
 // ===========================
