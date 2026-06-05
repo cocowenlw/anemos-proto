@@ -24,6 +24,7 @@ const (
 	WindService_GetWindField_FullMethodName             = "/anemos.wind.v1.WindService/GetWindField"
 	WindService_GetWindFieldSlice_FullMethodName        = "/anemos.wind.v1.WindService/GetWindFieldSlice"
 	WindService_SampleWindField_FullMethodName          = "/anemos.wind.v1.WindService/SampleWindField"
+	WindService_SampleWindFieldByPoint_FullMethodName   = "/anemos.wind.v1.WindService/SampleWindFieldByPoint"
 	WindService_GetWindFieldGrid_FullMethodName         = "/anemos.wind.v1.WindService/GetWindFieldGrid"
 	WindService_GetWindFieldSubGrid_FullMethodName      = "/anemos.wind.v1.WindService/GetWindFieldSubGrid"
 	WindService_GenerateWindFieldByTime_FullMethodName  = "/anemos.wind.v1.WindService/GenerateWindFieldByTime"
@@ -49,6 +50,7 @@ type WindServiceClient interface {
 	GetWindField(ctx context.Context, in *GetWindFieldreq, opts ...grpc.CallOption) (*GetWindFieldrsp, error)
 	GetWindFieldSlice(ctx context.Context, in *Slicereq, opts ...grpc.CallOption) (*Slicersp, error)
 	SampleWindField(ctx context.Context, in *SampleWindFieldreq, opts ...grpc.CallOption) (*SampleWindFieldrsp, error)
+	SampleWindFieldByPoint(ctx context.Context, in *SampleWindFieldByPointreq, opts ...grpc.CallOption) (*SampleWindFieldByPointrsp, error)
 	GetWindFieldGrid(ctx context.Context, in *GetWindFieldGridreq, opts ...grpc.CallOption) (*GetWindFieldGridrsp, error)
 	GetWindFieldSubGrid(ctx context.Context, in *GetWindFieldSubGridreq, opts ...grpc.CallOption) (*GetWindFieldSubGridrsp, error)
 	// JIT 推演：按 (region_id, valid_time) 按需生成/返回风场。
@@ -122,6 +124,16 @@ func (c *windServiceClient) SampleWindField(ctx context.Context, in *SampleWindF
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SampleWindFieldrsp)
 	err := c.cc.Invoke(ctx, WindService_SampleWindField_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *windServiceClient) SampleWindFieldByPoint(ctx context.Context, in *SampleWindFieldByPointreq, opts ...grpc.CallOption) (*SampleWindFieldByPointrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SampleWindFieldByPointrsp)
+	err := c.cc.Invoke(ctx, WindService_SampleWindFieldByPoint_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -268,6 +280,7 @@ type WindServiceServer interface {
 	GetWindField(context.Context, *GetWindFieldreq) (*GetWindFieldrsp, error)
 	GetWindFieldSlice(context.Context, *Slicereq) (*Slicersp, error)
 	SampleWindField(context.Context, *SampleWindFieldreq) (*SampleWindFieldrsp, error)
+	SampleWindFieldByPoint(context.Context, *SampleWindFieldByPointreq) (*SampleWindFieldByPointrsp, error)
 	GetWindFieldGrid(context.Context, *GetWindFieldGridreq) (*GetWindFieldGridrsp, error)
 	GetWindFieldSubGrid(context.Context, *GetWindFieldSubGridreq) (*GetWindFieldSubGridrsp, error)
 	// JIT 推演：按 (region_id, valid_time) 按需生成/返回风场。
@@ -311,6 +324,9 @@ func (UnimplementedWindServiceServer) GetWindFieldSlice(context.Context, *Slicer
 }
 func (UnimplementedWindServiceServer) SampleWindField(context.Context, *SampleWindFieldreq) (*SampleWindFieldrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method SampleWindField not implemented")
+}
+func (UnimplementedWindServiceServer) SampleWindFieldByPoint(context.Context, *SampleWindFieldByPointreq) (*SampleWindFieldByPointrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method SampleWindFieldByPoint not implemented")
 }
 func (UnimplementedWindServiceServer) GetWindFieldGrid(context.Context, *GetWindFieldGridreq) (*GetWindFieldGridrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetWindFieldGrid not implemented")
@@ -458,6 +474,24 @@ func _WindService_SampleWindField_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WindServiceServer).SampleWindField(ctx, req.(*SampleWindFieldreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WindService_SampleWindFieldByPoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SampleWindFieldByPointreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WindServiceServer).SampleWindFieldByPoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WindService_SampleWindFieldByPoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WindServiceServer).SampleWindFieldByPoint(ctx, req.(*SampleWindFieldByPointreq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -722,6 +756,10 @@ var WindService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SampleWindField",
 			Handler:    _WindService_SampleWindField_Handler,
+		},
+		{
+			MethodName: "SampleWindFieldByPoint",
+			Handler:    _WindService_SampleWindFieldByPoint_Handler,
 		},
 		{
 			MethodName: "GetWindFieldGrid",

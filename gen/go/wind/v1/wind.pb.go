@@ -1446,6 +1446,144 @@ func (x *SampleWindFieldrsp) GetSamples() []*SamplePoint {
 	return nil
 }
 
+// 按点采样请求（自动定位区域、取最新 ready 风场）
+type SampleWindFieldByPointreq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Lon           float64                `protobuf:"fixed64,1,opt,name=lon,proto3" json:"lon,omitempty"` // 经度
+	Lat           float64                `protobuf:"fixed64,2,opt,name=lat,proto3" json:"lat,omitempty"` // 纬度
+	Alt           float64                `protobuf:"fixed64,3,opt,name=alt,proto3" json:"alt,omitempty"` // 高度（米）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SampleWindFieldByPointreq) Reset() {
+	*x = SampleWindFieldByPointreq{}
+	mi := &file_wind_v1_wind_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SampleWindFieldByPointreq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SampleWindFieldByPointreq) ProtoMessage() {}
+
+func (x *SampleWindFieldByPointreq) ProtoReflect() protoreflect.Message {
+	mi := &file_wind_v1_wind_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SampleWindFieldByPointreq.ProtoReflect.Descriptor instead.
+func (*SampleWindFieldByPointreq) Descriptor() ([]byte, []int) {
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *SampleWindFieldByPointreq) GetLon() float64 {
+	if x != nil {
+		return x.Lon
+	}
+	return 0
+}
+
+func (x *SampleWindFieldByPointreq) GetLat() float64 {
+	if x != nil {
+		return x.Lat
+	}
+	return 0
+}
+
+func (x *SampleWindFieldByPointreq) GetAlt() float64 {
+	if x != nil {
+		return x.Alt
+	}
+	return 0
+}
+
+// 按点采样响应
+type SampleWindFieldByPointrsp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ValidTime     *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=valid_time,json=validTime,proto3" json:"valid_time,omitempty"`          // 风场有效时间
+	RegionId      string                 `protobuf:"bytes,2,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`             // 自动定位到的区域
+	ModelVersion  string                 `protobuf:"bytes,3,opt,name=model_version,json=modelVersion,proto3" json:"model_version,omitempty"` // 使用的模型版本
+	Wind          *WindVector            `protobuf:"bytes,4,opt,name=wind,proto3" json:"wind,omitempty"`                                     // 风矢量（含 u/v/w/tke）
+	HasTke        bool                   `protobuf:"varint,5,opt,name=has_tke,json=hasTke,proto3" json:"has_tke,omitempty"`                  // false → 该点无 k 数据
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SampleWindFieldByPointrsp) Reset() {
+	*x = SampleWindFieldByPointrsp{}
+	mi := &file_wind_v1_wind_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SampleWindFieldByPointrsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SampleWindFieldByPointrsp) ProtoMessage() {}
+
+func (x *SampleWindFieldByPointrsp) ProtoReflect() protoreflect.Message {
+	mi := &file_wind_v1_wind_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SampleWindFieldByPointrsp.ProtoReflect.Descriptor instead.
+func (*SampleWindFieldByPointrsp) Descriptor() ([]byte, []int) {
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *SampleWindFieldByPointrsp) GetValidTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ValidTime
+	}
+	return nil
+}
+
+func (x *SampleWindFieldByPointrsp) GetRegionId() string {
+	if x != nil {
+		return x.RegionId
+	}
+	return ""
+}
+
+func (x *SampleWindFieldByPointrsp) GetModelVersion() string {
+	if x != nil {
+		return x.ModelVersion
+	}
+	return ""
+}
+
+func (x *SampleWindFieldByPointrsp) GetWind() *WindVector {
+	if x != nil {
+		return x.Wind
+	}
+	return nil
+}
+
+func (x *SampleWindFieldByPointrsp) GetHasTke() bool {
+	if x != nil {
+		return x.HasTke
+	}
+	return false
+}
+
 type SamplePoint struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Location       *v1.Coordinate3D       `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
@@ -1457,7 +1595,7 @@ type SamplePoint struct {
 
 func (x *SamplePoint) Reset() {
 	*x = SamplePoint{}
-	mi := &file_wind_v1_wind_proto_msgTypes[19]
+	mi := &file_wind_v1_wind_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1469,7 +1607,7 @@ func (x *SamplePoint) String() string {
 func (*SamplePoint) ProtoMessage() {}
 
 func (x *SamplePoint) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[19]
+	mi := &file_wind_v1_wind_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1482,7 +1620,7 @@ func (x *SamplePoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SamplePoint.ProtoReflect.Descriptor instead.
 func (*SamplePoint) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{19}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *SamplePoint) GetLocation() *v1.Coordinate3D {
@@ -1516,7 +1654,7 @@ type GetWindFieldGridreq struct {
 
 func (x *GetWindFieldGridreq) Reset() {
 	*x = GetWindFieldGridreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[20]
+	mi := &file_wind_v1_wind_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1528,7 +1666,7 @@ func (x *GetWindFieldGridreq) String() string {
 func (*GetWindFieldGridreq) ProtoMessage() {}
 
 func (x *GetWindFieldGridreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[20]
+	mi := &file_wind_v1_wind_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1541,7 +1679,7 @@ func (x *GetWindFieldGridreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWindFieldGridreq.ProtoReflect.Descriptor instead.
 func (*GetWindFieldGridreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{20}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetWindFieldGridreq) GetResultId() string {
@@ -1568,7 +1706,7 @@ type GetWindFieldGridrsp struct {
 
 func (x *GetWindFieldGridrsp) Reset() {
 	*x = GetWindFieldGridrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[21]
+	mi := &file_wind_v1_wind_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1580,7 +1718,7 @@ func (x *GetWindFieldGridrsp) String() string {
 func (*GetWindFieldGridrsp) ProtoMessage() {}
 
 func (x *GetWindFieldGridrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[21]
+	mi := &file_wind_v1_wind_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1593,7 +1731,7 @@ func (x *GetWindFieldGridrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWindFieldGridrsp.ProtoReflect.Descriptor instead.
 func (*GetWindFieldGridrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{21}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GetWindFieldGridrsp) GetGridInfo() *WindFieldGridInfo {
@@ -1623,7 +1761,7 @@ type WindFieldGridInfo struct {
 
 func (x *WindFieldGridInfo) Reset() {
 	*x = WindFieldGridInfo{}
-	mi := &file_wind_v1_wind_proto_msgTypes[22]
+	mi := &file_wind_v1_wind_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1635,7 +1773,7 @@ func (x *WindFieldGridInfo) String() string {
 func (*WindFieldGridInfo) ProtoMessage() {}
 
 func (x *WindFieldGridInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[22]
+	mi := &file_wind_v1_wind_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1648,7 +1786,7 @@ func (x *WindFieldGridInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WindFieldGridInfo.ProtoReflect.Descriptor instead.
 func (*WindFieldGridInfo) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{22}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *WindFieldGridInfo) GetWidth() int32 {
@@ -1698,7 +1836,7 @@ type WindFieldGridLayer struct {
 
 func (x *WindFieldGridLayer) Reset() {
 	*x = WindFieldGridLayer{}
-	mi := &file_wind_v1_wind_proto_msgTypes[23]
+	mi := &file_wind_v1_wind_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1710,7 +1848,7 @@ func (x *WindFieldGridLayer) String() string {
 func (*WindFieldGridLayer) ProtoMessage() {}
 
 func (x *WindFieldGridLayer) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[23]
+	mi := &file_wind_v1_wind_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1723,7 +1861,7 @@ func (x *WindFieldGridLayer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WindFieldGridLayer.ProtoReflect.Descriptor instead.
 func (*WindFieldGridLayer) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{23}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *WindFieldGridLayer) GetHeight() float64 {
@@ -1766,7 +1904,7 @@ type GetWindFieldSubGridreq struct {
 
 func (x *GetWindFieldSubGridreq) Reset() {
 	*x = GetWindFieldSubGridreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[24]
+	mi := &file_wind_v1_wind_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1778,7 +1916,7 @@ func (x *GetWindFieldSubGridreq) String() string {
 func (*GetWindFieldSubGridreq) ProtoMessage() {}
 
 func (x *GetWindFieldSubGridreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[24]
+	mi := &file_wind_v1_wind_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1791,7 +1929,7 @@ func (x *GetWindFieldSubGridreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWindFieldSubGridreq.ProtoReflect.Descriptor instead.
 func (*GetWindFieldSubGridreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{24}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GetWindFieldSubGridreq) GetResultId() string {
@@ -1837,7 +1975,7 @@ type GetWindFieldSubGridrsp struct {
 
 func (x *GetWindFieldSubGridrsp) Reset() {
 	*x = GetWindFieldSubGridrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[25]
+	mi := &file_wind_v1_wind_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1849,7 +1987,7 @@ func (x *GetWindFieldSubGridrsp) String() string {
 func (*GetWindFieldSubGridrsp) ProtoMessage() {}
 
 func (x *GetWindFieldSubGridrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[25]
+	mi := &file_wind_v1_wind_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1862,7 +2000,7 @@ func (x *GetWindFieldSubGridrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWindFieldSubGridrsp.ProtoReflect.Descriptor instead.
 func (*GetWindFieldSubGridrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{25}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GetWindFieldSubGridrsp) GetNx() int32 {
@@ -1938,7 +2076,7 @@ type WindJob struct {
 
 func (x *WindJob) Reset() {
 	*x = WindJob{}
-	mi := &file_wind_v1_wind_proto_msgTypes[26]
+	mi := &file_wind_v1_wind_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1950,7 +2088,7 @@ func (x *WindJob) String() string {
 func (*WindJob) ProtoMessage() {}
 
 func (x *WindJob) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[26]
+	mi := &file_wind_v1_wind_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1963,7 +2101,7 @@ func (x *WindJob) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WindJob.ProtoReflect.Descriptor instead.
 func (*WindJob) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{26}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *WindJob) GetJobId() string {
@@ -2091,7 +2229,7 @@ type ListWindJobsreq struct {
 
 func (x *ListWindJobsreq) Reset() {
 	*x = ListWindJobsreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[27]
+	mi := &file_wind_v1_wind_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2103,7 +2241,7 @@ func (x *ListWindJobsreq) String() string {
 func (*ListWindJobsreq) ProtoMessage() {}
 
 func (x *ListWindJobsreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[27]
+	mi := &file_wind_v1_wind_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2116,7 +2254,7 @@ func (x *ListWindJobsreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWindJobsreq.ProtoReflect.Descriptor instead.
 func (*ListWindJobsreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{27}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *ListWindJobsreq) GetRegionId() string {
@@ -2164,7 +2302,7 @@ type ListWindJobsrsp struct {
 
 func (x *ListWindJobsrsp) Reset() {
 	*x = ListWindJobsrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[28]
+	mi := &file_wind_v1_wind_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2176,7 +2314,7 @@ func (x *ListWindJobsrsp) String() string {
 func (*ListWindJobsrsp) ProtoMessage() {}
 
 func (x *ListWindJobsrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[28]
+	mi := &file_wind_v1_wind_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2189,7 +2327,7 @@ func (x *ListWindJobsrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWindJobsrsp.ProtoReflect.Descriptor instead.
 func (*ListWindJobsrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{28}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *ListWindJobsrsp) GetJobs() []*WindJob {
@@ -2215,7 +2353,7 @@ type GetWindJobreq struct {
 
 func (x *GetWindJobreq) Reset() {
 	*x = GetWindJobreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[29]
+	mi := &file_wind_v1_wind_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2227,7 +2365,7 @@ func (x *GetWindJobreq) String() string {
 func (*GetWindJobreq) ProtoMessage() {}
 
 func (x *GetWindJobreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[29]
+	mi := &file_wind_v1_wind_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2240,7 +2378,7 @@ func (x *GetWindJobreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWindJobreq.ProtoReflect.Descriptor instead.
 func (*GetWindJobreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{29}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GetWindJobreq) GetJobId() string {
@@ -2259,7 +2397,7 @@ type GetWindJobrsp struct {
 
 func (x *GetWindJobrsp) Reset() {
 	*x = GetWindJobrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[30]
+	mi := &file_wind_v1_wind_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2271,7 +2409,7 @@ func (x *GetWindJobrsp) String() string {
 func (*GetWindJobrsp) ProtoMessage() {}
 
 func (x *GetWindJobrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[30]
+	mi := &file_wind_v1_wind_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2284,7 +2422,7 @@ func (x *GetWindJobrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWindJobrsp.ProtoReflect.Descriptor instead.
 func (*GetWindJobrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{30}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GetWindJobrsp) GetJob() *WindJob {
@@ -2308,7 +2446,7 @@ type CreateGenerationJobreq struct {
 
 func (x *CreateGenerationJobreq) Reset() {
 	*x = CreateGenerationJobreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[31]
+	mi := &file_wind_v1_wind_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2320,7 +2458,7 @@ func (x *CreateGenerationJobreq) String() string {
 func (*CreateGenerationJobreq) ProtoMessage() {}
 
 func (x *CreateGenerationJobreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[31]
+	mi := &file_wind_v1_wind_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2333,7 +2471,7 @@ func (x *CreateGenerationJobreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGenerationJobreq.ProtoReflect.Descriptor instead.
 func (*CreateGenerationJobreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{31}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *CreateGenerationJobreq) GetRegionId() string {
@@ -2388,7 +2526,7 @@ type CreateGenerationJobrsp struct {
 
 func (x *CreateGenerationJobrsp) Reset() {
 	*x = CreateGenerationJobrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[32]
+	mi := &file_wind_v1_wind_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2400,7 +2538,7 @@ func (x *CreateGenerationJobrsp) String() string {
 func (*CreateGenerationJobrsp) ProtoMessage() {}
 
 func (x *CreateGenerationJobrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[32]
+	mi := &file_wind_v1_wind_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2413,7 +2551,7 @@ func (x *CreateGenerationJobrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGenerationJobrsp.ProtoReflect.Descriptor instead.
 func (*CreateGenerationJobrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{32}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *CreateGenerationJobrsp) GetJobId() string {
@@ -2444,7 +2582,7 @@ type GenerateWindFieldByTimereq struct {
 
 func (x *GenerateWindFieldByTimereq) Reset() {
 	*x = GenerateWindFieldByTimereq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[33]
+	mi := &file_wind_v1_wind_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2456,7 +2594,7 @@ func (x *GenerateWindFieldByTimereq) String() string {
 func (*GenerateWindFieldByTimereq) ProtoMessage() {}
 
 func (x *GenerateWindFieldByTimereq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[33]
+	mi := &file_wind_v1_wind_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2469,7 +2607,7 @@ func (x *GenerateWindFieldByTimereq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerateWindFieldByTimereq.ProtoReflect.Descriptor instead.
 func (*GenerateWindFieldByTimereq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{33}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GenerateWindFieldByTimereq) GetRegionId() string {
@@ -2521,7 +2659,7 @@ type GenerateWindFieldByTimersp struct {
 
 func (x *GenerateWindFieldByTimersp) Reset() {
 	*x = GenerateWindFieldByTimersp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[34]
+	mi := &file_wind_v1_wind_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2533,7 +2671,7 @@ func (x *GenerateWindFieldByTimersp) String() string {
 func (*GenerateWindFieldByTimersp) ProtoMessage() {}
 
 func (x *GenerateWindFieldByTimersp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[34]
+	mi := &file_wind_v1_wind_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2546,7 +2684,7 @@ func (x *GenerateWindFieldByTimersp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerateWindFieldByTimersp.ProtoReflect.Descriptor instead.
 func (*GenerateWindFieldByTimersp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{34}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GenerateWindFieldByTimersp) GetResult() *WindFieldResult {
@@ -2580,7 +2718,7 @@ type CancelWindJobreq struct {
 
 func (x *CancelWindJobreq) Reset() {
 	*x = CancelWindJobreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[35]
+	mi := &file_wind_v1_wind_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2592,7 +2730,7 @@ func (x *CancelWindJobreq) String() string {
 func (*CancelWindJobreq) ProtoMessage() {}
 
 func (x *CancelWindJobreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[35]
+	mi := &file_wind_v1_wind_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2605,7 +2743,7 @@ func (x *CancelWindJobreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancelWindJobreq.ProtoReflect.Descriptor instead.
 func (*CancelWindJobreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{35}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *CancelWindJobreq) GetJobId() string {
@@ -2632,7 +2770,7 @@ type CancelWindJobrsp struct {
 
 func (x *CancelWindJobrsp) Reset() {
 	*x = CancelWindJobrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[36]
+	mi := &file_wind_v1_wind_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2644,7 +2782,7 @@ func (x *CancelWindJobrsp) String() string {
 func (*CancelWindJobrsp) ProtoMessage() {}
 
 func (x *CancelWindJobrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[36]
+	mi := &file_wind_v1_wind_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2657,7 +2795,7 @@ func (x *CancelWindJobrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancelWindJobrsp.ProtoReflect.Descriptor instead.
 func (*CancelWindJobrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{36}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *CancelWindJobrsp) GetSuccess() bool {
@@ -2684,7 +2822,7 @@ type RetryWindJobreq struct {
 
 func (x *RetryWindJobreq) Reset() {
 	*x = RetryWindJobreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[37]
+	mi := &file_wind_v1_wind_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2696,7 +2834,7 @@ func (x *RetryWindJobreq) String() string {
 func (*RetryWindJobreq) ProtoMessage() {}
 
 func (x *RetryWindJobreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[37]
+	mi := &file_wind_v1_wind_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2709,7 +2847,7 @@ func (x *RetryWindJobreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetryWindJobreq.ProtoReflect.Descriptor instead.
 func (*RetryWindJobreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{37}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *RetryWindJobreq) GetJobId() string {
@@ -2737,7 +2875,7 @@ type RetryWindJobrsp struct {
 
 func (x *RetryWindJobrsp) Reset() {
 	*x = RetryWindJobrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[38]
+	mi := &file_wind_v1_wind_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2749,7 +2887,7 @@ func (x *RetryWindJobrsp) String() string {
 func (*RetryWindJobrsp) ProtoMessage() {}
 
 func (x *RetryWindJobrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[38]
+	mi := &file_wind_v1_wind_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2762,7 +2900,7 @@ func (x *RetryWindJobrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetryWindJobrsp.ProtoReflect.Descriptor instead.
 func (*RetryWindJobrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{38}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *RetryWindJobrsp) GetNewJobId() string {
@@ -2802,7 +2940,7 @@ type ModelVersionInfo struct {
 
 func (x *ModelVersionInfo) Reset() {
 	*x = ModelVersionInfo{}
-	mi := &file_wind_v1_wind_proto_msgTypes[39]
+	mi := &file_wind_v1_wind_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2814,7 +2952,7 @@ func (x *ModelVersionInfo) String() string {
 func (*ModelVersionInfo) ProtoMessage() {}
 
 func (x *ModelVersionInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[39]
+	mi := &file_wind_v1_wind_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2827,7 +2965,7 @@ func (x *ModelVersionInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ModelVersionInfo.ProtoReflect.Descriptor instead.
 func (*ModelVersionInfo) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{39}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *ModelVersionInfo) GetVersionId() string {
@@ -2895,7 +3033,7 @@ type GetActiveModelVersionreq struct {
 
 func (x *GetActiveModelVersionreq) Reset() {
 	*x = GetActiveModelVersionreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[40]
+	mi := &file_wind_v1_wind_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2907,7 +3045,7 @@ func (x *GetActiveModelVersionreq) String() string {
 func (*GetActiveModelVersionreq) ProtoMessage() {}
 
 func (x *GetActiveModelVersionreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[40]
+	mi := &file_wind_v1_wind_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2920,7 +3058,7 @@ func (x *GetActiveModelVersionreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetActiveModelVersionreq.ProtoReflect.Descriptor instead.
 func (*GetActiveModelVersionreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{40}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *GetActiveModelVersionreq) GetModelType() string {
@@ -2939,7 +3077,7 @@ type GetActiveModelVersionrsp struct {
 
 func (x *GetActiveModelVersionrsp) Reset() {
 	*x = GetActiveModelVersionrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[41]
+	mi := &file_wind_v1_wind_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2951,7 +3089,7 @@ func (x *GetActiveModelVersionrsp) String() string {
 func (*GetActiveModelVersionrsp) ProtoMessage() {}
 
 func (x *GetActiveModelVersionrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[41]
+	mi := &file_wind_v1_wind_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2964,7 +3102,7 @@ func (x *GetActiveModelVersionrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetActiveModelVersionrsp.ProtoReflect.Descriptor instead.
 func (*GetActiveModelVersionrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{41}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *GetActiveModelVersionrsp) GetVersion() *ModelVersionInfo {
@@ -2984,7 +3122,7 @@ type ActivateModelVersionreq struct {
 
 func (x *ActivateModelVersionreq) Reset() {
 	*x = ActivateModelVersionreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[42]
+	mi := &file_wind_v1_wind_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2996,7 +3134,7 @@ func (x *ActivateModelVersionreq) String() string {
 func (*ActivateModelVersionreq) ProtoMessage() {}
 
 func (x *ActivateModelVersionreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[42]
+	mi := &file_wind_v1_wind_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3009,7 +3147,7 @@ func (x *ActivateModelVersionreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivateModelVersionreq.ProtoReflect.Descriptor instead.
 func (*ActivateModelVersionreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{42}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *ActivateModelVersionreq) GetVersionId() string {
@@ -3036,7 +3174,7 @@ type ActivateModelVersionrsp struct {
 
 func (x *ActivateModelVersionrsp) Reset() {
 	*x = ActivateModelVersionrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[43]
+	mi := &file_wind_v1_wind_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3048,7 +3186,7 @@ func (x *ActivateModelVersionrsp) String() string {
 func (*ActivateModelVersionrsp) ProtoMessage() {}
 
 func (x *ActivateModelVersionrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[43]
+	mi := &file_wind_v1_wind_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3061,7 +3199,7 @@ func (x *ActivateModelVersionrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivateModelVersionrsp.ProtoReflect.Descriptor instead.
 func (*ActivateModelVersionrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{43}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *ActivateModelVersionrsp) GetSuccess() bool {
@@ -3090,7 +3228,7 @@ type ListModelVersionsreq struct {
 
 func (x *ListModelVersionsreq) Reset() {
 	*x = ListModelVersionsreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[44]
+	mi := &file_wind_v1_wind_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3102,7 +3240,7 @@ func (x *ListModelVersionsreq) String() string {
 func (*ListModelVersionsreq) ProtoMessage() {}
 
 func (x *ListModelVersionsreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[44]
+	mi := &file_wind_v1_wind_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3115,7 +3253,7 @@ func (x *ListModelVersionsreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListModelVersionsreq.ProtoReflect.Descriptor instead.
 func (*ListModelVersionsreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{44}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *ListModelVersionsreq) GetModelType() string {
@@ -3156,7 +3294,7 @@ type ListModelVersionsrsp struct {
 
 func (x *ListModelVersionsrsp) Reset() {
 	*x = ListModelVersionsrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[45]
+	mi := &file_wind_v1_wind_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3168,7 +3306,7 @@ func (x *ListModelVersionsrsp) String() string {
 func (*ListModelVersionsrsp) ProtoMessage() {}
 
 func (x *ListModelVersionsrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[45]
+	mi := &file_wind_v1_wind_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3181,7 +3319,7 @@ func (x *ListModelVersionsrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListModelVersionsrsp.ProtoReflect.Descriptor instead.
 func (*ListModelVersionsrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{45}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *ListModelVersionsrsp) GetVersions() []*ModelVersionInfo {
@@ -3211,7 +3349,7 @@ type ReportGenerationResultreq struct {
 
 func (x *ReportGenerationResultreq) Reset() {
 	*x = ReportGenerationResultreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[46]
+	mi := &file_wind_v1_wind_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3223,7 +3361,7 @@ func (x *ReportGenerationResultreq) String() string {
 func (*ReportGenerationResultreq) ProtoMessage() {}
 
 func (x *ReportGenerationResultreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[46]
+	mi := &file_wind_v1_wind_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3236,7 +3374,7 @@ func (x *ReportGenerationResultreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportGenerationResultreq.ProtoReflect.Descriptor instead.
 func (*ReportGenerationResultreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{46}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *ReportGenerationResultreq) GetJobId() string {
@@ -3287,7 +3425,7 @@ type GenerationStats struct {
 
 func (x *GenerationStats) Reset() {
 	*x = GenerationStats{}
-	mi := &file_wind_v1_wind_proto_msgTypes[47]
+	mi := &file_wind_v1_wind_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3299,7 +3437,7 @@ func (x *GenerationStats) String() string {
 func (*GenerationStats) ProtoMessage() {}
 
 func (x *GenerationStats) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[47]
+	mi := &file_wind_v1_wind_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3312,7 +3450,7 @@ func (x *GenerationStats) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerationStats.ProtoReflect.Descriptor instead.
 func (*GenerationStats) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{47}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *GenerationStats) GetInferenceTimeSec() float64 {
@@ -3360,7 +3498,7 @@ type ReportGenerationResultrsp struct {
 
 func (x *ReportGenerationResultrsp) Reset() {
 	*x = ReportGenerationResultrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[48]
+	mi := &file_wind_v1_wind_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3372,7 +3510,7 @@ func (x *ReportGenerationResultrsp) String() string {
 func (*ReportGenerationResultrsp) ProtoMessage() {}
 
 func (x *ReportGenerationResultrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[48]
+	mi := &file_wind_v1_wind_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3385,7 +3523,7 @@ func (x *ReportGenerationResultrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportGenerationResultrsp.ProtoReflect.Descriptor instead.
 func (*ReportGenerationResultrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{48}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ReportGenerationResultrsp) GetAcknowledged() bool {
@@ -3415,7 +3553,7 @@ type ReportAssimilationResultreq struct {
 
 func (x *ReportAssimilationResultreq) Reset() {
 	*x = ReportAssimilationResultreq{}
-	mi := &file_wind_v1_wind_proto_msgTypes[49]
+	mi := &file_wind_v1_wind_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3427,7 +3565,7 @@ func (x *ReportAssimilationResultreq) String() string {
 func (*ReportAssimilationResultreq) ProtoMessage() {}
 
 func (x *ReportAssimilationResultreq) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[49]
+	mi := &file_wind_v1_wind_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3440,7 +3578,7 @@ func (x *ReportAssimilationResultreq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportAssimilationResultreq.ProtoReflect.Descriptor instead.
 func (*ReportAssimilationResultreq) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{49}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *ReportAssimilationResultreq) GetJobId() string {
@@ -3490,7 +3628,7 @@ type AssimilationQuality struct {
 
 func (x *AssimilationQuality) Reset() {
 	*x = AssimilationQuality{}
-	mi := &file_wind_v1_wind_proto_msgTypes[50]
+	mi := &file_wind_v1_wind_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3502,7 +3640,7 @@ func (x *AssimilationQuality) String() string {
 func (*AssimilationQuality) ProtoMessage() {}
 
 func (x *AssimilationQuality) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[50]
+	mi := &file_wind_v1_wind_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3515,7 +3653,7 @@ func (x *AssimilationQuality) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssimilationQuality.ProtoReflect.Descriptor instead.
 func (*AssimilationQuality) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{50}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *AssimilationQuality) GetRmseBefore() float64 {
@@ -3556,7 +3694,7 @@ type ReportAssimilationResultrsp struct {
 
 func (x *ReportAssimilationResultrsp) Reset() {
 	*x = ReportAssimilationResultrsp{}
-	mi := &file_wind_v1_wind_proto_msgTypes[51]
+	mi := &file_wind_v1_wind_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3568,7 +3706,7 @@ func (x *ReportAssimilationResultrsp) String() string {
 func (*ReportAssimilationResultrsp) ProtoMessage() {}
 
 func (x *ReportAssimilationResultrsp) ProtoReflect() protoreflect.Message {
-	mi := &file_wind_v1_wind_proto_msgTypes[51]
+	mi := &file_wind_v1_wind_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3581,7 +3719,7 @@ func (x *ReportAssimilationResultrsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportAssimilationResultrsp.ProtoReflect.Descriptor instead.
 func (*ReportAssimilationResultrsp) Descriptor() ([]byte, []int) {
-	return file_wind_v1_wind_proto_rawDescGZIP(), []int{51}
+	return file_wind_v1_wind_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *ReportAssimilationResultrsp) GetAcknowledged() bool {
@@ -3716,7 +3854,18 @@ const file_wind_v1_wind_proto_rawDesc = "" +
 	"\x10horizontal_count\x18\x03 \x01(\x05R\x0fhorizontalCount\x12#\n" +
 	"\rheight_levels\x18\x04 \x03(\x01R\fheightLevels\"K\n" +
 	"\x12SampleWindFieldrsp\x125\n" +
-	"\asamples\x18\x01 \x03(\v2\x1b.anemos.wind.v1.SamplePointR\asamples\"\xa3\x01\n" +
+	"\asamples\x18\x01 \x03(\v2\x1b.anemos.wind.v1.SamplePointR\asamples\"Q\n" +
+	"\x19SampleWindFieldByPointreq\x12\x10\n" +
+	"\x03lon\x18\x01 \x01(\x01R\x03lon\x12\x10\n" +
+	"\x03lat\x18\x02 \x01(\x01R\x03lat\x12\x10\n" +
+	"\x03alt\x18\x03 \x01(\x01R\x03alt\"\xe1\x01\n" +
+	"\x19SampleWindFieldByPointrsp\x129\n" +
+	"\n" +
+	"valid_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tvalidTime\x12\x1b\n" +
+	"\tregion_id\x18\x02 \x01(\tR\bregionId\x12#\n" +
+	"\rmodel_version\x18\x03 \x01(\tR\fmodelVersion\x12.\n" +
+	"\x04wind\x18\x04 \x01(\v2\x1a.anemos.wind.v1.WindVectorR\x04wind\x12\x17\n" +
+	"\ahas_tke\x18\x05 \x01(\bR\x06hasTke\"\xa3\x01\n" +
 	"\vSamplePoint\x12:\n" +
 	"\blocation\x18\x01 \x01(\v2\x1e.anemos.common.v1.Coordinate3DR\blocation\x12.\n" +
 	"\x04wind\x18\x02 \x01(\v2\x1a.anemos.wind.v1.WindVectorR\x04wind\x12(\n" +
@@ -3895,13 +4044,14 @@ const file_wind_v1_wind_proto_rawDesc = "" +
 	"\x10SliceOrientation\x12!\n" +
 	"\x1dSLICE_ORIENTATION_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cSLICE_ORIENTATION_HORIZONTAL\x10\x01\x12\x1e\n" +
-	"\x1aSLICE_ORIENTATION_VERTICAL\x10\x022\xc1\r\n" +
+	"\x1aSLICE_ORIENTATION_VERTICAL\x10\x022\xb1\x0e\n" +
 	"\vWindService\x12b\n" +
 	"\x12GetLatestWindField\x12%.anemos.wind.v1.GetLatestWindFieldreq\x1a%.anemos.wind.v1.GetLatestWindFieldrsp\x12V\n" +
 	"\x0eListWindFields\x12!.anemos.wind.v1.ListWindFieldsreq\x1a!.anemos.wind.v1.ListWindFieldsrsp\x12P\n" +
 	"\fGetWindField\x12\x1f.anemos.wind.v1.GetWindFieldreq\x1a\x1f.anemos.wind.v1.GetWindFieldrsp\x12G\n" +
 	"\x11GetWindFieldSlice\x12\x18.anemos.wind.v1.Slicereq\x1a\x18.anemos.wind.v1.Slicersp\x12Y\n" +
-	"\x0fSampleWindField\x12\".anemos.wind.v1.SampleWindFieldreq\x1a\".anemos.wind.v1.SampleWindFieldrsp\x12\\\n" +
+	"\x0fSampleWindField\x12\".anemos.wind.v1.SampleWindFieldreq\x1a\".anemos.wind.v1.SampleWindFieldrsp\x12n\n" +
+	"\x16SampleWindFieldByPoint\x12).anemos.wind.v1.SampleWindFieldByPointreq\x1a).anemos.wind.v1.SampleWindFieldByPointrsp\x12\\\n" +
 	"\x10GetWindFieldGrid\x12#.anemos.wind.v1.GetWindFieldGridreq\x1a#.anemos.wind.v1.GetWindFieldGridrsp\x12e\n" +
 	"\x13GetWindFieldSubGrid\x12&.anemos.wind.v1.GetWindFieldSubGridreq\x1a&.anemos.wind.v1.GetWindFieldSubGridrsp\x12q\n" +
 	"\x17GenerateWindFieldByTime\x12*.anemos.wind.v1.GenerateWindFieldByTimereq\x1a*.anemos.wind.v1.GenerateWindFieldByTimersp\x12P\n" +
@@ -3930,7 +4080,7 @@ func file_wind_v1_wind_proto_rawDescGZIP() []byte {
 }
 
 var file_wind_v1_wind_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_wind_v1_wind_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
+var file_wind_v1_wind_proto_msgTypes = make([]protoimpl.MessageInfo, 54)
 var file_wind_v1_wind_proto_goTypes = []any{
 	(SliceOrientation)(0),               // 0: anemos.wind.v1.SliceOrientation
 	(*WindFieldResult)(nil),             // 1: anemos.wind.v1.WindFieldResult
@@ -3952,148 +4102,154 @@ var file_wind_v1_wind_proto_goTypes = []any{
 	(*RouteSample)(nil),                 // 17: anemos.wind.v1.RouteSample
 	(*ProfileSample)(nil),               // 18: anemos.wind.v1.ProfileSample
 	(*SampleWindFieldrsp)(nil),          // 19: anemos.wind.v1.SampleWindFieldrsp
-	(*SamplePoint)(nil),                 // 20: anemos.wind.v1.SamplePoint
-	(*GetWindFieldGridreq)(nil),         // 21: anemos.wind.v1.GetWindFieldGridreq
-	(*GetWindFieldGridrsp)(nil),         // 22: anemos.wind.v1.GetWindFieldGridrsp
-	(*WindFieldGridInfo)(nil),           // 23: anemos.wind.v1.WindFieldGridInfo
-	(*WindFieldGridLayer)(nil),          // 24: anemos.wind.v1.WindFieldGridLayer
-	(*GetWindFieldSubGridreq)(nil),      // 25: anemos.wind.v1.GetWindFieldSubGridreq
-	(*GetWindFieldSubGridrsp)(nil),      // 26: anemos.wind.v1.GetWindFieldSubGridrsp
-	(*WindJob)(nil),                     // 27: anemos.wind.v1.WindJob
-	(*ListWindJobsreq)(nil),             // 28: anemos.wind.v1.ListWindJobsreq
-	(*ListWindJobsrsp)(nil),             // 29: anemos.wind.v1.ListWindJobsrsp
-	(*GetWindJobreq)(nil),               // 30: anemos.wind.v1.GetWindJobreq
-	(*GetWindJobrsp)(nil),               // 31: anemos.wind.v1.GetWindJobrsp
-	(*CreateGenerationJobreq)(nil),      // 32: anemos.wind.v1.CreateGenerationJobreq
-	(*CreateGenerationJobrsp)(nil),      // 33: anemos.wind.v1.CreateGenerationJobrsp
-	(*GenerateWindFieldByTimereq)(nil),  // 34: anemos.wind.v1.GenerateWindFieldByTimereq
-	(*GenerateWindFieldByTimersp)(nil),  // 35: anemos.wind.v1.GenerateWindFieldByTimersp
-	(*CancelWindJobreq)(nil),            // 36: anemos.wind.v1.CancelWindJobreq
-	(*CancelWindJobrsp)(nil),            // 37: anemos.wind.v1.CancelWindJobrsp
-	(*RetryWindJobreq)(nil),             // 38: anemos.wind.v1.RetryWindJobreq
-	(*RetryWindJobrsp)(nil),             // 39: anemos.wind.v1.RetryWindJobrsp
-	(*ModelVersionInfo)(nil),            // 40: anemos.wind.v1.ModelVersionInfo
-	(*GetActiveModelVersionreq)(nil),    // 41: anemos.wind.v1.GetActiveModelVersionreq
-	(*GetActiveModelVersionrsp)(nil),    // 42: anemos.wind.v1.GetActiveModelVersionrsp
-	(*ActivateModelVersionreq)(nil),     // 43: anemos.wind.v1.ActivateModelVersionreq
-	(*ActivateModelVersionrsp)(nil),     // 44: anemos.wind.v1.ActivateModelVersionrsp
-	(*ListModelVersionsreq)(nil),        // 45: anemos.wind.v1.ListModelVersionsreq
-	(*ListModelVersionsrsp)(nil),        // 46: anemos.wind.v1.ListModelVersionsrsp
-	(*ReportGenerationResultreq)(nil),   // 47: anemos.wind.v1.ReportGenerationResultreq
-	(*GenerationStats)(nil),             // 48: anemos.wind.v1.GenerationStats
-	(*ReportGenerationResultrsp)(nil),   // 49: anemos.wind.v1.ReportGenerationResultrsp
-	(*ReportAssimilationResultreq)(nil), // 50: anemos.wind.v1.ReportAssimilationResultreq
-	(*AssimilationQuality)(nil),         // 51: anemos.wind.v1.AssimilationQuality
-	(*ReportAssimilationResultrsp)(nil), // 52: anemos.wind.v1.ReportAssimilationResultrsp
-	(*v1.BoundingBox)(nil),              // 53: anemos.common.v1.BoundingBox
-	(*timestamppb.Timestamp)(nil),       // 54: google.protobuf.Timestamp
-	(*v1.TimeRange)(nil),                // 55: anemos.common.v1.TimeRange
-	(*v1.Paginationreq)(nil),            // 56: anemos.common.v1.Paginationreq
-	(*v1.Paginationrsp)(nil),            // 57: anemos.common.v1.Paginationrsp
-	(*v1.Coordinate)(nil),               // 58: anemos.common.v1.Coordinate
-	(*v1.Coordinate3D)(nil),             // 59: anemos.common.v1.Coordinate3D
-	(*v1.JobStageStatus)(nil),           // 60: anemos.common.v1.JobStageStatus
+	(*SampleWindFieldByPointreq)(nil),   // 20: anemos.wind.v1.SampleWindFieldByPointreq
+	(*SampleWindFieldByPointrsp)(nil),   // 21: anemos.wind.v1.SampleWindFieldByPointrsp
+	(*SamplePoint)(nil),                 // 22: anemos.wind.v1.SamplePoint
+	(*GetWindFieldGridreq)(nil),         // 23: anemos.wind.v1.GetWindFieldGridreq
+	(*GetWindFieldGridrsp)(nil),         // 24: anemos.wind.v1.GetWindFieldGridrsp
+	(*WindFieldGridInfo)(nil),           // 25: anemos.wind.v1.WindFieldGridInfo
+	(*WindFieldGridLayer)(nil),          // 26: anemos.wind.v1.WindFieldGridLayer
+	(*GetWindFieldSubGridreq)(nil),      // 27: anemos.wind.v1.GetWindFieldSubGridreq
+	(*GetWindFieldSubGridrsp)(nil),      // 28: anemos.wind.v1.GetWindFieldSubGridrsp
+	(*WindJob)(nil),                     // 29: anemos.wind.v1.WindJob
+	(*ListWindJobsreq)(nil),             // 30: anemos.wind.v1.ListWindJobsreq
+	(*ListWindJobsrsp)(nil),             // 31: anemos.wind.v1.ListWindJobsrsp
+	(*GetWindJobreq)(nil),               // 32: anemos.wind.v1.GetWindJobreq
+	(*GetWindJobrsp)(nil),               // 33: anemos.wind.v1.GetWindJobrsp
+	(*CreateGenerationJobreq)(nil),      // 34: anemos.wind.v1.CreateGenerationJobreq
+	(*CreateGenerationJobrsp)(nil),      // 35: anemos.wind.v1.CreateGenerationJobrsp
+	(*GenerateWindFieldByTimereq)(nil),  // 36: anemos.wind.v1.GenerateWindFieldByTimereq
+	(*GenerateWindFieldByTimersp)(nil),  // 37: anemos.wind.v1.GenerateWindFieldByTimersp
+	(*CancelWindJobreq)(nil),            // 38: anemos.wind.v1.CancelWindJobreq
+	(*CancelWindJobrsp)(nil),            // 39: anemos.wind.v1.CancelWindJobrsp
+	(*RetryWindJobreq)(nil),             // 40: anemos.wind.v1.RetryWindJobreq
+	(*RetryWindJobrsp)(nil),             // 41: anemos.wind.v1.RetryWindJobrsp
+	(*ModelVersionInfo)(nil),            // 42: anemos.wind.v1.ModelVersionInfo
+	(*GetActiveModelVersionreq)(nil),    // 43: anemos.wind.v1.GetActiveModelVersionreq
+	(*GetActiveModelVersionrsp)(nil),    // 44: anemos.wind.v1.GetActiveModelVersionrsp
+	(*ActivateModelVersionreq)(nil),     // 45: anemos.wind.v1.ActivateModelVersionreq
+	(*ActivateModelVersionrsp)(nil),     // 46: anemos.wind.v1.ActivateModelVersionrsp
+	(*ListModelVersionsreq)(nil),        // 47: anemos.wind.v1.ListModelVersionsreq
+	(*ListModelVersionsrsp)(nil),        // 48: anemos.wind.v1.ListModelVersionsrsp
+	(*ReportGenerationResultreq)(nil),   // 49: anemos.wind.v1.ReportGenerationResultreq
+	(*GenerationStats)(nil),             // 50: anemos.wind.v1.GenerationStats
+	(*ReportGenerationResultrsp)(nil),   // 51: anemos.wind.v1.ReportGenerationResultrsp
+	(*ReportAssimilationResultreq)(nil), // 52: anemos.wind.v1.ReportAssimilationResultreq
+	(*AssimilationQuality)(nil),         // 53: anemos.wind.v1.AssimilationQuality
+	(*ReportAssimilationResultrsp)(nil), // 54: anemos.wind.v1.ReportAssimilationResultrsp
+	(*v1.BoundingBox)(nil),              // 55: anemos.common.v1.BoundingBox
+	(*timestamppb.Timestamp)(nil),       // 56: google.protobuf.Timestamp
+	(*v1.TimeRange)(nil),                // 57: anemos.common.v1.TimeRange
+	(*v1.Paginationreq)(nil),            // 58: anemos.common.v1.Paginationreq
+	(*v1.Paginationrsp)(nil),            // 59: anemos.common.v1.Paginationrsp
+	(*v1.Coordinate)(nil),               // 60: anemos.common.v1.Coordinate
+	(*v1.Coordinate3D)(nil),             // 61: anemos.common.v1.Coordinate3D
+	(*v1.JobStageStatus)(nil),           // 62: anemos.common.v1.JobStageStatus
 }
 var file_wind_v1_wind_proto_depIdxs = []int32{
-	53, // 0: anemos.wind.v1.WindFieldResult.coverage:type_name -> anemos.common.v1.BoundingBox
-	54, // 1: anemos.wind.v1.WindFieldResult.valid_time:type_name -> google.protobuf.Timestamp
-	54, // 2: anemos.wind.v1.WindFieldResult.generated_at:type_name -> google.protobuf.Timestamp
-	54, // 3: anemos.wind.v1.WindFieldTimelineEntry.query_time:type_name -> google.protobuf.Timestamp
-	54, // 4: anemos.wind.v1.WindFieldTimelineEntry.generated_at:type_name -> google.protobuf.Timestamp
-	54, // 5: anemos.wind.v1.GetLatestWindFieldreq.query_time:type_name -> google.protobuf.Timestamp
+	55, // 0: anemos.wind.v1.WindFieldResult.coverage:type_name -> anemos.common.v1.BoundingBox
+	56, // 1: anemos.wind.v1.WindFieldResult.valid_time:type_name -> google.protobuf.Timestamp
+	56, // 2: anemos.wind.v1.WindFieldResult.generated_at:type_name -> google.protobuf.Timestamp
+	56, // 3: anemos.wind.v1.WindFieldTimelineEntry.query_time:type_name -> google.protobuf.Timestamp
+	56, // 4: anemos.wind.v1.WindFieldTimelineEntry.generated_at:type_name -> google.protobuf.Timestamp
+	56, // 5: anemos.wind.v1.GetLatestWindFieldreq.query_time:type_name -> google.protobuf.Timestamp
 	1,  // 6: anemos.wind.v1.GetLatestWindFieldrsp.result:type_name -> anemos.wind.v1.WindFieldResult
 	2,  // 7: anemos.wind.v1.GetLatestWindFieldrsp.timeline:type_name -> anemos.wind.v1.WindFieldTimelineEntry
-	55, // 8: anemos.wind.v1.ListWindFieldsreq.time_range:type_name -> anemos.common.v1.TimeRange
-	56, // 9: anemos.wind.v1.ListWindFieldsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	57, // 8: anemos.wind.v1.ListWindFieldsreq.time_range:type_name -> anemos.common.v1.TimeRange
+	58, // 9: anemos.wind.v1.ListWindFieldsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	1,  // 10: anemos.wind.v1.ListWindFieldsrsp.results:type_name -> anemos.wind.v1.WindFieldResult
-	57, // 11: anemos.wind.v1.ListWindFieldsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	59, // 11: anemos.wind.v1.ListWindFieldsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	1,  // 12: anemos.wind.v1.GetWindFieldrsp.result:type_name -> anemos.wind.v1.WindFieldResult
 	9,  // 13: anemos.wind.v1.GetWindFieldrsp.grid:type_name -> anemos.wind.v1.WindFieldGrid
 	10, // 14: anemos.wind.v1.GetWindFieldrsp.generation_summary:type_name -> anemos.wind.v1.GenerationSummary
 	2,  // 15: anemos.wind.v1.GetWindFieldrsp.timeline:type_name -> anemos.wind.v1.WindFieldTimelineEntry
-	54, // 16: anemos.wind.v1.GenerationSummary.meteo_time:type_name -> google.protobuf.Timestamp
+	56, // 16: anemos.wind.v1.GenerationSummary.meteo_time:type_name -> google.protobuf.Timestamp
 	0,  // 17: anemos.wind.v1.Slicereq.orientation:type_name -> anemos.wind.v1.SliceOrientation
-	58, // 18: anemos.wind.v1.Slicereq.start:type_name -> anemos.common.v1.Coordinate
-	58, // 19: anemos.wind.v1.Slicereq.end:type_name -> anemos.common.v1.Coordinate
+	60, // 18: anemos.wind.v1.Slicereq.start:type_name -> anemos.common.v1.Coordinate
+	60, // 19: anemos.wind.v1.Slicereq.end:type_name -> anemos.common.v1.Coordinate
 	0,  // 20: anemos.wind.v1.Slicersp.orientation:type_name -> anemos.wind.v1.SliceOrientation
 	14, // 21: anemos.wind.v1.Slicersp.data:type_name -> anemos.wind.v1.WindVector
 	13, // 22: anemos.wind.v1.Slicersp.metadata:type_name -> anemos.wind.v1.SliceMetadata
-	53, // 23: anemos.wind.v1.SliceMetadata.extent:type_name -> anemos.common.v1.BoundingBox
+	55, // 23: anemos.wind.v1.SliceMetadata.extent:type_name -> anemos.common.v1.BoundingBox
 	16, // 24: anemos.wind.v1.SampleWindFieldreq.point:type_name -> anemos.wind.v1.PointSample
 	17, // 25: anemos.wind.v1.SampleWindFieldreq.route:type_name -> anemos.wind.v1.RouteSample
 	18, // 26: anemos.wind.v1.SampleWindFieldreq.profile:type_name -> anemos.wind.v1.ProfileSample
-	59, // 27: anemos.wind.v1.PointSample.points:type_name -> anemos.common.v1.Coordinate3D
-	59, // 28: anemos.wind.v1.RouteSample.waypoints:type_name -> anemos.common.v1.Coordinate3D
-	58, // 29: anemos.wind.v1.ProfileSample.start:type_name -> anemos.common.v1.Coordinate
-	58, // 30: anemos.wind.v1.ProfileSample.end:type_name -> anemos.common.v1.Coordinate
-	20, // 31: anemos.wind.v1.SampleWindFieldrsp.samples:type_name -> anemos.wind.v1.SamplePoint
-	59, // 32: anemos.wind.v1.SamplePoint.location:type_name -> anemos.common.v1.Coordinate3D
-	14, // 33: anemos.wind.v1.SamplePoint.wind:type_name -> anemos.wind.v1.WindVector
-	23, // 34: anemos.wind.v1.GetWindFieldGridrsp.grid_info:type_name -> anemos.wind.v1.WindFieldGridInfo
-	24, // 35: anemos.wind.v1.GetWindFieldGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
-	53, // 36: anemos.wind.v1.WindFieldGridInfo.bbox:type_name -> anemos.common.v1.BoundingBox
-	53, // 37: anemos.wind.v1.GetWindFieldSubGridreq.bbox:type_name -> anemos.common.v1.BoundingBox
-	24, // 38: anemos.wind.v1.GetWindFieldSubGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
-	55, // 39: anemos.wind.v1.WindJob.time_window:type_name -> anemos.common.v1.TimeRange
-	54, // 40: anemos.wind.v1.WindJob.submitted_at:type_name -> google.protobuf.Timestamp
-	54, // 41: anemos.wind.v1.WindJob.updated_at:type_name -> google.protobuf.Timestamp
-	60, // 42: anemos.wind.v1.WindJob.stages:type_name -> anemos.common.v1.JobStageStatus
-	55, // 43: anemos.wind.v1.ListWindJobsreq.time_range:type_name -> anemos.common.v1.TimeRange
-	56, // 44: anemos.wind.v1.ListWindJobsreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	27, // 45: anemos.wind.v1.ListWindJobsrsp.jobs:type_name -> anemos.wind.v1.WindJob
-	57, // 46: anemos.wind.v1.ListWindJobsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	27, // 47: anemos.wind.v1.GetWindJobrsp.job:type_name -> anemos.wind.v1.WindJob
-	55, // 48: anemos.wind.v1.CreateGenerationJobreq.time_window:type_name -> anemos.common.v1.TimeRange
-	54, // 49: anemos.wind.v1.GenerateWindFieldByTimereq.valid_time:type_name -> google.protobuf.Timestamp
-	1,  // 50: anemos.wind.v1.GenerateWindFieldByTimersp.result:type_name -> anemos.wind.v1.WindFieldResult
-	54, // 51: anemos.wind.v1.ModelVersionInfo.registered_at:type_name -> google.protobuf.Timestamp
-	54, // 52: anemos.wind.v1.ModelVersionInfo.activated_at:type_name -> google.protobuf.Timestamp
-	40, // 53: anemos.wind.v1.GetActiveModelVersionrsp.version:type_name -> anemos.wind.v1.ModelVersionInfo
-	40, // 54: anemos.wind.v1.ActivateModelVersionrsp.active_version:type_name -> anemos.wind.v1.ModelVersionInfo
-	40, // 55: anemos.wind.v1.ListModelVersionsrsp.versions:type_name -> anemos.wind.v1.ModelVersionInfo
-	48, // 56: anemos.wind.v1.ReportGenerationResultreq.stats:type_name -> anemos.wind.v1.GenerationStats
-	51, // 57: anemos.wind.v1.ReportAssimilationResultreq.quality:type_name -> anemos.wind.v1.AssimilationQuality
-	3,  // 58: anemos.wind.v1.WindService.GetLatestWindField:input_type -> anemos.wind.v1.GetLatestWindFieldreq
-	5,  // 59: anemos.wind.v1.WindService.ListWindFields:input_type -> anemos.wind.v1.ListWindFieldsreq
-	7,  // 60: anemos.wind.v1.WindService.GetWindField:input_type -> anemos.wind.v1.GetWindFieldreq
-	11, // 61: anemos.wind.v1.WindService.GetWindFieldSlice:input_type -> anemos.wind.v1.Slicereq
-	15, // 62: anemos.wind.v1.WindService.SampleWindField:input_type -> anemos.wind.v1.SampleWindFieldreq
-	21, // 63: anemos.wind.v1.WindService.GetWindFieldGrid:input_type -> anemos.wind.v1.GetWindFieldGridreq
-	25, // 64: anemos.wind.v1.WindService.GetWindFieldSubGrid:input_type -> anemos.wind.v1.GetWindFieldSubGridreq
-	34, // 65: anemos.wind.v1.WindService.GenerateWindFieldByTime:input_type -> anemos.wind.v1.GenerateWindFieldByTimereq
-	28, // 66: anemos.wind.v1.WindService.ListWindJobs:input_type -> anemos.wind.v1.ListWindJobsreq
-	30, // 67: anemos.wind.v1.WindService.GetWindJob:input_type -> anemos.wind.v1.GetWindJobreq
-	32, // 68: anemos.wind.v1.WindService.CreateGenerationJob:input_type -> anemos.wind.v1.CreateGenerationJobreq
-	36, // 69: anemos.wind.v1.WindService.CancelWindJob:input_type -> anemos.wind.v1.CancelWindJobreq
-	38, // 70: anemos.wind.v1.WindService.RetryWindJob:input_type -> anemos.wind.v1.RetryWindJobreq
-	41, // 71: anemos.wind.v1.WindService.GetActiveModelVersion:input_type -> anemos.wind.v1.GetActiveModelVersionreq
-	43, // 72: anemos.wind.v1.WindService.ActivateModelVersion:input_type -> anemos.wind.v1.ActivateModelVersionreq
-	45, // 73: anemos.wind.v1.WindService.ListModelVersions:input_type -> anemos.wind.v1.ListModelVersionsreq
-	47, // 74: anemos.wind.v1.WindService.ReportGenerationResult:input_type -> anemos.wind.v1.ReportGenerationResultreq
-	50, // 75: anemos.wind.v1.WindService.ReportAssimilationResult:input_type -> anemos.wind.v1.ReportAssimilationResultreq
-	4,  // 76: anemos.wind.v1.WindService.GetLatestWindField:output_type -> anemos.wind.v1.GetLatestWindFieldrsp
-	6,  // 77: anemos.wind.v1.WindService.ListWindFields:output_type -> anemos.wind.v1.ListWindFieldsrsp
-	8,  // 78: anemos.wind.v1.WindService.GetWindField:output_type -> anemos.wind.v1.GetWindFieldrsp
-	12, // 79: anemos.wind.v1.WindService.GetWindFieldSlice:output_type -> anemos.wind.v1.Slicersp
-	19, // 80: anemos.wind.v1.WindService.SampleWindField:output_type -> anemos.wind.v1.SampleWindFieldrsp
-	22, // 81: anemos.wind.v1.WindService.GetWindFieldGrid:output_type -> anemos.wind.v1.GetWindFieldGridrsp
-	26, // 82: anemos.wind.v1.WindService.GetWindFieldSubGrid:output_type -> anemos.wind.v1.GetWindFieldSubGridrsp
-	35, // 83: anemos.wind.v1.WindService.GenerateWindFieldByTime:output_type -> anemos.wind.v1.GenerateWindFieldByTimersp
-	29, // 84: anemos.wind.v1.WindService.ListWindJobs:output_type -> anemos.wind.v1.ListWindJobsrsp
-	31, // 85: anemos.wind.v1.WindService.GetWindJob:output_type -> anemos.wind.v1.GetWindJobrsp
-	33, // 86: anemos.wind.v1.WindService.CreateGenerationJob:output_type -> anemos.wind.v1.CreateGenerationJobrsp
-	37, // 87: anemos.wind.v1.WindService.CancelWindJob:output_type -> anemos.wind.v1.CancelWindJobrsp
-	39, // 88: anemos.wind.v1.WindService.RetryWindJob:output_type -> anemos.wind.v1.RetryWindJobrsp
-	42, // 89: anemos.wind.v1.WindService.GetActiveModelVersion:output_type -> anemos.wind.v1.GetActiveModelVersionrsp
-	44, // 90: anemos.wind.v1.WindService.ActivateModelVersion:output_type -> anemos.wind.v1.ActivateModelVersionrsp
-	46, // 91: anemos.wind.v1.WindService.ListModelVersions:output_type -> anemos.wind.v1.ListModelVersionsrsp
-	49, // 92: anemos.wind.v1.WindService.ReportGenerationResult:output_type -> anemos.wind.v1.ReportGenerationResultrsp
-	52, // 93: anemos.wind.v1.WindService.ReportAssimilationResult:output_type -> anemos.wind.v1.ReportAssimilationResultrsp
-	76, // [76:94] is the sub-list for method output_type
-	58, // [58:76] is the sub-list for method input_type
-	58, // [58:58] is the sub-list for extension type_name
-	58, // [58:58] is the sub-list for extension extendee
-	0,  // [0:58] is the sub-list for field type_name
+	61, // 27: anemos.wind.v1.PointSample.points:type_name -> anemos.common.v1.Coordinate3D
+	61, // 28: anemos.wind.v1.RouteSample.waypoints:type_name -> anemos.common.v1.Coordinate3D
+	60, // 29: anemos.wind.v1.ProfileSample.start:type_name -> anemos.common.v1.Coordinate
+	60, // 30: anemos.wind.v1.ProfileSample.end:type_name -> anemos.common.v1.Coordinate
+	22, // 31: anemos.wind.v1.SampleWindFieldrsp.samples:type_name -> anemos.wind.v1.SamplePoint
+	56, // 32: anemos.wind.v1.SampleWindFieldByPointrsp.valid_time:type_name -> google.protobuf.Timestamp
+	14, // 33: anemos.wind.v1.SampleWindFieldByPointrsp.wind:type_name -> anemos.wind.v1.WindVector
+	61, // 34: anemos.wind.v1.SamplePoint.location:type_name -> anemos.common.v1.Coordinate3D
+	14, // 35: anemos.wind.v1.SamplePoint.wind:type_name -> anemos.wind.v1.WindVector
+	25, // 36: anemos.wind.v1.GetWindFieldGridrsp.grid_info:type_name -> anemos.wind.v1.WindFieldGridInfo
+	26, // 37: anemos.wind.v1.GetWindFieldGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
+	55, // 38: anemos.wind.v1.WindFieldGridInfo.bbox:type_name -> anemos.common.v1.BoundingBox
+	55, // 39: anemos.wind.v1.GetWindFieldSubGridreq.bbox:type_name -> anemos.common.v1.BoundingBox
+	26, // 40: anemos.wind.v1.GetWindFieldSubGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
+	57, // 41: anemos.wind.v1.WindJob.time_window:type_name -> anemos.common.v1.TimeRange
+	56, // 42: anemos.wind.v1.WindJob.submitted_at:type_name -> google.protobuf.Timestamp
+	56, // 43: anemos.wind.v1.WindJob.updated_at:type_name -> google.protobuf.Timestamp
+	62, // 44: anemos.wind.v1.WindJob.stages:type_name -> anemos.common.v1.JobStageStatus
+	57, // 45: anemos.wind.v1.ListWindJobsreq.time_range:type_name -> anemos.common.v1.TimeRange
+	58, // 46: anemos.wind.v1.ListWindJobsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	29, // 47: anemos.wind.v1.ListWindJobsrsp.jobs:type_name -> anemos.wind.v1.WindJob
+	59, // 48: anemos.wind.v1.ListWindJobsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	29, // 49: anemos.wind.v1.GetWindJobrsp.job:type_name -> anemos.wind.v1.WindJob
+	57, // 50: anemos.wind.v1.CreateGenerationJobreq.time_window:type_name -> anemos.common.v1.TimeRange
+	56, // 51: anemos.wind.v1.GenerateWindFieldByTimereq.valid_time:type_name -> google.protobuf.Timestamp
+	1,  // 52: anemos.wind.v1.GenerateWindFieldByTimersp.result:type_name -> anemos.wind.v1.WindFieldResult
+	56, // 53: anemos.wind.v1.ModelVersionInfo.registered_at:type_name -> google.protobuf.Timestamp
+	56, // 54: anemos.wind.v1.ModelVersionInfo.activated_at:type_name -> google.protobuf.Timestamp
+	42, // 55: anemos.wind.v1.GetActiveModelVersionrsp.version:type_name -> anemos.wind.v1.ModelVersionInfo
+	42, // 56: anemos.wind.v1.ActivateModelVersionrsp.active_version:type_name -> anemos.wind.v1.ModelVersionInfo
+	42, // 57: anemos.wind.v1.ListModelVersionsrsp.versions:type_name -> anemos.wind.v1.ModelVersionInfo
+	50, // 58: anemos.wind.v1.ReportGenerationResultreq.stats:type_name -> anemos.wind.v1.GenerationStats
+	53, // 59: anemos.wind.v1.ReportAssimilationResultreq.quality:type_name -> anemos.wind.v1.AssimilationQuality
+	3,  // 60: anemos.wind.v1.WindService.GetLatestWindField:input_type -> anemos.wind.v1.GetLatestWindFieldreq
+	5,  // 61: anemos.wind.v1.WindService.ListWindFields:input_type -> anemos.wind.v1.ListWindFieldsreq
+	7,  // 62: anemos.wind.v1.WindService.GetWindField:input_type -> anemos.wind.v1.GetWindFieldreq
+	11, // 63: anemos.wind.v1.WindService.GetWindFieldSlice:input_type -> anemos.wind.v1.Slicereq
+	15, // 64: anemos.wind.v1.WindService.SampleWindField:input_type -> anemos.wind.v1.SampleWindFieldreq
+	20, // 65: anemos.wind.v1.WindService.SampleWindFieldByPoint:input_type -> anemos.wind.v1.SampleWindFieldByPointreq
+	23, // 66: anemos.wind.v1.WindService.GetWindFieldGrid:input_type -> anemos.wind.v1.GetWindFieldGridreq
+	27, // 67: anemos.wind.v1.WindService.GetWindFieldSubGrid:input_type -> anemos.wind.v1.GetWindFieldSubGridreq
+	36, // 68: anemos.wind.v1.WindService.GenerateWindFieldByTime:input_type -> anemos.wind.v1.GenerateWindFieldByTimereq
+	30, // 69: anemos.wind.v1.WindService.ListWindJobs:input_type -> anemos.wind.v1.ListWindJobsreq
+	32, // 70: anemos.wind.v1.WindService.GetWindJob:input_type -> anemos.wind.v1.GetWindJobreq
+	34, // 71: anemos.wind.v1.WindService.CreateGenerationJob:input_type -> anemos.wind.v1.CreateGenerationJobreq
+	38, // 72: anemos.wind.v1.WindService.CancelWindJob:input_type -> anemos.wind.v1.CancelWindJobreq
+	40, // 73: anemos.wind.v1.WindService.RetryWindJob:input_type -> anemos.wind.v1.RetryWindJobreq
+	43, // 74: anemos.wind.v1.WindService.GetActiveModelVersion:input_type -> anemos.wind.v1.GetActiveModelVersionreq
+	45, // 75: anemos.wind.v1.WindService.ActivateModelVersion:input_type -> anemos.wind.v1.ActivateModelVersionreq
+	47, // 76: anemos.wind.v1.WindService.ListModelVersions:input_type -> anemos.wind.v1.ListModelVersionsreq
+	49, // 77: anemos.wind.v1.WindService.ReportGenerationResult:input_type -> anemos.wind.v1.ReportGenerationResultreq
+	52, // 78: anemos.wind.v1.WindService.ReportAssimilationResult:input_type -> anemos.wind.v1.ReportAssimilationResultreq
+	4,  // 79: anemos.wind.v1.WindService.GetLatestWindField:output_type -> anemos.wind.v1.GetLatestWindFieldrsp
+	6,  // 80: anemos.wind.v1.WindService.ListWindFields:output_type -> anemos.wind.v1.ListWindFieldsrsp
+	8,  // 81: anemos.wind.v1.WindService.GetWindField:output_type -> anemos.wind.v1.GetWindFieldrsp
+	12, // 82: anemos.wind.v1.WindService.GetWindFieldSlice:output_type -> anemos.wind.v1.Slicersp
+	19, // 83: anemos.wind.v1.WindService.SampleWindField:output_type -> anemos.wind.v1.SampleWindFieldrsp
+	21, // 84: anemos.wind.v1.WindService.SampleWindFieldByPoint:output_type -> anemos.wind.v1.SampleWindFieldByPointrsp
+	24, // 85: anemos.wind.v1.WindService.GetWindFieldGrid:output_type -> anemos.wind.v1.GetWindFieldGridrsp
+	28, // 86: anemos.wind.v1.WindService.GetWindFieldSubGrid:output_type -> anemos.wind.v1.GetWindFieldSubGridrsp
+	37, // 87: anemos.wind.v1.WindService.GenerateWindFieldByTime:output_type -> anemos.wind.v1.GenerateWindFieldByTimersp
+	31, // 88: anemos.wind.v1.WindService.ListWindJobs:output_type -> anemos.wind.v1.ListWindJobsrsp
+	33, // 89: anemos.wind.v1.WindService.GetWindJob:output_type -> anemos.wind.v1.GetWindJobrsp
+	35, // 90: anemos.wind.v1.WindService.CreateGenerationJob:output_type -> anemos.wind.v1.CreateGenerationJobrsp
+	39, // 91: anemos.wind.v1.WindService.CancelWindJob:output_type -> anemos.wind.v1.CancelWindJobrsp
+	41, // 92: anemos.wind.v1.WindService.RetryWindJob:output_type -> anemos.wind.v1.RetryWindJobrsp
+	44, // 93: anemos.wind.v1.WindService.GetActiveModelVersion:output_type -> anemos.wind.v1.GetActiveModelVersionrsp
+	46, // 94: anemos.wind.v1.WindService.ActivateModelVersion:output_type -> anemos.wind.v1.ActivateModelVersionrsp
+	48, // 95: anemos.wind.v1.WindService.ListModelVersions:output_type -> anemos.wind.v1.ListModelVersionsrsp
+	51, // 96: anemos.wind.v1.WindService.ReportGenerationResult:output_type -> anemos.wind.v1.ReportGenerationResultrsp
+	54, // 97: anemos.wind.v1.WindService.ReportAssimilationResult:output_type -> anemos.wind.v1.ReportAssimilationResultrsp
+	79, // [79:98] is the sub-list for method output_type
+	60, // [60:79] is the sub-list for method input_type
+	60, // [60:60] is the sub-list for extension type_name
+	60, // [60:60] is the sub-list for extension extendee
+	0,  // [0:60] is the sub-list for field type_name
 }
 
 func init() { file_wind_v1_wind_proto_init() }
@@ -4112,7 +4268,7 @@ func file_wind_v1_wind_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_wind_v1_wind_proto_rawDesc), len(file_wind_v1_wind_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   52,
+			NumMessages:   54,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

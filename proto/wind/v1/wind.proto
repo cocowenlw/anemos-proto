@@ -18,6 +18,7 @@ service WindService {
   rpc GetWindField(GetWindFieldreq) returns (GetWindFieldrsp);                       // 按结果 ID 查询风场详情
   rpc GetWindFieldSlice(Slicereq) returns (Slicersp);                                // 查询指定风场的水平/垂直切片
   rpc SampleWindField(SampleWindFieldreq) returns (SampleWindFieldrsp);              // 统一采样（点/航线/剖面，request 中使用 oneof）
+  rpc SampleWindFieldByPoint(SampleWindFieldByPointreq) returns (SampleWindFieldByPointrsp); // 按经纬度自动定位区域+最新风场的单点采样（公开 API）
   rpc GetWindFieldGrid(GetWindFieldGridreq) returns (GetWindFieldGridrsp);           // 获取完整网格数据（U/V/W 数组），用于风切变等全分辨率计算
   rpc GetWindFieldSubGrid(GetWindFieldSubGridreq) returns (GetWindFieldSubGridrsp); // 获取区域裁剪后的子网格数据，用于航线优化等局部计算
 
@@ -211,6 +212,22 @@ message ProfileSample {
 
 message SampleWindFieldrsp {
   repeated SamplePoint samples = 1;
+}
+
+// 按点采样请求（自动定位区域、取最新 ready 风场）
+message SampleWindFieldByPointreq {
+  double lon = 1;                                      // 经度
+  double lat = 2;                                      // 纬度
+  double alt = 3;                                      // 高度（米）
+}
+
+// 按点采样响应
+message SampleWindFieldByPointrsp {
+  google.protobuf.Timestamp valid_time = 1;            // 风场有效时间
+  string region_id = 2;                                // 自动定位到的区域
+  string model_version = 3;                            // 使用的模型版本
+  WindVector wind = 4;                                 // 风矢量（含 u/v/w/tke）
+  bool has_tke = 5;                                     // false → 该点无 k 数据
 }
 
 message SamplePoint {
