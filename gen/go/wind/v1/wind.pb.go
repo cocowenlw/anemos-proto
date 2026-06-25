@@ -958,8 +958,9 @@ type SliceMetadata struct {
 	// 逐格地面海拔（ASL，米），行主序，row0=最小纬度(南)/col0=最小经度(西)，与 extent 同域。
 	// 前端据此把切片层贴着地形渲染（本地地形 + 离地高度）。仅有 DEM 的后端(fuxicfd)填充。
 	TerrainGrid   []float64 `protobuf:"fixed64,4,rep,packed,name=terrain_grid,json=terrainGrid,proto3" json:"terrain_grid,omitempty"`
-	TerrainRows   int32     `protobuf:"varint,5,opt,name=terrain_rows,json=terrainRows,proto3" json:"terrain_rows,omitempty"` // terrain_grid 行数（纬度方向）
-	TerrainCols   int32     `protobuf:"varint,6,opt,name=terrain_cols,json=terrainCols,proto3" json:"terrain_cols,omitempty"` // terrain_grid 列数（经度方向）
+	TerrainRows   int32     `protobuf:"varint,5,opt,name=terrain_rows,json=terrainRows,proto3" json:"terrain_rows,omitempty"`  // terrain_grid 行数（纬度方向）
+	TerrainCols   int32     `protobuf:"varint,6,opt,name=terrain_cols,json=terrainCols,proto3" json:"terrain_cols,omitempty"`  // terrain_grid 列数（经度方向）
+	InflowSpeed   float64   `protobuf:"fixed64,7,opt,name=inflow_speed,json=inflowSpeed,proto3" json:"inflow_speed,omitempty"` // 切片高度的自由来流速度 (m/s)，按请求高度在逐层 req_speed 上插值；0=无真值，flight-service 回退 p95
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1032,6 +1033,13 @@ func (x *SliceMetadata) GetTerrainRows() int32 {
 func (x *SliceMetadata) GetTerrainCols() int32 {
 	if x != nil {
 		return x.TerrainCols
+	}
+	return 0
+}
+
+func (x *SliceMetadata) GetInflowSpeed() float64 {
+	if x != nil {
+		return x.InflowSpeed
 	}
 	return 0
 }
@@ -3820,14 +3828,15 @@ const file_wind_v1_wind_proto_rawDesc = "" +
 	"\vorientation\x18\x02 \x01(\x0e2 .anemos.wind.v1.SliceOrientationR\vorientation\x12\x16\n" +
 	"\x06height\x18\x03 \x01(\x01R\x06height\x12.\n" +
 	"\x04data\x18\x04 \x03(\v2\x1a.anemos.wind.v1.WindVectorR\x04data\x129\n" +
-	"\bmetadata\x18\x05 \x01(\v2\x1d.anemos.wind.v1.SliceMetadataR\bmetadata\"\xe8\x01\n" +
+	"\bmetadata\x18\x05 \x01(\v2\x1d.anemos.wind.v1.SliceMetadataR\bmetadata\"\x8b\x02\n" +
 	"\rSliceMetadata\x12\x14\n" +
 	"\x05width\x18\x01 \x01(\x05R\x05width\x12!\n" +
 	"\fheight_count\x18\x02 \x01(\x05R\vheightCount\x125\n" +
 	"\x06extent\x18\x03 \x01(\v2\x1d.anemos.common.v1.BoundingBoxR\x06extent\x12!\n" +
 	"\fterrain_grid\x18\x04 \x03(\x01R\vterrainGrid\x12!\n" +
 	"\fterrain_rows\x18\x05 \x01(\x05R\vterrainRows\x12!\n" +
-	"\fterrain_cols\x18\x06 \x01(\x05R\vterrainCols\"\xd7\x01\n" +
+	"\fterrain_cols\x18\x06 \x01(\x05R\vterrainCols\x12!\n" +
+	"\finflow_speed\x18\a \x01(\x01R\vinflowSpeed\"\xd7\x01\n" +
 	"\n" +
 	"WindVector\x12\f\n" +
 	"\x01u\x18\x01 \x01(\x01R\x01u\x12\f\n" +

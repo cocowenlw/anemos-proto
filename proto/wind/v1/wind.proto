@@ -165,6 +165,7 @@ message SliceMetadata {
   repeated double terrain_grid = 4;
   int32 terrain_rows = 5;                              // terrain_grid 行数（纬度方向）
   int32 terrain_cols = 6;                              // terrain_grid 列数（经度方向）
+  double inflow_speed = 7;                             // 切片高度的自由来流速度 (m/s)，按请求高度在逐层 req_speed 上插值；0=无真值，flight-service 回退 p95
 }
 
 // 风速矢量
