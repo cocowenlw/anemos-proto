@@ -45,6 +45,7 @@ const (
 	FlightService_GetRouteRiskTrend_FullMethodName      = "/anemos.flight.v1.FlightService/GetRouteRiskTrend"
 	FlightService_AdviseAssessment_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseAssessment"
 	FlightService_AdviseComparison_FullMethodName       = "/anemos.flight.v1.FlightService/AdviseComparison"
+	FlightService_CheckSegmentTerrain_FullMethodName    = "/anemos.flight.v1.FlightService/CheckSegmentTerrain"
 )
 
 // FlightServiceClient is the client API for FlightService service.
@@ -87,6 +88,10 @@ type FlightServiceClient interface {
 	// ----- AI 辅助分析（LLM 生成自然语言研判） -----
 	AdviseAssessment(ctx context.Context, in *AdviseAssessmentreq, opts ...grpc.CallOption) (*AdviseAssessmentrsp, error)
 	AdviseComparison(ctx context.Context, in *AdviseComparisonreq, opts ...grpc.CallOption) (*AdviseComparisonrsp, error)
+	// ----- 航段地形/建筑穿模校验（新增航点时前端逐段调用） -----
+	// CheckSegmentTerrain 校验单个航段(start→end 直线)是否穿越地形或建筑。
+	// start/end 的 alt 语义为离地高度 AGL(米)。
+	CheckSegmentTerrain(ctx context.Context, in *CheckSegmentTerrainreq, opts ...grpc.CallOption) (*CheckSegmentTerrainrsp, error)
 }
 
 type flightServiceClient struct {
@@ -357,6 +362,16 @@ func (c *flightServiceClient) AdviseComparison(ctx context.Context, in *AdviseCo
 	return out, nil
 }
 
+func (c *flightServiceClient) CheckSegmentTerrain(ctx context.Context, in *CheckSegmentTerrainreq, opts ...grpc.CallOption) (*CheckSegmentTerrainrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckSegmentTerrainrsp)
+	err := c.cc.Invoke(ctx, FlightService_CheckSegmentTerrain_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FlightServiceServer is the server API for FlightService service.
 // All implementations must embed UnimplementedFlightServiceServer
 // for forward compatibility.
@@ -397,6 +412,10 @@ type FlightServiceServer interface {
 	// ----- AI 辅助分析（LLM 生成自然语言研判） -----
 	AdviseAssessment(context.Context, *AdviseAssessmentreq) (*AdviseAssessmentrsp, error)
 	AdviseComparison(context.Context, *AdviseComparisonreq) (*AdviseComparisonrsp, error)
+	// ----- 航段地形/建筑穿模校验（新增航点时前端逐段调用） -----
+	// CheckSegmentTerrain 校验单个航段(start→end 直线)是否穿越地形或建筑。
+	// start/end 的 alt 语义为离地高度 AGL(米)。
+	CheckSegmentTerrain(context.Context, *CheckSegmentTerrainreq) (*CheckSegmentTerrainrsp, error)
 	mustEmbedUnimplementedFlightServiceServer()
 }
 
@@ -484,6 +503,9 @@ func (UnimplementedFlightServiceServer) AdviseAssessment(context.Context, *Advis
 }
 func (UnimplementedFlightServiceServer) AdviseComparison(context.Context, *AdviseComparisonreq) (*AdviseComparisonrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method AdviseComparison not implemented")
+}
+func (UnimplementedFlightServiceServer) CheckSegmentTerrain(context.Context, *CheckSegmentTerrainreq) (*CheckSegmentTerrainrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method CheckSegmentTerrain not implemented")
 }
 func (UnimplementedFlightServiceServer) mustEmbedUnimplementedFlightServiceServer() {}
 func (UnimplementedFlightServiceServer) testEmbeddedByValue()                       {}
@@ -974,6 +996,24 @@ func _FlightService_AdviseComparison_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FlightService_CheckSegmentTerrain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckSegmentTerrainreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FlightServiceServer).CheckSegmentTerrain(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FlightService_CheckSegmentTerrain_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlightServiceServer).CheckSegmentTerrain(ctx, req.(*CheckSegmentTerrainreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FlightService_ServiceDesc is the grpc.ServiceDesc for FlightService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1084,6 +1124,10 @@ var FlightService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdviseComparison",
 			Handler:    _FlightService_AdviseComparison_Handler,
+		},
+		{
+			MethodName: "CheckSegmentTerrain",
+			Handler:    _FlightService_CheckSegmentTerrain_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
