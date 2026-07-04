@@ -220,6 +220,9 @@ message SampleWindFieldByPointreq {
   double lon = 1;                                      // 经度
   double lat = 2;                                      // 纬度
   double alt = 3;                                      // 高度（米）
+  // 脉动演化时刻；不传 = 服务器当前时间。只驱动脉动相位，
+  // 基础风场仍取最新 ready 帧（历史风场由其他接口负责）。
+  google.protobuf.Timestamp at = 4;
 }
 
 // 按点采样响应
@@ -227,8 +230,11 @@ message SampleWindFieldByPointrsp {
   google.protobuf.Timestamp valid_time = 1;            // 风场有效时间
   string region_id = 2;                                // 自动定位到的区域
   string model_version = 3;                            // 使用的模型版本
-  WindVector wind = 4;                                 // 风矢量（含 u/v/w/tke）
+  WindVector wind = 4;                                 // 时均风矢量（含 u/v/w/tke），语义不变
   bool has_tke = 5;                                     // false → 该点无 k 数据
+  // 瞬态风 = 时均 + RFG 合成脉动（u/v/w/speed/direction 为瞬时值，
+  // tke 原样复制）。恒有值：无 k 数据或 k=0 时退化为等于 wind。
+  WindVector wind_instant = 6;
 }
 
 message SamplePoint {

@@ -1456,10 +1456,13 @@ func (x *SampleWindFieldrsp) GetSamples() []*SamplePoint {
 
 // 按点采样请求（自动定位区域、取最新 ready 风场）
 type SampleWindFieldByPointreq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Lon           float64                `protobuf:"fixed64,1,opt,name=lon,proto3" json:"lon,omitempty"` // 经度
-	Lat           float64                `protobuf:"fixed64,2,opt,name=lat,proto3" json:"lat,omitempty"` // 纬度
-	Alt           float64                `protobuf:"fixed64,3,opt,name=alt,proto3" json:"alt,omitempty"` // 高度（米）
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Lon   float64                `protobuf:"fixed64,1,opt,name=lon,proto3" json:"lon,omitempty"` // 经度
+	Lat   float64                `protobuf:"fixed64,2,opt,name=lat,proto3" json:"lat,omitempty"` // 纬度
+	Alt   float64                `protobuf:"fixed64,3,opt,name=alt,proto3" json:"alt,omitempty"` // 高度（米）
+	// 脉动演化时刻；不传 = 服务器当前时间。只驱动脉动相位，
+	// 基础风场仍取最新 ready 帧（历史风场由其他接口负责）。
+	At            *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=at,proto3" json:"at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1515,14 +1518,24 @@ func (x *SampleWindFieldByPointreq) GetAlt() float64 {
 	return 0
 }
 
+func (x *SampleWindFieldByPointreq) GetAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.At
+	}
+	return nil
+}
+
 // 按点采样响应
 type SampleWindFieldByPointrsp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ValidTime     *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=valid_time,json=validTime,proto3" json:"valid_time,omitempty"`          // 风场有效时间
-	RegionId      string                 `protobuf:"bytes,2,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`             // 自动定位到的区域
-	ModelVersion  string                 `protobuf:"bytes,3,opt,name=model_version,json=modelVersion,proto3" json:"model_version,omitempty"` // 使用的模型版本
-	Wind          *WindVector            `protobuf:"bytes,4,opt,name=wind,proto3" json:"wind,omitempty"`                                     // 风矢量（含 u/v/w/tke）
-	HasTke        bool                   `protobuf:"varint,5,opt,name=has_tke,json=hasTke,proto3" json:"has_tke,omitempty"`                  // false → 该点无 k 数据
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	ValidTime    *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=valid_time,json=validTime,proto3" json:"valid_time,omitempty"`          // 风场有效时间
+	RegionId     string                 `protobuf:"bytes,2,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`             // 自动定位到的区域
+	ModelVersion string                 `protobuf:"bytes,3,opt,name=model_version,json=modelVersion,proto3" json:"model_version,omitempty"` // 使用的模型版本
+	Wind         *WindVector            `protobuf:"bytes,4,opt,name=wind,proto3" json:"wind,omitempty"`                                     // 时均风矢量（含 u/v/w/tke），语义不变
+	HasTke       bool                   `protobuf:"varint,5,opt,name=has_tke,json=hasTke,proto3" json:"has_tke,omitempty"`                  // false → 该点无 k 数据
+	// 瞬态风 = 时均 + RFG 合成脉动（u/v/w/speed/direction 为瞬时值，
+	// tke 原样复制）。恒有值：无 k 数据或 k=0 时退化为等于 wind。
+	WindInstant   *WindVector `protobuf:"bytes,6,opt,name=wind_instant,json=windInstant,proto3" json:"wind_instant,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1590,6 +1603,13 @@ func (x *SampleWindFieldByPointrsp) GetHasTke() bool {
 		return x.HasTke
 	}
 	return false
+}
+
+func (x *SampleWindFieldByPointrsp) GetWindInstant() *WindVector {
+	if x != nil {
+		return x.WindInstant
+	}
+	return nil
 }
 
 type SamplePoint struct {
@@ -3863,18 +3883,20 @@ const file_wind_v1_wind_proto_rawDesc = "" +
 	"\x10horizontal_count\x18\x03 \x01(\x05R\x0fhorizontalCount\x12#\n" +
 	"\rheight_levels\x18\x04 \x03(\x01R\fheightLevels\"K\n" +
 	"\x12SampleWindFieldrsp\x125\n" +
-	"\asamples\x18\x01 \x03(\v2\x1b.anemos.wind.v1.SamplePointR\asamples\"Q\n" +
+	"\asamples\x18\x01 \x03(\v2\x1b.anemos.wind.v1.SamplePointR\asamples\"}\n" +
 	"\x19SampleWindFieldByPointreq\x12\x10\n" +
 	"\x03lon\x18\x01 \x01(\x01R\x03lon\x12\x10\n" +
 	"\x03lat\x18\x02 \x01(\x01R\x03lat\x12\x10\n" +
-	"\x03alt\x18\x03 \x01(\x01R\x03alt\"\xe1\x01\n" +
+	"\x03alt\x18\x03 \x01(\x01R\x03alt\x12*\n" +
+	"\x02at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x02at\"\xa0\x02\n" +
 	"\x19SampleWindFieldByPointrsp\x129\n" +
 	"\n" +
 	"valid_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tvalidTime\x12\x1b\n" +
 	"\tregion_id\x18\x02 \x01(\tR\bregionId\x12#\n" +
 	"\rmodel_version\x18\x03 \x01(\tR\fmodelVersion\x12.\n" +
 	"\x04wind\x18\x04 \x01(\v2\x1a.anemos.wind.v1.WindVectorR\x04wind\x12\x17\n" +
-	"\ahas_tke\x18\x05 \x01(\bR\x06hasTke\"\xa3\x01\n" +
+	"\ahas_tke\x18\x05 \x01(\bR\x06hasTke\x12=\n" +
+	"\fwind_instant\x18\x06 \x01(\v2\x1a.anemos.wind.v1.WindVectorR\vwindInstant\"\xa3\x01\n" +
 	"\vSamplePoint\x12:\n" +
 	"\blocation\x18\x01 \x01(\v2\x1e.anemos.common.v1.Coordinate3DR\blocation\x12.\n" +
 	"\x04wind\x18\x02 \x01(\v2\x1a.anemos.wind.v1.WindVectorR\x04wind\x12(\n" +
@@ -4188,77 +4210,79 @@ var file_wind_v1_wind_proto_depIdxs = []int32{
 	60, // 29: anemos.wind.v1.ProfileSample.start:type_name -> anemos.common.v1.Coordinate
 	60, // 30: anemos.wind.v1.ProfileSample.end:type_name -> anemos.common.v1.Coordinate
 	22, // 31: anemos.wind.v1.SampleWindFieldrsp.samples:type_name -> anemos.wind.v1.SamplePoint
-	56, // 32: anemos.wind.v1.SampleWindFieldByPointrsp.valid_time:type_name -> google.protobuf.Timestamp
-	14, // 33: anemos.wind.v1.SampleWindFieldByPointrsp.wind:type_name -> anemos.wind.v1.WindVector
-	61, // 34: anemos.wind.v1.SamplePoint.location:type_name -> anemos.common.v1.Coordinate3D
-	14, // 35: anemos.wind.v1.SamplePoint.wind:type_name -> anemos.wind.v1.WindVector
-	25, // 36: anemos.wind.v1.GetWindFieldGridrsp.grid_info:type_name -> anemos.wind.v1.WindFieldGridInfo
-	26, // 37: anemos.wind.v1.GetWindFieldGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
-	55, // 38: anemos.wind.v1.WindFieldGridInfo.bbox:type_name -> anemos.common.v1.BoundingBox
-	55, // 39: anemos.wind.v1.GetWindFieldSubGridreq.bbox:type_name -> anemos.common.v1.BoundingBox
-	26, // 40: anemos.wind.v1.GetWindFieldSubGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
-	57, // 41: anemos.wind.v1.WindJob.time_window:type_name -> anemos.common.v1.TimeRange
-	56, // 42: anemos.wind.v1.WindJob.submitted_at:type_name -> google.protobuf.Timestamp
-	56, // 43: anemos.wind.v1.WindJob.updated_at:type_name -> google.protobuf.Timestamp
-	62, // 44: anemos.wind.v1.WindJob.stages:type_name -> anemos.common.v1.JobStageStatus
-	57, // 45: anemos.wind.v1.ListWindJobsreq.time_range:type_name -> anemos.common.v1.TimeRange
-	58, // 46: anemos.wind.v1.ListWindJobsreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	29, // 47: anemos.wind.v1.ListWindJobsrsp.jobs:type_name -> anemos.wind.v1.WindJob
-	59, // 48: anemos.wind.v1.ListWindJobsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	29, // 49: anemos.wind.v1.GetWindJobrsp.job:type_name -> anemos.wind.v1.WindJob
-	57, // 50: anemos.wind.v1.CreateGenerationJobreq.time_window:type_name -> anemos.common.v1.TimeRange
-	56, // 51: anemos.wind.v1.GenerateWindFieldByTimereq.valid_time:type_name -> google.protobuf.Timestamp
-	1,  // 52: anemos.wind.v1.GenerateWindFieldByTimersp.result:type_name -> anemos.wind.v1.WindFieldResult
-	56, // 53: anemos.wind.v1.ModelVersionInfo.registered_at:type_name -> google.protobuf.Timestamp
-	56, // 54: anemos.wind.v1.ModelVersionInfo.activated_at:type_name -> google.protobuf.Timestamp
-	42, // 55: anemos.wind.v1.GetActiveModelVersionrsp.version:type_name -> anemos.wind.v1.ModelVersionInfo
-	42, // 56: anemos.wind.v1.ActivateModelVersionrsp.active_version:type_name -> anemos.wind.v1.ModelVersionInfo
-	42, // 57: anemos.wind.v1.ListModelVersionsrsp.versions:type_name -> anemos.wind.v1.ModelVersionInfo
-	50, // 58: anemos.wind.v1.ReportGenerationResultreq.stats:type_name -> anemos.wind.v1.GenerationStats
-	53, // 59: anemos.wind.v1.ReportAssimilationResultreq.quality:type_name -> anemos.wind.v1.AssimilationQuality
-	3,  // 60: anemos.wind.v1.WindService.GetLatestWindField:input_type -> anemos.wind.v1.GetLatestWindFieldreq
-	5,  // 61: anemos.wind.v1.WindService.ListWindFields:input_type -> anemos.wind.v1.ListWindFieldsreq
-	7,  // 62: anemos.wind.v1.WindService.GetWindField:input_type -> anemos.wind.v1.GetWindFieldreq
-	11, // 63: anemos.wind.v1.WindService.GetWindFieldSlice:input_type -> anemos.wind.v1.Slicereq
-	15, // 64: anemos.wind.v1.WindService.SampleWindField:input_type -> anemos.wind.v1.SampleWindFieldreq
-	20, // 65: anemos.wind.v1.WindService.SampleWindFieldByPoint:input_type -> anemos.wind.v1.SampleWindFieldByPointreq
-	23, // 66: anemos.wind.v1.WindService.GetWindFieldGrid:input_type -> anemos.wind.v1.GetWindFieldGridreq
-	27, // 67: anemos.wind.v1.WindService.GetWindFieldSubGrid:input_type -> anemos.wind.v1.GetWindFieldSubGridreq
-	36, // 68: anemos.wind.v1.WindService.GenerateWindFieldByTime:input_type -> anemos.wind.v1.GenerateWindFieldByTimereq
-	30, // 69: anemos.wind.v1.WindService.ListWindJobs:input_type -> anemos.wind.v1.ListWindJobsreq
-	32, // 70: anemos.wind.v1.WindService.GetWindJob:input_type -> anemos.wind.v1.GetWindJobreq
-	34, // 71: anemos.wind.v1.WindService.CreateGenerationJob:input_type -> anemos.wind.v1.CreateGenerationJobreq
-	38, // 72: anemos.wind.v1.WindService.CancelWindJob:input_type -> anemos.wind.v1.CancelWindJobreq
-	40, // 73: anemos.wind.v1.WindService.RetryWindJob:input_type -> anemos.wind.v1.RetryWindJobreq
-	43, // 74: anemos.wind.v1.WindService.GetActiveModelVersion:input_type -> anemos.wind.v1.GetActiveModelVersionreq
-	45, // 75: anemos.wind.v1.WindService.ActivateModelVersion:input_type -> anemos.wind.v1.ActivateModelVersionreq
-	47, // 76: anemos.wind.v1.WindService.ListModelVersions:input_type -> anemos.wind.v1.ListModelVersionsreq
-	49, // 77: anemos.wind.v1.WindService.ReportGenerationResult:input_type -> anemos.wind.v1.ReportGenerationResultreq
-	52, // 78: anemos.wind.v1.WindService.ReportAssimilationResult:input_type -> anemos.wind.v1.ReportAssimilationResultreq
-	4,  // 79: anemos.wind.v1.WindService.GetLatestWindField:output_type -> anemos.wind.v1.GetLatestWindFieldrsp
-	6,  // 80: anemos.wind.v1.WindService.ListWindFields:output_type -> anemos.wind.v1.ListWindFieldsrsp
-	8,  // 81: anemos.wind.v1.WindService.GetWindField:output_type -> anemos.wind.v1.GetWindFieldrsp
-	12, // 82: anemos.wind.v1.WindService.GetWindFieldSlice:output_type -> anemos.wind.v1.Slicersp
-	19, // 83: anemos.wind.v1.WindService.SampleWindField:output_type -> anemos.wind.v1.SampleWindFieldrsp
-	21, // 84: anemos.wind.v1.WindService.SampleWindFieldByPoint:output_type -> anemos.wind.v1.SampleWindFieldByPointrsp
-	24, // 85: anemos.wind.v1.WindService.GetWindFieldGrid:output_type -> anemos.wind.v1.GetWindFieldGridrsp
-	28, // 86: anemos.wind.v1.WindService.GetWindFieldSubGrid:output_type -> anemos.wind.v1.GetWindFieldSubGridrsp
-	37, // 87: anemos.wind.v1.WindService.GenerateWindFieldByTime:output_type -> anemos.wind.v1.GenerateWindFieldByTimersp
-	31, // 88: anemos.wind.v1.WindService.ListWindJobs:output_type -> anemos.wind.v1.ListWindJobsrsp
-	33, // 89: anemos.wind.v1.WindService.GetWindJob:output_type -> anemos.wind.v1.GetWindJobrsp
-	35, // 90: anemos.wind.v1.WindService.CreateGenerationJob:output_type -> anemos.wind.v1.CreateGenerationJobrsp
-	39, // 91: anemos.wind.v1.WindService.CancelWindJob:output_type -> anemos.wind.v1.CancelWindJobrsp
-	41, // 92: anemos.wind.v1.WindService.RetryWindJob:output_type -> anemos.wind.v1.RetryWindJobrsp
-	44, // 93: anemos.wind.v1.WindService.GetActiveModelVersion:output_type -> anemos.wind.v1.GetActiveModelVersionrsp
-	46, // 94: anemos.wind.v1.WindService.ActivateModelVersion:output_type -> anemos.wind.v1.ActivateModelVersionrsp
-	48, // 95: anemos.wind.v1.WindService.ListModelVersions:output_type -> anemos.wind.v1.ListModelVersionsrsp
-	51, // 96: anemos.wind.v1.WindService.ReportGenerationResult:output_type -> anemos.wind.v1.ReportGenerationResultrsp
-	54, // 97: anemos.wind.v1.WindService.ReportAssimilationResult:output_type -> anemos.wind.v1.ReportAssimilationResultrsp
-	79, // [79:98] is the sub-list for method output_type
-	60, // [60:79] is the sub-list for method input_type
-	60, // [60:60] is the sub-list for extension type_name
-	60, // [60:60] is the sub-list for extension extendee
-	0,  // [0:60] is the sub-list for field type_name
+	56, // 32: anemos.wind.v1.SampleWindFieldByPointreq.at:type_name -> google.protobuf.Timestamp
+	56, // 33: anemos.wind.v1.SampleWindFieldByPointrsp.valid_time:type_name -> google.protobuf.Timestamp
+	14, // 34: anemos.wind.v1.SampleWindFieldByPointrsp.wind:type_name -> anemos.wind.v1.WindVector
+	14, // 35: anemos.wind.v1.SampleWindFieldByPointrsp.wind_instant:type_name -> anemos.wind.v1.WindVector
+	61, // 36: anemos.wind.v1.SamplePoint.location:type_name -> anemos.common.v1.Coordinate3D
+	14, // 37: anemos.wind.v1.SamplePoint.wind:type_name -> anemos.wind.v1.WindVector
+	25, // 38: anemos.wind.v1.GetWindFieldGridrsp.grid_info:type_name -> anemos.wind.v1.WindFieldGridInfo
+	26, // 39: anemos.wind.v1.GetWindFieldGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
+	55, // 40: anemos.wind.v1.WindFieldGridInfo.bbox:type_name -> anemos.common.v1.BoundingBox
+	55, // 41: anemos.wind.v1.GetWindFieldSubGridreq.bbox:type_name -> anemos.common.v1.BoundingBox
+	26, // 42: anemos.wind.v1.GetWindFieldSubGridrsp.layers:type_name -> anemos.wind.v1.WindFieldGridLayer
+	57, // 43: anemos.wind.v1.WindJob.time_window:type_name -> anemos.common.v1.TimeRange
+	56, // 44: anemos.wind.v1.WindJob.submitted_at:type_name -> google.protobuf.Timestamp
+	56, // 45: anemos.wind.v1.WindJob.updated_at:type_name -> google.protobuf.Timestamp
+	62, // 46: anemos.wind.v1.WindJob.stages:type_name -> anemos.common.v1.JobStageStatus
+	57, // 47: anemos.wind.v1.ListWindJobsreq.time_range:type_name -> anemos.common.v1.TimeRange
+	58, // 48: anemos.wind.v1.ListWindJobsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	29, // 49: anemos.wind.v1.ListWindJobsrsp.jobs:type_name -> anemos.wind.v1.WindJob
+	59, // 50: anemos.wind.v1.ListWindJobsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	29, // 51: anemos.wind.v1.GetWindJobrsp.job:type_name -> anemos.wind.v1.WindJob
+	57, // 52: anemos.wind.v1.CreateGenerationJobreq.time_window:type_name -> anemos.common.v1.TimeRange
+	56, // 53: anemos.wind.v1.GenerateWindFieldByTimereq.valid_time:type_name -> google.protobuf.Timestamp
+	1,  // 54: anemos.wind.v1.GenerateWindFieldByTimersp.result:type_name -> anemos.wind.v1.WindFieldResult
+	56, // 55: anemos.wind.v1.ModelVersionInfo.registered_at:type_name -> google.protobuf.Timestamp
+	56, // 56: anemos.wind.v1.ModelVersionInfo.activated_at:type_name -> google.protobuf.Timestamp
+	42, // 57: anemos.wind.v1.GetActiveModelVersionrsp.version:type_name -> anemos.wind.v1.ModelVersionInfo
+	42, // 58: anemos.wind.v1.ActivateModelVersionrsp.active_version:type_name -> anemos.wind.v1.ModelVersionInfo
+	42, // 59: anemos.wind.v1.ListModelVersionsrsp.versions:type_name -> anemos.wind.v1.ModelVersionInfo
+	50, // 60: anemos.wind.v1.ReportGenerationResultreq.stats:type_name -> anemos.wind.v1.GenerationStats
+	53, // 61: anemos.wind.v1.ReportAssimilationResultreq.quality:type_name -> anemos.wind.v1.AssimilationQuality
+	3,  // 62: anemos.wind.v1.WindService.GetLatestWindField:input_type -> anemos.wind.v1.GetLatestWindFieldreq
+	5,  // 63: anemos.wind.v1.WindService.ListWindFields:input_type -> anemos.wind.v1.ListWindFieldsreq
+	7,  // 64: anemos.wind.v1.WindService.GetWindField:input_type -> anemos.wind.v1.GetWindFieldreq
+	11, // 65: anemos.wind.v1.WindService.GetWindFieldSlice:input_type -> anemos.wind.v1.Slicereq
+	15, // 66: anemos.wind.v1.WindService.SampleWindField:input_type -> anemos.wind.v1.SampleWindFieldreq
+	20, // 67: anemos.wind.v1.WindService.SampleWindFieldByPoint:input_type -> anemos.wind.v1.SampleWindFieldByPointreq
+	23, // 68: anemos.wind.v1.WindService.GetWindFieldGrid:input_type -> anemos.wind.v1.GetWindFieldGridreq
+	27, // 69: anemos.wind.v1.WindService.GetWindFieldSubGrid:input_type -> anemos.wind.v1.GetWindFieldSubGridreq
+	36, // 70: anemos.wind.v1.WindService.GenerateWindFieldByTime:input_type -> anemos.wind.v1.GenerateWindFieldByTimereq
+	30, // 71: anemos.wind.v1.WindService.ListWindJobs:input_type -> anemos.wind.v1.ListWindJobsreq
+	32, // 72: anemos.wind.v1.WindService.GetWindJob:input_type -> anemos.wind.v1.GetWindJobreq
+	34, // 73: anemos.wind.v1.WindService.CreateGenerationJob:input_type -> anemos.wind.v1.CreateGenerationJobreq
+	38, // 74: anemos.wind.v1.WindService.CancelWindJob:input_type -> anemos.wind.v1.CancelWindJobreq
+	40, // 75: anemos.wind.v1.WindService.RetryWindJob:input_type -> anemos.wind.v1.RetryWindJobreq
+	43, // 76: anemos.wind.v1.WindService.GetActiveModelVersion:input_type -> anemos.wind.v1.GetActiveModelVersionreq
+	45, // 77: anemos.wind.v1.WindService.ActivateModelVersion:input_type -> anemos.wind.v1.ActivateModelVersionreq
+	47, // 78: anemos.wind.v1.WindService.ListModelVersions:input_type -> anemos.wind.v1.ListModelVersionsreq
+	49, // 79: anemos.wind.v1.WindService.ReportGenerationResult:input_type -> anemos.wind.v1.ReportGenerationResultreq
+	52, // 80: anemos.wind.v1.WindService.ReportAssimilationResult:input_type -> anemos.wind.v1.ReportAssimilationResultreq
+	4,  // 81: anemos.wind.v1.WindService.GetLatestWindField:output_type -> anemos.wind.v1.GetLatestWindFieldrsp
+	6,  // 82: anemos.wind.v1.WindService.ListWindFields:output_type -> anemos.wind.v1.ListWindFieldsrsp
+	8,  // 83: anemos.wind.v1.WindService.GetWindField:output_type -> anemos.wind.v1.GetWindFieldrsp
+	12, // 84: anemos.wind.v1.WindService.GetWindFieldSlice:output_type -> anemos.wind.v1.Slicersp
+	19, // 85: anemos.wind.v1.WindService.SampleWindField:output_type -> anemos.wind.v1.SampleWindFieldrsp
+	21, // 86: anemos.wind.v1.WindService.SampleWindFieldByPoint:output_type -> anemos.wind.v1.SampleWindFieldByPointrsp
+	24, // 87: anemos.wind.v1.WindService.GetWindFieldGrid:output_type -> anemos.wind.v1.GetWindFieldGridrsp
+	28, // 88: anemos.wind.v1.WindService.GetWindFieldSubGrid:output_type -> anemos.wind.v1.GetWindFieldSubGridrsp
+	37, // 89: anemos.wind.v1.WindService.GenerateWindFieldByTime:output_type -> anemos.wind.v1.GenerateWindFieldByTimersp
+	31, // 90: anemos.wind.v1.WindService.ListWindJobs:output_type -> anemos.wind.v1.ListWindJobsrsp
+	33, // 91: anemos.wind.v1.WindService.GetWindJob:output_type -> anemos.wind.v1.GetWindJobrsp
+	35, // 92: anemos.wind.v1.WindService.CreateGenerationJob:output_type -> anemos.wind.v1.CreateGenerationJobrsp
+	39, // 93: anemos.wind.v1.WindService.CancelWindJob:output_type -> anemos.wind.v1.CancelWindJobrsp
+	41, // 94: anemos.wind.v1.WindService.RetryWindJob:output_type -> anemos.wind.v1.RetryWindJobrsp
+	44, // 95: anemos.wind.v1.WindService.GetActiveModelVersion:output_type -> anemos.wind.v1.GetActiveModelVersionrsp
+	46, // 96: anemos.wind.v1.WindService.ActivateModelVersion:output_type -> anemos.wind.v1.ActivateModelVersionrsp
+	48, // 97: anemos.wind.v1.WindService.ListModelVersions:output_type -> anemos.wind.v1.ListModelVersionsrsp
+	51, // 98: anemos.wind.v1.WindService.ReportGenerationResult:output_type -> anemos.wind.v1.ReportGenerationResultrsp
+	54, // 99: anemos.wind.v1.WindService.ReportAssimilationResult:output_type -> anemos.wind.v1.ReportAssimilationResultrsp
+	81, // [81:100] is the sub-list for method output_type
+	62, // [62:81] is the sub-list for method input_type
+	62, // [62:62] is the sub-list for extension type_name
+	62, // [62:62] is the sub-list for extension extendee
+	0,  // [0:62] is the sub-list for field type_name
 }
 
 func init() { file_wind_v1_wind_proto_init() }
