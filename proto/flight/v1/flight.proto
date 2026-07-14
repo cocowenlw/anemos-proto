@@ -57,6 +57,11 @@ service FlightService {
   // ----- AI 辅助分析（LLM 生成自然语言研判） -----
   rpc AdviseAssessment(AdviseAssessmentreq) returns (AdviseAssessmentrsp);          // 单条评估的 AI 研判文本
   rpc AdviseComparison(AdviseComparisonreq) returns (AdviseComparisonrsp);          // 双评估对比的 AI 研判文本
+
+  // ----- 航段地形/建筑穿模校验（新增航点时前端逐段调用） -----
+  // CheckSegmentTerrain 校验单个航段(start→end 直线)是否穿越地形或建筑。
+  // start/end 的 alt 语义为离地高度 AGL(米)。
+  rpc CheckSegmentTerrain(CheckSegmentTerrainreq) returns (CheckSegmentTerrainrsp);
 }
 
 // ===========================
@@ -782,4 +787,31 @@ message RiskTimeSegment {
   google.protobuf.Timestamp peak_time = 5;               // 峰值时刻
   repeated string trigger_dimensions = 6;                // 触发维度并集
   repeated int32 affected_segment_idx = 7;               // 受影响的航段索引并集
+}
+
+// CheckSegmentTerrainreq 是航段地形/建筑穿模校验请求。
+// start/end 的 alt 为离地高度 AGL(米)；region_id 为后端唯一空间键。
+message CheckSegmentTerrainreq {
+  string region_id = 1;
+  anemos.common.v1.Coordinate3D start = 2;
+  anemos.common.v1.Coordinate3D end = 3;
+}
+
+// CheckSegmentTerrainrsp 是校验结果。collision=false 即视为通过。
+// has_terrain_data=false 表示该区域无 DEM，未做地形穿模判断(仍判建筑)。
+message CheckSegmentTerrainrsp {
+  bool collision = 1;
+  bool has_terrain_data = 2;
+  double max_depth = 3;                       // 最大穿透深度(米)
+  repeated SegmentCollisionPoint points = 4;
+  string message = 5;                         // 面向前端的软提示文案
+}
+
+// SegmentCollisionPoint 是一处采样穿模点(海拔均为 MSL 绝对高程，米)。
+message SegmentCollisionPoint {
+  double lon = 1;
+  double lat = 2;
+  double terrain_height = 3;     // 地面或障碍顶 MSL
+  double flight_height = 4;      // 航线在该点的 MSL
+  double penetration_depth = 5;  // terrain_height - flight_height (>0)
 }

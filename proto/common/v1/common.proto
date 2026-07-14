@@ -95,6 +95,9 @@ message Region {
   RegionStatus status = 7;                         // 区域状态
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
+  string inference_profile_id = 10;                // 绑定的推理预设 ID（空=用默认）
+  optional double center_lon = 11;                 // FuXi 区域填；GIS 查询锚点
+  optional double center_lat = 12;
 }
 
 // --- 时间范围 ---

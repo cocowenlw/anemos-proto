@@ -329,6 +329,13 @@ message MeteoFields {
   double pressure = 5;                                // 气压 (hPa)
   double humidity = 6;                                // 相对湿度 (%)
   double precipitation = 7;                           // 降水量 (mm/h)
+  repeated MeteoWindLevel wind_profile = 8;           // 多高度风层（升序，可为空；TJWeather 10~160m）
+}
+
+message MeteoWindLevel {
+  double height_m = 1;                                // 高度 (m)
+  double speed = 2;                                   // 风速 (m/s)
+  double direction_deg = 3;                           // 气象学风向（来向，0=北 90=东）
 }
 
 message GetMeteoSnapshotreq {

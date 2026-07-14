@@ -2264,14 +2264,17 @@ func (x *ExportArtifact) GetFileSizeBytes() int64 {
 }
 
 type CreateRegionreq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`                                    // 区域名称
-	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`                      // 区域描述
-	Boundary      *v1.AreaOfInterest     `protobuf:"bytes,3,opt,name=boundary,proto3" json:"boundary,omitempty"`                            // 区域边界
-	MinAltitude   float64                `protobuf:"fixed64,4,opt,name=min_altitude,json=minAltitude,proto3" json:"min_altitude,omitempty"` // 最低管控高度 (米 AGL)
-	MaxAltitude   float64                `protobuf:"fixed64,5,opt,name=max_altitude,json=maxAltitude,proto3" json:"max_altitude,omitempty"` // 最高管控高度 (米 AGL)
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Name               string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`                                                         // 区域名称
+	Description        string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`                                           // 区域描述
+	Boundary           *v1.AreaOfInterest     `protobuf:"bytes,3,opt,name=boundary,proto3" json:"boundary,omitempty"`                                                 // 区域边界
+	MinAltitude        float64                `protobuf:"fixed64,4,opt,name=min_altitude,json=minAltitude,proto3" json:"min_altitude,omitempty"`                      // 最低管控高度 (米 AGL)
+	MaxAltitude        float64                `protobuf:"fixed64,5,opt,name=max_altitude,json=maxAltitude,proto3" json:"max_altitude,omitempty"`                      // 最高管控高度 (米 AGL)
+	InferenceProfileId string                 `protobuf:"bytes,6,opt,name=inference_profile_id,json=inferenceProfileId,proto3" json:"inference_profile_id,omitempty"` // 绑定的推理预设 ID
+	CenterLon          *float64               `protobuf:"fixed64,7,opt,name=center_lon,json=centerLon,proto3,oneof" json:"center_lon,omitempty"`                      // FuXi 区域填；GIS 查询锚点
+	CenterLat          *float64               `protobuf:"fixed64,8,opt,name=center_lat,json=centerLat,proto3,oneof" json:"center_lat,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *CreateRegionreq) Reset() {
@@ -2335,6 +2338,27 @@ func (x *CreateRegionreq) GetMinAltitude() float64 {
 func (x *CreateRegionreq) GetMaxAltitude() float64 {
 	if x != nil {
 		return x.MaxAltitude
+	}
+	return 0
+}
+
+func (x *CreateRegionreq) GetInferenceProfileId() string {
+	if x != nil {
+		return x.InferenceProfileId
+	}
+	return ""
+}
+
+func (x *CreateRegionreq) GetCenterLon() float64 {
+	if x != nil && x.CenterLon != nil {
+		return *x.CenterLon
+	}
+	return 0
+}
+
+func (x *CreateRegionreq) GetCenterLat() float64 {
+	if x != nil && x.CenterLat != nil {
+		return *x.CenterLat
 	}
 	return 0
 }
@@ -2584,16 +2608,19 @@ func (x *ListRegionsrsp) GetPagination() *v1.Paginationrsp {
 }
 
 type UpdateRegionreq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	RegionId      string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                 // 目标区域 ID
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                         // 区域名称（可选更新）
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`                           // 区域描述（可选更新）
-	Boundary      *v1.AreaOfInterest     `protobuf:"bytes,4,opt,name=boundary,proto3" json:"boundary,omitempty"`                                 // 区域边界（可选更新）
-	MinAltitude   float64                `protobuf:"fixed64,5,opt,name=min_altitude,json=minAltitude,proto3" json:"min_altitude,omitempty"`      // 最低管控高度（可选更新）
-	MaxAltitude   float64                `protobuf:"fixed64,6,opt,name=max_altitude,json=maxAltitude,proto3" json:"max_altitude,omitempty"`      // 最高管控高度（可选更新）
-	Status        v1.RegionStatus        `protobuf:"varint,7,opt,name=status,proto3,enum=anemos.common.v1.RegionStatus" json:"status,omitempty"` // 区域状态（可选更新）
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	RegionId           string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                                 // 目标区域 ID
+	Name               string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                                         // 区域名称（可选更新）
+	Description        string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`                                           // 区域描述（可选更新）
+	Boundary           *v1.AreaOfInterest     `protobuf:"bytes,4,opt,name=boundary,proto3" json:"boundary,omitempty"`                                                 // 区域边界（可选更新）
+	MinAltitude        float64                `protobuf:"fixed64,5,opt,name=min_altitude,json=minAltitude,proto3" json:"min_altitude,omitempty"`                      // 最低管控高度（可选更新）
+	MaxAltitude        float64                `protobuf:"fixed64,6,opt,name=max_altitude,json=maxAltitude,proto3" json:"max_altitude,omitempty"`                      // 最高管控高度（可选更新）
+	Status             v1.RegionStatus        `protobuf:"varint,7,opt,name=status,proto3,enum=anemos.common.v1.RegionStatus" json:"status,omitempty"`                 // 区域状态（可选更新）
+	InferenceProfileId string                 `protobuf:"bytes,8,opt,name=inference_profile_id,json=inferenceProfileId,proto3" json:"inference_profile_id,omitempty"` // 绑定的推理预设 ID（可选更新）
+	CenterLon          *float64               `protobuf:"fixed64,9,opt,name=center_lon,json=centerLon,proto3,oneof" json:"center_lon,omitempty"`                      // FuXi 区域填；GIS 查询锚点
+	CenterLat          *float64               `protobuf:"fixed64,10,opt,name=center_lat,json=centerLat,proto3,oneof" json:"center_lat,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *UpdateRegionreq) Reset() {
@@ -2673,6 +2700,27 @@ func (x *UpdateRegionreq) GetStatus() v1.RegionStatus {
 		return x.Status
 	}
 	return v1.RegionStatus(0)
+}
+
+func (x *UpdateRegionreq) GetInferenceProfileId() string {
+	if x != nil {
+		return x.InferenceProfileId
+	}
+	return ""
+}
+
+func (x *UpdateRegionreq) GetCenterLon() float64 {
+	if x != nil && x.CenterLon != nil {
+		return *x.CenterLon
+	}
+	return 0
+}
+
+func (x *UpdateRegionreq) GetCenterLat() float64 {
+	if x != nil && x.CenterLat != nil {
+		return *x.CenterLat
+	}
+	return 0
 }
 
 type UpdateRegionrsp struct {
@@ -3127,6 +3175,364 @@ func (x *ListUserRegionBindingsrsp) GetPagination() *v1.Paginationrsp {
 	return nil
 }
 
+// InferenceProfileSummary 用于前端下拉，只回展示所需三项（不暴露 url/api_key）。
+type InferenceProfileSummary struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProfileId     string                 `protobuf:"bytes,1,opt,name=profile_id,json=profileId,proto3" json:"profile_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Backend       string                 `protobuf:"bytes,3,opt,name=backend,proto3" json:"backend,omitempty"` // huajian | fuxicfd
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InferenceProfileSummary) Reset() {
+	*x = InferenceProfileSummary{}
+	mi := &file_platform_v1_platform_proto_msgTypes[47]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InferenceProfileSummary) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InferenceProfileSummary) ProtoMessage() {}
+
+func (x *InferenceProfileSummary) ProtoReflect() protoreflect.Message {
+	mi := &file_platform_v1_platform_proto_msgTypes[47]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InferenceProfileSummary.ProtoReflect.Descriptor instead.
+func (*InferenceProfileSummary) Descriptor() ([]byte, []int) {
+	return file_platform_v1_platform_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *InferenceProfileSummary) GetProfileId() string {
+	if x != nil {
+		return x.ProfileId
+	}
+	return ""
+}
+
+func (x *InferenceProfileSummary) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *InferenceProfileSummary) GetBackend() string {
+	if x != nil {
+		return x.Backend
+	}
+	return ""
+}
+
+type ListInferenceProfilesreq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListInferenceProfilesreq) Reset() {
+	*x = ListInferenceProfilesreq{}
+	mi := &file_platform_v1_platform_proto_msgTypes[48]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListInferenceProfilesreq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListInferenceProfilesreq) ProtoMessage() {}
+
+func (x *ListInferenceProfilesreq) ProtoReflect() protoreflect.Message {
+	mi := &file_platform_v1_platform_proto_msgTypes[48]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListInferenceProfilesreq.ProtoReflect.Descriptor instead.
+func (*ListInferenceProfilesreq) Descriptor() ([]byte, []int) {
+	return file_platform_v1_platform_proto_rawDescGZIP(), []int{48}
+}
+
+type ListInferenceProfilesrsp struct {
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Profiles      []*InferenceProfileSummary `protobuf:"bytes,1,rep,name=profiles,proto3" json:"profiles,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListInferenceProfilesrsp) Reset() {
+	*x = ListInferenceProfilesrsp{}
+	mi := &file_platform_v1_platform_proto_msgTypes[49]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListInferenceProfilesrsp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListInferenceProfilesrsp) ProtoMessage() {}
+
+func (x *ListInferenceProfilesrsp) ProtoReflect() protoreflect.Message {
+	mi := &file_platform_v1_platform_proto_msgTypes[49]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListInferenceProfilesrsp.ProtoReflect.Descriptor instead.
+func (*ListInferenceProfilesrsp) Descriptor() ([]byte, []int) {
+	return file_platform_v1_platform_proto_rawDescGZIP(), []int{49}
+}
+
+func (x *ListInferenceProfilesrsp) GetProfiles() []*InferenceProfileSummary {
+	if x != nil {
+		return x.Profiles
+	}
+	return nil
+}
+
+type ResolveRegionInferenceProfilereq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RegionId      string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResolveRegionInferenceProfilereq) Reset() {
+	*x = ResolveRegionInferenceProfilereq{}
+	mi := &file_platform_v1_platform_proto_msgTypes[50]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolveRegionInferenceProfilereq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveRegionInferenceProfilereq) ProtoMessage() {}
+
+func (x *ResolveRegionInferenceProfilereq) ProtoReflect() protoreflect.Message {
+	mi := &file_platform_v1_platform_proto_msgTypes[50]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolveRegionInferenceProfilereq.ProtoReflect.Descriptor instead.
+func (*ResolveRegionInferenceProfilereq) Descriptor() ([]byte, []int) {
+	return file_platform_v1_platform_proto_rawDescGZIP(), []int{50}
+}
+
+func (x *ResolveRegionInferenceProfilereq) GetRegionId() string {
+	if x != nil {
+		return x.RegionId
+	}
+	return ""
+}
+
+// ResolveRegionInferenceProfilersp 是 worker 建 job 时需要的完整 profile。
+type ResolveRegionInferenceProfilersp struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Backend           string                 `protobuf:"bytes,1,opt,name=backend,proto3" json:"backend,omitempty"`
+	Url               string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	ModelId           string                 `protobuf:"bytes,3,opt,name=model_id,json=modelId,proto3" json:"model_id,omitempty"`
+	ApiKey            string                 `protobuf:"bytes,4,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+	GridResolution    int32                  `protobuf:"varint,5,opt,name=grid_resolution,json=gridResolution,proto3" json:"grid_resolution,omitempty"`
+	HasTerrain        bool                   `protobuf:"varint,6,opt,name=has_terrain,json=hasTerrain,proto3" json:"has_terrain,omitempty"` // fuxicfd 才 true
+	GisBaseUrl        string                 `protobuf:"bytes,7,opt,name=gis_base_url,json=gisBaseUrl,proto3" json:"gis_base_url,omitempty"`
+	CenterLon         float64                `protobuf:"fixed64,8,opt,name=center_lon,json=centerLon,proto3" json:"center_lon,omitempty"`
+	CenterLat         float64                `protobuf:"fixed64,9,opt,name=center_lat,json=centerLat,proto3" json:"center_lat,omitempty"`
+	TerrainDx         float64                `protobuf:"fixed64,10,opt,name=terrain_dx,json=terrainDx,proto3" json:"terrain_dx,omitempty"`
+	TerrainDy         float64                `protobuf:"fixed64,11,opt,name=terrain_dy,json=terrainDy,proto3" json:"terrain_dy,omitempty"`
+	ElevationSource   string                 `protobuf:"bytes,12,opt,name=elevation_source,json=elevationSource,proto3" json:"elevation_source,omitempty"`
+	RoughnessSource   string                 `protobuf:"bytes,13,opt,name=roughness_source,json=roughnessSource,proto3" json:"roughness_source,omitempty"`
+	HasAffine         bool                   `protobuf:"varint,14,opt,name=has_affine,json=hasAffine,proto3" json:"has_affine,omitempty"`
+	AffineRotationDeg float64                `protobuf:"fixed64,15,opt,name=affine_rotation_deg,json=affineRotationDeg,proto3" json:"affine_rotation_deg,omitempty"`
+	AffineScaleFactor float64                `protobuf:"fixed64,16,opt,name=affine_scale_factor,json=affineScaleFactor,proto3" json:"affine_scale_factor,omitempty"`
+	AffineSouthShiftM float64                `protobuf:"fixed64,17,opt,name=affine_south_shift_m,json=affineSouthShiftM,proto3" json:"affine_south_shift_m,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ResolveRegionInferenceProfilersp) Reset() {
+	*x = ResolveRegionInferenceProfilersp{}
+	mi := &file_platform_v1_platform_proto_msgTypes[51]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolveRegionInferenceProfilersp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveRegionInferenceProfilersp) ProtoMessage() {}
+
+func (x *ResolveRegionInferenceProfilersp) ProtoReflect() protoreflect.Message {
+	mi := &file_platform_v1_platform_proto_msgTypes[51]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolveRegionInferenceProfilersp.ProtoReflect.Descriptor instead.
+func (*ResolveRegionInferenceProfilersp) Descriptor() ([]byte, []int) {
+	return file_platform_v1_platform_proto_rawDescGZIP(), []int{51}
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetBackend() string {
+	if x != nil {
+		return x.Backend
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetModelId() string {
+	if x != nil {
+		return x.ModelId
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetApiKey() string {
+	if x != nil {
+		return x.ApiKey
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetGridResolution() int32 {
+	if x != nil {
+		return x.GridResolution
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetHasTerrain() bool {
+	if x != nil {
+		return x.HasTerrain
+	}
+	return false
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetGisBaseUrl() string {
+	if x != nil {
+		return x.GisBaseUrl
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetCenterLon() float64 {
+	if x != nil {
+		return x.CenterLon
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetCenterLat() float64 {
+	if x != nil {
+		return x.CenterLat
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetTerrainDx() float64 {
+	if x != nil {
+		return x.TerrainDx
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetTerrainDy() float64 {
+	if x != nil {
+		return x.TerrainDy
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetElevationSource() string {
+	if x != nil {
+		return x.ElevationSource
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetRoughnessSource() string {
+	if x != nil {
+		return x.RoughnessSource
+	}
+	return ""
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetHasAffine() bool {
+	if x != nil {
+		return x.HasAffine
+	}
+	return false
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetAffineRotationDeg() float64 {
+	if x != nil {
+		return x.AffineRotationDeg
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetAffineScaleFactor() float64 {
+	if x != nil {
+		return x.AffineScaleFactor
+	}
+	return 0
+}
+
+func (x *ResolveRegionInferenceProfilersp) GetAffineSouthShiftM() float64 {
+	if x != nil {
+		return x.AffineSouthShiftM
+	}
+	return 0
+}
+
 var File_platform_v1_platform_proto protoreflect.FileDescriptor
 
 const file_platform_v1_platform_proto_rawDesc = "" +
@@ -3306,13 +3712,20 @@ const file_platform_v1_platform_proto_rawDesc = "" +
 	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12!\n" +
 	"\fdownload_url\x18\x02 \x01(\tR\vdownloadUrl\x12!\n" +
 	"\fcontent_type\x18\x03 \x01(\tR\vcontentType\x12&\n" +
-	"\x0ffile_size_bytes\x18\x04 \x01(\x03R\rfileSizeBytes\"\xcb\x01\n" +
+	"\x0ffile_size_bytes\x18\x04 \x01(\x03R\rfileSizeBytes\"\xe3\x02\n" +
 	"\x0fCreateRegionreq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12<\n" +
 	"\bboundary\x18\x03 \x01(\v2 .anemos.common.v1.AreaOfInterestR\bboundary\x12!\n" +
 	"\fmin_altitude\x18\x04 \x01(\x01R\vminAltitude\x12!\n" +
-	"\fmax_altitude\x18\x05 \x01(\x01R\vmaxAltitude\"C\n" +
+	"\fmax_altitude\x18\x05 \x01(\x01R\vmaxAltitude\x120\n" +
+	"\x14inference_profile_id\x18\x06 \x01(\tR\x12inferenceProfileId\x12\"\n" +
+	"\n" +
+	"center_lon\x18\a \x01(\x01H\x00R\tcenterLon\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"center_lat\x18\b \x01(\x01H\x01R\tcenterLat\x88\x01\x01B\r\n" +
+	"\v_center_lonB\r\n" +
+	"\v_center_lat\"C\n" +
 	"\x0fCreateRegionrsp\x120\n" +
 	"\x06region\x18\x01 \x01(\v2\x18.anemos.common.v1.RegionR\x06region\"+\n" +
 	"\fGetRegionreq\x12\x1b\n" +
@@ -3329,7 +3742,7 @@ const file_platform_v1_platform_proto_rawDesc = "" +
 	"\aregions\x18\x01 \x03(\v2\x18.anemos.common.v1.RegionR\aregions\x12?\n" +
 	"\n" +
 	"pagination\x18\x02 \x01(\v2\x1f.anemos.common.v1.PaginationrspR\n" +
-	"pagination\"\xa0\x02\n" +
+	"pagination\"\xb8\x03\n" +
 	"\x0fUpdateRegionreq\x12\x1b\n" +
 	"\tregion_id\x18\x01 \x01(\tR\bregionId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -3337,7 +3750,15 @@ const file_platform_v1_platform_proto_rawDesc = "" +
 	"\bboundary\x18\x04 \x01(\v2 .anemos.common.v1.AreaOfInterestR\bboundary\x12!\n" +
 	"\fmin_altitude\x18\x05 \x01(\x01R\vminAltitude\x12!\n" +
 	"\fmax_altitude\x18\x06 \x01(\x01R\vmaxAltitude\x126\n" +
-	"\x06status\x18\a \x01(\x0e2\x1e.anemos.common.v1.RegionStatusR\x06status\"C\n" +
+	"\x06status\x18\a \x01(\x0e2\x1e.anemos.common.v1.RegionStatusR\x06status\x120\n" +
+	"\x14inference_profile_id\x18\b \x01(\tR\x12inferenceProfileId\x12\"\n" +
+	"\n" +
+	"center_lon\x18\t \x01(\x01H\x00R\tcenterLon\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"center_lat\x18\n" +
+	" \x01(\x01H\x01R\tcenterLat\x88\x01\x01B\r\n" +
+	"\v_center_lonB\r\n" +
+	"\v_center_lat\"C\n" +
 	"\x0fUpdateRegionrsp\x120\n" +
 	"\x06region\x18\x01 \x01(\v2\x18.anemos.common.v1.RegionR\x06region\".\n" +
 	"\x0fDeleteRegionreq\x12\x1b\n" +
@@ -3367,7 +3788,43 @@ const file_platform_v1_platform_proto_rawDesc = "" +
 	"\bbindings\x18\x01 \x03(\v2%.anemos.platform.v1.UserRegionBindingR\bbindings\x12?\n" +
 	"\n" +
 	"pagination\x18\x02 \x01(\v2\x1f.anemos.common.v1.PaginationrspR\n" +
-	"pagination*P\n" +
+	"pagination\"f\n" +
+	"\x17InferenceProfileSummary\x12\x1d\n" +
+	"\n" +
+	"profile_id\x18\x01 \x01(\tR\tprofileId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x18\n" +
+	"\abackend\x18\x03 \x01(\tR\abackend\"\x1a\n" +
+	"\x18ListInferenceProfilesreq\"c\n" +
+	"\x18ListInferenceProfilesrsp\x12G\n" +
+	"\bprofiles\x18\x01 \x03(\v2+.anemos.platform.v1.InferenceProfileSummaryR\bprofiles\"?\n" +
+	" ResolveRegionInferenceProfilereq\x12\x1b\n" +
+	"\tregion_id\x18\x01 \x01(\tR\bregionId\"\xf0\x04\n" +
+	" ResolveRegionInferenceProfilersp\x12\x18\n" +
+	"\abackend\x18\x01 \x01(\tR\abackend\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\x12\x19\n" +
+	"\bmodel_id\x18\x03 \x01(\tR\amodelId\x12\x17\n" +
+	"\aapi_key\x18\x04 \x01(\tR\x06apiKey\x12'\n" +
+	"\x0fgrid_resolution\x18\x05 \x01(\x05R\x0egridResolution\x12\x1f\n" +
+	"\vhas_terrain\x18\x06 \x01(\bR\n" +
+	"hasTerrain\x12 \n" +
+	"\fgis_base_url\x18\a \x01(\tR\n" +
+	"gisBaseUrl\x12\x1d\n" +
+	"\n" +
+	"center_lon\x18\b \x01(\x01R\tcenterLon\x12\x1d\n" +
+	"\n" +
+	"center_lat\x18\t \x01(\x01R\tcenterLat\x12\x1d\n" +
+	"\n" +
+	"terrain_dx\x18\n" +
+	" \x01(\x01R\tterrainDx\x12\x1d\n" +
+	"\n" +
+	"terrain_dy\x18\v \x01(\x01R\tterrainDy\x12)\n" +
+	"\x10elevation_source\x18\f \x01(\tR\x0felevationSource\x12)\n" +
+	"\x10roughness_source\x18\r \x01(\tR\x0froughnessSource\x12\x1d\n" +
+	"\n" +
+	"has_affine\x18\x0e \x01(\bR\thasAffine\x12.\n" +
+	"\x13affine_rotation_deg\x18\x0f \x01(\x01R\x11affineRotationDeg\x12.\n" +
+	"\x13affine_scale_factor\x18\x10 \x01(\x01R\x11affineScaleFactor\x12/\n" +
+	"\x14affine_south_shift_m\x18\x11 \x01(\x01R\x11affineSouthShiftM*P\n" +
 	"\x04Role\x12\x14\n" +
 	"\x10ROLE_UNSPECIFIED\x10\x00\x12\x0f\n" +
 	"\vROLE_VIEWER\x10\x01\x12\x11\n" +
@@ -3387,7 +3844,7 @@ const file_platform_v1_platform_proto_rawDesc = "" +
 	"\x19EXPORT_FORMAT_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11EXPORT_FORMAT_PDF\x10\x01\x12\x16\n" +
 	"\x12EXPORT_FORMAT_DOCX\x10\x02\x12\x15\n" +
-	"\x11EXPORT_FORMAT_PNG\x10\x032\xe6\r\n" +
+	"\x11EXPORT_FORMAT_PNG\x10\x032\xe9\x0f\n" +
 	"\x0fPlatformService\x12X\n" +
 	"\fAuthenticate\x12#.anemos.platform.v1.Authenticatereq\x1a#.anemos.platform.v1.Authenticatersp\x12X\n" +
 	"\fRefreshToken\x12#.anemos.platform.v1.RefreshTokenreq\x1a#.anemos.platform.v1.RefreshTokenrsp\x12a\n" +
@@ -3403,7 +3860,9 @@ const file_platform_v1_platform_proto_rawDesc = "" +
 	"\tGetRegion\x12 .anemos.platform.v1.GetRegionreq\x1a .anemos.platform.v1.GetRegionrsp\x12U\n" +
 	"\vListRegions\x12\".anemos.platform.v1.ListRegionsreq\x1a\".anemos.platform.v1.ListRegionsrsp\x12X\n" +
 	"\fUpdateRegion\x12#.anemos.platform.v1.UpdateRegionreq\x1a#.anemos.platform.v1.UpdateRegionrsp\x12X\n" +
-	"\fDeleteRegion\x12#.anemos.platform.v1.DeleteRegionreq\x1a#.anemos.platform.v1.DeleteRegionrsp\x12^\n" +
+	"\fDeleteRegion\x12#.anemos.platform.v1.DeleteRegionreq\x1a#.anemos.platform.v1.DeleteRegionrsp\x12s\n" +
+	"\x15ListInferenceProfiles\x12,.anemos.platform.v1.ListInferenceProfilesreq\x1a,.anemos.platform.v1.ListInferenceProfilesrsp\x12\x8b\x01\n" +
+	"\x1dResolveRegionInferenceProfile\x124.anemos.platform.v1.ResolveRegionInferenceProfilereq\x1a4.anemos.platform.v1.ResolveRegionInferenceProfilersp\x12^\n" +
 	"\x0eBindUserRegion\x12%.anemos.platform.v1.BindUserRegionreq\x1a%.anemos.platform.v1.BindUserRegionrsp\x12d\n" +
 	"\x10UnbindUserRegion\x12'.anemos.platform.v1.UnbindUserRegionreq\x1a'.anemos.platform.v1.UnbindUserRegionrsp\x12v\n" +
 	"\x16ListUserRegionBindings\x12-.anemos.platform.v1.ListUserRegionBindingsreq\x1a-.anemos.platform.v1.ListUserRegionBindingsrsp\x12X\n" +
@@ -3423,171 +3882,181 @@ func file_platform_v1_platform_proto_rawDescGZIP() []byte {
 }
 
 var file_platform_v1_platform_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_platform_v1_platform_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
+var file_platform_v1_platform_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
 var file_platform_v1_platform_proto_goTypes = []any{
-	(Role)(0),                         // 0: anemos.platform.v1.Role
-	(AlertSeverity)(0),                // 1: anemos.platform.v1.AlertSeverity
-	(AckStatus)(0),                    // 2: anemos.platform.v1.AckStatus
-	(ExportFormat)(0),                 // 3: anemos.platform.v1.ExportFormat
-	(*Authenticatereq)(nil),           // 4: anemos.platform.v1.Authenticatereq
-	(*Authenticatersp)(nil),           // 5: anemos.platform.v1.Authenticatersp
-	(*RefreshTokenreq)(nil),           // 6: anemos.platform.v1.RefreshTokenreq
-	(*RefreshTokenrsp)(nil),           // 7: anemos.platform.v1.RefreshTokenrsp
-	(*IntrospectTokenreq)(nil),        // 8: anemos.platform.v1.IntrospectTokenreq
-	(*IntrospectTokenrsp)(nil),        // 9: anemos.platform.v1.IntrospectTokenrsp
-	(*UserInfo)(nil),                  // 10: anemos.platform.v1.UserInfo
-	(*UserRegionBinding)(nil),         // 11: anemos.platform.v1.UserRegionBinding
-	(*ListUsersreq)(nil),              // 12: anemos.platform.v1.ListUsersreq
-	(*ListUsersrsp)(nil),              // 13: anemos.platform.v1.ListUsersrsp
-	(*UpsertUserRolereq)(nil),         // 14: anemos.platform.v1.UpsertUserRolereq
-	(*UpsertUserRolersp)(nil),         // 15: anemos.platform.v1.UpsertUserRolersp
-	(*Alert)(nil),                     // 16: anemos.platform.v1.Alert
-	(*ListAlertsreq)(nil),             // 17: anemos.platform.v1.ListAlertsreq
-	(*ListAlertsrsp)(nil),             // 18: anemos.platform.v1.ListAlertsrsp
-	(*AckAlertreq)(nil),               // 19: anemos.platform.v1.AckAlertreq
-	(*AlertAckResult)(nil),            // 20: anemos.platform.v1.AlertAckResult
-	(*AckAlertrsp)(nil),               // 21: anemos.platform.v1.AckAlertrsp
-	(*AlertRule)(nil),                 // 22: anemos.platform.v1.AlertRule
-	(*NotificationConfig)(nil),        // 23: anemos.platform.v1.NotificationConfig
-	(*ListAlertRulesreq)(nil),         // 24: anemos.platform.v1.ListAlertRulesreq
-	(*ListAlertRulesrsp)(nil),         // 25: anemos.platform.v1.ListAlertRulesrsp
-	(*UpsertAlertRulereq)(nil),        // 26: anemos.platform.v1.UpsertAlertRulereq
-	(*UpsertAlertRulersp)(nil),        // 27: anemos.platform.v1.UpsertAlertRulersp
-	(*ExportReportreq)(nil),           // 28: anemos.platform.v1.ExportReportreq
-	(*ExportJob)(nil),                 // 29: anemos.platform.v1.ExportJob
-	(*ExportReportrsp)(nil),           // 30: anemos.platform.v1.ExportReportrsp
-	(*GetExportJobreq)(nil),           // 31: anemos.platform.v1.GetExportJobreq
-	(*GetExportJobrsp)(nil),           // 32: anemos.platform.v1.GetExportJobrsp
-	(*ContentSource)(nil),             // 33: anemos.platform.v1.ContentSource
-	(*ExportArtifact)(nil),            // 34: anemos.platform.v1.ExportArtifact
-	(*CreateRegionreq)(nil),           // 35: anemos.platform.v1.CreateRegionreq
-	(*CreateRegionrsp)(nil),           // 36: anemos.platform.v1.CreateRegionrsp
-	(*GetRegionreq)(nil),              // 37: anemos.platform.v1.GetRegionreq
-	(*GetRegionrsp)(nil),              // 38: anemos.platform.v1.GetRegionrsp
-	(*ListRegionsreq)(nil),            // 39: anemos.platform.v1.ListRegionsreq
-	(*ListRegionsrsp)(nil),            // 40: anemos.platform.v1.ListRegionsrsp
-	(*UpdateRegionreq)(nil),           // 41: anemos.platform.v1.UpdateRegionreq
-	(*UpdateRegionrsp)(nil),           // 42: anemos.platform.v1.UpdateRegionrsp
-	(*DeleteRegionreq)(nil),           // 43: anemos.platform.v1.DeleteRegionreq
-	(*DeleteRegionrsp)(nil),           // 44: anemos.platform.v1.DeleteRegionrsp
-	(*BindUserRegionreq)(nil),         // 45: anemos.platform.v1.BindUserRegionreq
-	(*BindUserRegionrsp)(nil),         // 46: anemos.platform.v1.BindUserRegionrsp
-	(*UnbindUserRegionreq)(nil),       // 47: anemos.platform.v1.UnbindUserRegionreq
-	(*UnbindUserRegionrsp)(nil),       // 48: anemos.platform.v1.UnbindUserRegionrsp
-	(*ListUserRegionBindingsreq)(nil), // 49: anemos.platform.v1.ListUserRegionBindingsreq
-	(*ListUserRegionBindingsrsp)(nil), // 50: anemos.platform.v1.ListUserRegionBindingsrsp
-	(*timestamppb.Timestamp)(nil),     // 51: google.protobuf.Timestamp
-	(*v1.Paginationreq)(nil),          // 52: anemos.common.v1.Paginationreq
-	(*v1.Paginationrsp)(nil),          // 53: anemos.common.v1.Paginationrsp
-	(*v1.Coordinate)(nil),             // 54: anemos.common.v1.Coordinate
-	(*v1.TimeRange)(nil),              // 55: anemos.common.v1.TimeRange
-	(*v1.AreaOfInterest)(nil),         // 56: anemos.common.v1.AreaOfInterest
-	(*v1.Region)(nil),                 // 57: anemos.common.v1.Region
-	(v1.RegionStatus)(0),              // 58: anemos.common.v1.RegionStatus
+	(Role)(0),                                // 0: anemos.platform.v1.Role
+	(AlertSeverity)(0),                       // 1: anemos.platform.v1.AlertSeverity
+	(AckStatus)(0),                           // 2: anemos.platform.v1.AckStatus
+	(ExportFormat)(0),                        // 3: anemos.platform.v1.ExportFormat
+	(*Authenticatereq)(nil),                  // 4: anemos.platform.v1.Authenticatereq
+	(*Authenticatersp)(nil),                  // 5: anemos.platform.v1.Authenticatersp
+	(*RefreshTokenreq)(nil),                  // 6: anemos.platform.v1.RefreshTokenreq
+	(*RefreshTokenrsp)(nil),                  // 7: anemos.platform.v1.RefreshTokenrsp
+	(*IntrospectTokenreq)(nil),               // 8: anemos.platform.v1.IntrospectTokenreq
+	(*IntrospectTokenrsp)(nil),               // 9: anemos.platform.v1.IntrospectTokenrsp
+	(*UserInfo)(nil),                         // 10: anemos.platform.v1.UserInfo
+	(*UserRegionBinding)(nil),                // 11: anemos.platform.v1.UserRegionBinding
+	(*ListUsersreq)(nil),                     // 12: anemos.platform.v1.ListUsersreq
+	(*ListUsersrsp)(nil),                     // 13: anemos.platform.v1.ListUsersrsp
+	(*UpsertUserRolereq)(nil),                // 14: anemos.platform.v1.UpsertUserRolereq
+	(*UpsertUserRolersp)(nil),                // 15: anemos.platform.v1.UpsertUserRolersp
+	(*Alert)(nil),                            // 16: anemos.platform.v1.Alert
+	(*ListAlertsreq)(nil),                    // 17: anemos.platform.v1.ListAlertsreq
+	(*ListAlertsrsp)(nil),                    // 18: anemos.platform.v1.ListAlertsrsp
+	(*AckAlertreq)(nil),                      // 19: anemos.platform.v1.AckAlertreq
+	(*AlertAckResult)(nil),                   // 20: anemos.platform.v1.AlertAckResult
+	(*AckAlertrsp)(nil),                      // 21: anemos.platform.v1.AckAlertrsp
+	(*AlertRule)(nil),                        // 22: anemos.platform.v1.AlertRule
+	(*NotificationConfig)(nil),               // 23: anemos.platform.v1.NotificationConfig
+	(*ListAlertRulesreq)(nil),                // 24: anemos.platform.v1.ListAlertRulesreq
+	(*ListAlertRulesrsp)(nil),                // 25: anemos.platform.v1.ListAlertRulesrsp
+	(*UpsertAlertRulereq)(nil),               // 26: anemos.platform.v1.UpsertAlertRulereq
+	(*UpsertAlertRulersp)(nil),               // 27: anemos.platform.v1.UpsertAlertRulersp
+	(*ExportReportreq)(nil),                  // 28: anemos.platform.v1.ExportReportreq
+	(*ExportJob)(nil),                        // 29: anemos.platform.v1.ExportJob
+	(*ExportReportrsp)(nil),                  // 30: anemos.platform.v1.ExportReportrsp
+	(*GetExportJobreq)(nil),                  // 31: anemos.platform.v1.GetExportJobreq
+	(*GetExportJobrsp)(nil),                  // 32: anemos.platform.v1.GetExportJobrsp
+	(*ContentSource)(nil),                    // 33: anemos.platform.v1.ContentSource
+	(*ExportArtifact)(nil),                   // 34: anemos.platform.v1.ExportArtifact
+	(*CreateRegionreq)(nil),                  // 35: anemos.platform.v1.CreateRegionreq
+	(*CreateRegionrsp)(nil),                  // 36: anemos.platform.v1.CreateRegionrsp
+	(*GetRegionreq)(nil),                     // 37: anemos.platform.v1.GetRegionreq
+	(*GetRegionrsp)(nil),                     // 38: anemos.platform.v1.GetRegionrsp
+	(*ListRegionsreq)(nil),                   // 39: anemos.platform.v1.ListRegionsreq
+	(*ListRegionsrsp)(nil),                   // 40: anemos.platform.v1.ListRegionsrsp
+	(*UpdateRegionreq)(nil),                  // 41: anemos.platform.v1.UpdateRegionreq
+	(*UpdateRegionrsp)(nil),                  // 42: anemos.platform.v1.UpdateRegionrsp
+	(*DeleteRegionreq)(nil),                  // 43: anemos.platform.v1.DeleteRegionreq
+	(*DeleteRegionrsp)(nil),                  // 44: anemos.platform.v1.DeleteRegionrsp
+	(*BindUserRegionreq)(nil),                // 45: anemos.platform.v1.BindUserRegionreq
+	(*BindUserRegionrsp)(nil),                // 46: anemos.platform.v1.BindUserRegionrsp
+	(*UnbindUserRegionreq)(nil),              // 47: anemos.platform.v1.UnbindUserRegionreq
+	(*UnbindUserRegionrsp)(nil),              // 48: anemos.platform.v1.UnbindUserRegionrsp
+	(*ListUserRegionBindingsreq)(nil),        // 49: anemos.platform.v1.ListUserRegionBindingsreq
+	(*ListUserRegionBindingsrsp)(nil),        // 50: anemos.platform.v1.ListUserRegionBindingsrsp
+	(*InferenceProfileSummary)(nil),          // 51: anemos.platform.v1.InferenceProfileSummary
+	(*ListInferenceProfilesreq)(nil),         // 52: anemos.platform.v1.ListInferenceProfilesreq
+	(*ListInferenceProfilesrsp)(nil),         // 53: anemos.platform.v1.ListInferenceProfilesrsp
+	(*ResolveRegionInferenceProfilereq)(nil), // 54: anemos.platform.v1.ResolveRegionInferenceProfilereq
+	(*ResolveRegionInferenceProfilersp)(nil), // 55: anemos.platform.v1.ResolveRegionInferenceProfilersp
+	(*timestamppb.Timestamp)(nil),            // 56: google.protobuf.Timestamp
+	(*v1.Paginationreq)(nil),                 // 57: anemos.common.v1.Paginationreq
+	(*v1.Paginationrsp)(nil),                 // 58: anemos.common.v1.Paginationrsp
+	(*v1.Coordinate)(nil),                    // 59: anemos.common.v1.Coordinate
+	(*v1.TimeRange)(nil),                     // 60: anemos.common.v1.TimeRange
+	(*v1.AreaOfInterest)(nil),                // 61: anemos.common.v1.AreaOfInterest
+	(*v1.Region)(nil),                        // 62: anemos.common.v1.Region
+	(v1.RegionStatus)(0),                     // 63: anemos.common.v1.RegionStatus
 }
 var file_platform_v1_platform_proto_depIdxs = []int32{
 	10, // 0: anemos.platform.v1.Authenticatersp.user:type_name -> anemos.platform.v1.UserInfo
 	10, // 1: anemos.platform.v1.IntrospectTokenrsp.user:type_name -> anemos.platform.v1.UserInfo
 	0,  // 2: anemos.platform.v1.UserInfo.roles:type_name -> anemos.platform.v1.Role
-	51, // 3: anemos.platform.v1.UserInfo.created_at:type_name -> google.protobuf.Timestamp
-	51, // 4: anemos.platform.v1.UserInfo.last_login_at:type_name -> google.protobuf.Timestamp
+	56, // 3: anemos.platform.v1.UserInfo.created_at:type_name -> google.protobuf.Timestamp
+	56, // 4: anemos.platform.v1.UserInfo.last_login_at:type_name -> google.protobuf.Timestamp
 	11, // 5: anemos.platform.v1.UserInfo.region_bindings:type_name -> anemos.platform.v1.UserRegionBinding
 	0,  // 6: anemos.platform.v1.UserRegionBinding.role:type_name -> anemos.platform.v1.Role
-	51, // 7: anemos.platform.v1.UserRegionBinding.created_at:type_name -> google.protobuf.Timestamp
+	56, // 7: anemos.platform.v1.UserRegionBinding.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 8: anemos.platform.v1.ListUsersreq.role_filter:type_name -> anemos.platform.v1.Role
-	52, // 9: anemos.platform.v1.ListUsersreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	57, // 9: anemos.platform.v1.ListUsersreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	10, // 10: anemos.platform.v1.ListUsersrsp.users:type_name -> anemos.platform.v1.UserInfo
-	53, // 11: anemos.platform.v1.ListUsersrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	58, // 11: anemos.platform.v1.ListUsersrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	0,  // 12: anemos.platform.v1.UpsertUserRolereq.roles:type_name -> anemos.platform.v1.Role
 	10, // 13: anemos.platform.v1.UpsertUserRolersp.user:type_name -> anemos.platform.v1.UserInfo
 	1,  // 14: anemos.platform.v1.Alert.severity:type_name -> anemos.platform.v1.AlertSeverity
 	2,  // 15: anemos.platform.v1.Alert.ack_status:type_name -> anemos.platform.v1.AckStatus
-	51, // 16: anemos.platform.v1.Alert.triggered_at:type_name -> google.protobuf.Timestamp
-	51, // 17: anemos.platform.v1.Alert.acked_at:type_name -> google.protobuf.Timestamp
-	54, // 18: anemos.platform.v1.Alert.location:type_name -> anemos.common.v1.Coordinate
+	56, // 16: anemos.platform.v1.Alert.triggered_at:type_name -> google.protobuf.Timestamp
+	56, // 17: anemos.platform.v1.Alert.acked_at:type_name -> google.protobuf.Timestamp
+	59, // 18: anemos.platform.v1.Alert.location:type_name -> anemos.common.v1.Coordinate
 	1,  // 19: anemos.platform.v1.ListAlertsreq.severity:type_name -> anemos.platform.v1.AlertSeverity
-	51, // 20: anemos.platform.v1.ListAlertsreq.time_from:type_name -> google.protobuf.Timestamp
-	51, // 21: anemos.platform.v1.ListAlertsreq.time_to:type_name -> google.protobuf.Timestamp
+	56, // 20: anemos.platform.v1.ListAlertsreq.time_from:type_name -> google.protobuf.Timestamp
+	56, // 21: anemos.platform.v1.ListAlertsreq.time_to:type_name -> google.protobuf.Timestamp
 	2,  // 22: anemos.platform.v1.ListAlertsreq.ack_status:type_name -> anemos.platform.v1.AckStatus
 	16, // 23: anemos.platform.v1.ListAlertsrsp.alerts:type_name -> anemos.platform.v1.Alert
 	2,  // 24: anemos.platform.v1.AlertAckResult.ack_status:type_name -> anemos.platform.v1.AckStatus
-	51, // 25: anemos.platform.v1.AlertAckResult.acked_at:type_name -> google.protobuf.Timestamp
+	56, // 25: anemos.platform.v1.AlertAckResult.acked_at:type_name -> google.protobuf.Timestamp
 	20, // 26: anemos.platform.v1.AckAlertrsp.ack_result:type_name -> anemos.platform.v1.AlertAckResult
 	1,  // 27: anemos.platform.v1.AlertRule.severity:type_name -> anemos.platform.v1.AlertSeverity
 	23, // 28: anemos.platform.v1.AlertRule.notification:type_name -> anemos.platform.v1.NotificationConfig
-	51, // 29: anemos.platform.v1.AlertRule.created_at:type_name -> google.protobuf.Timestamp
-	51, // 30: anemos.platform.v1.AlertRule.updated_at:type_name -> google.protobuf.Timestamp
-	52, // 31: anemos.platform.v1.ListAlertRulesreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	56, // 29: anemos.platform.v1.AlertRule.created_at:type_name -> google.protobuf.Timestamp
+	56, // 30: anemos.platform.v1.AlertRule.updated_at:type_name -> google.protobuf.Timestamp
+	57, // 31: anemos.platform.v1.ListAlertRulesreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	22, // 32: anemos.platform.v1.ListAlertRulesrsp.rules:type_name -> anemos.platform.v1.AlertRule
-	53, // 33: anemos.platform.v1.ListAlertRulesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	58, // 33: anemos.platform.v1.ListAlertRulesrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
 	22, // 34: anemos.platform.v1.UpsertAlertRulereq.rule:type_name -> anemos.platform.v1.AlertRule
-	55, // 35: anemos.platform.v1.ExportReportreq.time_range:type_name -> anemos.common.v1.TimeRange
+	60, // 35: anemos.platform.v1.ExportReportreq.time_range:type_name -> anemos.common.v1.TimeRange
 	3,  // 36: anemos.platform.v1.ExportReportreq.format:type_name -> anemos.platform.v1.ExportFormat
 	33, // 37: anemos.platform.v1.ExportJob.content_source:type_name -> anemos.platform.v1.ContentSource
 	34, // 38: anemos.platform.v1.ExportJob.artifact:type_name -> anemos.platform.v1.ExportArtifact
-	51, // 39: anemos.platform.v1.ExportJob.generated_at:type_name -> google.protobuf.Timestamp
+	56, // 39: anemos.platform.v1.ExportJob.generated_at:type_name -> google.protobuf.Timestamp
 	33, // 40: anemos.platform.v1.ExportReportrsp.content_source:type_name -> anemos.platform.v1.ContentSource
 	34, // 41: anemos.platform.v1.ExportReportrsp.artifact:type_name -> anemos.platform.v1.ExportArtifact
-	51, // 42: anemos.platform.v1.ExportReportrsp.generated_at:type_name -> google.protobuf.Timestamp
+	56, // 42: anemos.platform.v1.ExportReportrsp.generated_at:type_name -> google.protobuf.Timestamp
 	29, // 43: anemos.platform.v1.GetExportJobrsp.job:type_name -> anemos.platform.v1.ExportJob
-	56, // 44: anemos.platform.v1.CreateRegionreq.boundary:type_name -> anemos.common.v1.AreaOfInterest
-	57, // 45: anemos.platform.v1.CreateRegionrsp.region:type_name -> anemos.common.v1.Region
-	57, // 46: anemos.platform.v1.GetRegionrsp.region:type_name -> anemos.common.v1.Region
-	58, // 47: anemos.platform.v1.ListRegionsreq.status_filter:type_name -> anemos.common.v1.RegionStatus
-	52, // 48: anemos.platform.v1.ListRegionsreq.pagination:type_name -> anemos.common.v1.Paginationreq
-	57, // 49: anemos.platform.v1.ListRegionsrsp.regions:type_name -> anemos.common.v1.Region
-	53, // 50: anemos.platform.v1.ListRegionsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	56, // 51: anemos.platform.v1.UpdateRegionreq.boundary:type_name -> anemos.common.v1.AreaOfInterest
-	58, // 52: anemos.platform.v1.UpdateRegionreq.status:type_name -> anemos.common.v1.RegionStatus
-	57, // 53: anemos.platform.v1.UpdateRegionrsp.region:type_name -> anemos.common.v1.Region
+	61, // 44: anemos.platform.v1.CreateRegionreq.boundary:type_name -> anemos.common.v1.AreaOfInterest
+	62, // 45: anemos.platform.v1.CreateRegionrsp.region:type_name -> anemos.common.v1.Region
+	62, // 46: anemos.platform.v1.GetRegionrsp.region:type_name -> anemos.common.v1.Region
+	63, // 47: anemos.platform.v1.ListRegionsreq.status_filter:type_name -> anemos.common.v1.RegionStatus
+	57, // 48: anemos.platform.v1.ListRegionsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	62, // 49: anemos.platform.v1.ListRegionsrsp.regions:type_name -> anemos.common.v1.Region
+	58, // 50: anemos.platform.v1.ListRegionsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	61, // 51: anemos.platform.v1.UpdateRegionreq.boundary:type_name -> anemos.common.v1.AreaOfInterest
+	63, // 52: anemos.platform.v1.UpdateRegionreq.status:type_name -> anemos.common.v1.RegionStatus
+	62, // 53: anemos.platform.v1.UpdateRegionrsp.region:type_name -> anemos.common.v1.Region
 	0,  // 54: anemos.platform.v1.BindUserRegionreq.role:type_name -> anemos.platform.v1.Role
 	11, // 55: anemos.platform.v1.BindUserRegionrsp.binding:type_name -> anemos.platform.v1.UserRegionBinding
-	52, // 56: anemos.platform.v1.ListUserRegionBindingsreq.pagination:type_name -> anemos.common.v1.Paginationreq
+	57, // 56: anemos.platform.v1.ListUserRegionBindingsreq.pagination:type_name -> anemos.common.v1.Paginationreq
 	11, // 57: anemos.platform.v1.ListUserRegionBindingsrsp.bindings:type_name -> anemos.platform.v1.UserRegionBinding
-	53, // 58: anemos.platform.v1.ListUserRegionBindingsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
-	4,  // 59: anemos.platform.v1.PlatformService.Authenticate:input_type -> anemos.platform.v1.Authenticatereq
-	6,  // 60: anemos.platform.v1.PlatformService.RefreshToken:input_type -> anemos.platform.v1.RefreshTokenreq
-	8,  // 61: anemos.platform.v1.PlatformService.IntrospectToken:input_type -> anemos.platform.v1.IntrospectTokenreq
-	12, // 62: anemos.platform.v1.PlatformService.ListUsers:input_type -> anemos.platform.v1.ListUsersreq
-	14, // 63: anemos.platform.v1.PlatformService.UpsertUserRole:input_type -> anemos.platform.v1.UpsertUserRolereq
-	17, // 64: anemos.platform.v1.PlatformService.ListAlerts:input_type -> anemos.platform.v1.ListAlertsreq
-	19, // 65: anemos.platform.v1.PlatformService.AckAlert:input_type -> anemos.platform.v1.AckAlertreq
-	24, // 66: anemos.platform.v1.PlatformService.ListAlertRules:input_type -> anemos.platform.v1.ListAlertRulesreq
-	26, // 67: anemos.platform.v1.PlatformService.UpsertAlertRule:input_type -> anemos.platform.v1.UpsertAlertRulereq
-	35, // 68: anemos.platform.v1.PlatformService.CreateRegion:input_type -> anemos.platform.v1.CreateRegionreq
-	37, // 69: anemos.platform.v1.PlatformService.GetRegion:input_type -> anemos.platform.v1.GetRegionreq
-	39, // 70: anemos.platform.v1.PlatformService.ListRegions:input_type -> anemos.platform.v1.ListRegionsreq
-	41, // 71: anemos.platform.v1.PlatformService.UpdateRegion:input_type -> anemos.platform.v1.UpdateRegionreq
-	43, // 72: anemos.platform.v1.PlatformService.DeleteRegion:input_type -> anemos.platform.v1.DeleteRegionreq
-	45, // 73: anemos.platform.v1.PlatformService.BindUserRegion:input_type -> anemos.platform.v1.BindUserRegionreq
-	47, // 74: anemos.platform.v1.PlatformService.UnbindUserRegion:input_type -> anemos.platform.v1.UnbindUserRegionreq
-	49, // 75: anemos.platform.v1.PlatformService.ListUserRegionBindings:input_type -> anemos.platform.v1.ListUserRegionBindingsreq
-	28, // 76: anemos.platform.v1.PlatformService.ExportReport:input_type -> anemos.platform.v1.ExportReportreq
-	31, // 77: anemos.platform.v1.PlatformService.GetExportJob:input_type -> anemos.platform.v1.GetExportJobreq
-	5,  // 78: anemos.platform.v1.PlatformService.Authenticate:output_type -> anemos.platform.v1.Authenticatersp
-	7,  // 79: anemos.platform.v1.PlatformService.RefreshToken:output_type -> anemos.platform.v1.RefreshTokenrsp
-	9,  // 80: anemos.platform.v1.PlatformService.IntrospectToken:output_type -> anemos.platform.v1.IntrospectTokenrsp
-	13, // 81: anemos.platform.v1.PlatformService.ListUsers:output_type -> anemos.platform.v1.ListUsersrsp
-	15, // 82: anemos.platform.v1.PlatformService.UpsertUserRole:output_type -> anemos.platform.v1.UpsertUserRolersp
-	18, // 83: anemos.platform.v1.PlatformService.ListAlerts:output_type -> anemos.platform.v1.ListAlertsrsp
-	21, // 84: anemos.platform.v1.PlatformService.AckAlert:output_type -> anemos.platform.v1.AckAlertrsp
-	25, // 85: anemos.platform.v1.PlatformService.ListAlertRules:output_type -> anemos.platform.v1.ListAlertRulesrsp
-	27, // 86: anemos.platform.v1.PlatformService.UpsertAlertRule:output_type -> anemos.platform.v1.UpsertAlertRulersp
-	36, // 87: anemos.platform.v1.PlatformService.CreateRegion:output_type -> anemos.platform.v1.CreateRegionrsp
-	38, // 88: anemos.platform.v1.PlatformService.GetRegion:output_type -> anemos.platform.v1.GetRegionrsp
-	40, // 89: anemos.platform.v1.PlatformService.ListRegions:output_type -> anemos.platform.v1.ListRegionsrsp
-	42, // 90: anemos.platform.v1.PlatformService.UpdateRegion:output_type -> anemos.platform.v1.UpdateRegionrsp
-	44, // 91: anemos.platform.v1.PlatformService.DeleteRegion:output_type -> anemos.platform.v1.DeleteRegionrsp
-	46, // 92: anemos.platform.v1.PlatformService.BindUserRegion:output_type -> anemos.platform.v1.BindUserRegionrsp
-	48, // 93: anemos.platform.v1.PlatformService.UnbindUserRegion:output_type -> anemos.platform.v1.UnbindUserRegionrsp
-	50, // 94: anemos.platform.v1.PlatformService.ListUserRegionBindings:output_type -> anemos.platform.v1.ListUserRegionBindingsrsp
-	30, // 95: anemos.platform.v1.PlatformService.ExportReport:output_type -> anemos.platform.v1.ExportReportrsp
-	32, // 96: anemos.platform.v1.PlatformService.GetExportJob:output_type -> anemos.platform.v1.GetExportJobrsp
-	78, // [78:97] is the sub-list for method output_type
-	59, // [59:78] is the sub-list for method input_type
-	59, // [59:59] is the sub-list for extension type_name
-	59, // [59:59] is the sub-list for extension extendee
-	0,  // [0:59] is the sub-list for field type_name
+	58, // 58: anemos.platform.v1.ListUserRegionBindingsrsp.pagination:type_name -> anemos.common.v1.Paginationrsp
+	51, // 59: anemos.platform.v1.ListInferenceProfilesrsp.profiles:type_name -> anemos.platform.v1.InferenceProfileSummary
+	4,  // 60: anemos.platform.v1.PlatformService.Authenticate:input_type -> anemos.platform.v1.Authenticatereq
+	6,  // 61: anemos.platform.v1.PlatformService.RefreshToken:input_type -> anemos.platform.v1.RefreshTokenreq
+	8,  // 62: anemos.platform.v1.PlatformService.IntrospectToken:input_type -> anemos.platform.v1.IntrospectTokenreq
+	12, // 63: anemos.platform.v1.PlatformService.ListUsers:input_type -> anemos.platform.v1.ListUsersreq
+	14, // 64: anemos.platform.v1.PlatformService.UpsertUserRole:input_type -> anemos.platform.v1.UpsertUserRolereq
+	17, // 65: anemos.platform.v1.PlatformService.ListAlerts:input_type -> anemos.platform.v1.ListAlertsreq
+	19, // 66: anemos.platform.v1.PlatformService.AckAlert:input_type -> anemos.platform.v1.AckAlertreq
+	24, // 67: anemos.platform.v1.PlatformService.ListAlertRules:input_type -> anemos.platform.v1.ListAlertRulesreq
+	26, // 68: anemos.platform.v1.PlatformService.UpsertAlertRule:input_type -> anemos.platform.v1.UpsertAlertRulereq
+	35, // 69: anemos.platform.v1.PlatformService.CreateRegion:input_type -> anemos.platform.v1.CreateRegionreq
+	37, // 70: anemos.platform.v1.PlatformService.GetRegion:input_type -> anemos.platform.v1.GetRegionreq
+	39, // 71: anemos.platform.v1.PlatformService.ListRegions:input_type -> anemos.platform.v1.ListRegionsreq
+	41, // 72: anemos.platform.v1.PlatformService.UpdateRegion:input_type -> anemos.platform.v1.UpdateRegionreq
+	43, // 73: anemos.platform.v1.PlatformService.DeleteRegion:input_type -> anemos.platform.v1.DeleteRegionreq
+	52, // 74: anemos.platform.v1.PlatformService.ListInferenceProfiles:input_type -> anemos.platform.v1.ListInferenceProfilesreq
+	54, // 75: anemos.platform.v1.PlatformService.ResolveRegionInferenceProfile:input_type -> anemos.platform.v1.ResolveRegionInferenceProfilereq
+	45, // 76: anemos.platform.v1.PlatformService.BindUserRegion:input_type -> anemos.platform.v1.BindUserRegionreq
+	47, // 77: anemos.platform.v1.PlatformService.UnbindUserRegion:input_type -> anemos.platform.v1.UnbindUserRegionreq
+	49, // 78: anemos.platform.v1.PlatformService.ListUserRegionBindings:input_type -> anemos.platform.v1.ListUserRegionBindingsreq
+	28, // 79: anemos.platform.v1.PlatformService.ExportReport:input_type -> anemos.platform.v1.ExportReportreq
+	31, // 80: anemos.platform.v1.PlatformService.GetExportJob:input_type -> anemos.platform.v1.GetExportJobreq
+	5,  // 81: anemos.platform.v1.PlatformService.Authenticate:output_type -> anemos.platform.v1.Authenticatersp
+	7,  // 82: anemos.platform.v1.PlatformService.RefreshToken:output_type -> anemos.platform.v1.RefreshTokenrsp
+	9,  // 83: anemos.platform.v1.PlatformService.IntrospectToken:output_type -> anemos.platform.v1.IntrospectTokenrsp
+	13, // 84: anemos.platform.v1.PlatformService.ListUsers:output_type -> anemos.platform.v1.ListUsersrsp
+	15, // 85: anemos.platform.v1.PlatformService.UpsertUserRole:output_type -> anemos.platform.v1.UpsertUserRolersp
+	18, // 86: anemos.platform.v1.PlatformService.ListAlerts:output_type -> anemos.platform.v1.ListAlertsrsp
+	21, // 87: anemos.platform.v1.PlatformService.AckAlert:output_type -> anemos.platform.v1.AckAlertrsp
+	25, // 88: anemos.platform.v1.PlatformService.ListAlertRules:output_type -> anemos.platform.v1.ListAlertRulesrsp
+	27, // 89: anemos.platform.v1.PlatformService.UpsertAlertRule:output_type -> anemos.platform.v1.UpsertAlertRulersp
+	36, // 90: anemos.platform.v1.PlatformService.CreateRegion:output_type -> anemos.platform.v1.CreateRegionrsp
+	38, // 91: anemos.platform.v1.PlatformService.GetRegion:output_type -> anemos.platform.v1.GetRegionrsp
+	40, // 92: anemos.platform.v1.PlatformService.ListRegions:output_type -> anemos.platform.v1.ListRegionsrsp
+	42, // 93: anemos.platform.v1.PlatformService.UpdateRegion:output_type -> anemos.platform.v1.UpdateRegionrsp
+	44, // 94: anemos.platform.v1.PlatformService.DeleteRegion:output_type -> anemos.platform.v1.DeleteRegionrsp
+	53, // 95: anemos.platform.v1.PlatformService.ListInferenceProfiles:output_type -> anemos.platform.v1.ListInferenceProfilesrsp
+	55, // 96: anemos.platform.v1.PlatformService.ResolveRegionInferenceProfile:output_type -> anemos.platform.v1.ResolveRegionInferenceProfilersp
+	46, // 97: anemos.platform.v1.PlatformService.BindUserRegion:output_type -> anemos.platform.v1.BindUserRegionrsp
+	48, // 98: anemos.platform.v1.PlatformService.UnbindUserRegion:output_type -> anemos.platform.v1.UnbindUserRegionrsp
+	50, // 99: anemos.platform.v1.PlatformService.ListUserRegionBindings:output_type -> anemos.platform.v1.ListUserRegionBindingsrsp
+	30, // 100: anemos.platform.v1.PlatformService.ExportReport:output_type -> anemos.platform.v1.ExportReportrsp
+	32, // 101: anemos.platform.v1.PlatformService.GetExportJob:output_type -> anemos.platform.v1.GetExportJobrsp
+	81, // [81:102] is the sub-list for method output_type
+	60, // [60:81] is the sub-list for method input_type
+	60, // [60:60] is the sub-list for extension type_name
+	60, // [60:60] is the sub-list for extension extendee
+	0,  // [0:60] is the sub-list for field type_name
 }
 
 func init() { file_platform_v1_platform_proto_init() }
@@ -3595,13 +4064,15 @@ func file_platform_v1_platform_proto_init() {
 	if File_platform_v1_platform_proto != nil {
 		return
 	}
+	file_platform_v1_platform_proto_msgTypes[31].OneofWrappers = []any{}
+	file_platform_v1_platform_proto_msgTypes[37].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_platform_v1_platform_proto_rawDesc), len(file_platform_v1_platform_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   47,
+			NumMessages:   52,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
