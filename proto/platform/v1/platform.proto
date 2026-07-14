@@ -36,6 +36,10 @@ service PlatformService {
   rpc UpdateRegion(UpdateRegionreq) returns (UpdateRegionrsp);                      // 更新区域信息
   rpc DeleteRegion(DeleteRegionreq) returns (DeleteRegionrsp);                      // 删除区域（需无关联数据）
 
+  // 推理预设
+  rpc ListInferenceProfiles(ListInferenceProfilesreq) returns (ListInferenceProfilesrsp);              // 列出命名推理预设（前端下拉）
+  rpc ResolveRegionInferenceProfile(ResolveRegionInferenceProfilereq) returns (ResolveRegionInferenceProfilersp); // 解析区域→完整 profile（worker 用）
+
   // ----- 区域权限管理 -----
   rpc BindUserRegion(BindUserRegionreq) returns (BindUserRegionrsp);                // 绑定用户到区域（授予区域角色）
   rpc UnbindUserRegion(UnbindUserRegionreq) returns (UnbindUserRegionrsp);          // 解除用户区域绑定
@@ -309,6 +313,9 @@ message CreateRegionreq {
   anemos.common.v1.AreaOfInterest boundary = 3;        // 区域边界
   double min_altitude = 4;                             // 最低管控高度 (米 AGL)
   double max_altitude = 5;                             // 最高管控高度 (米 AGL)
+  string inference_profile_id = 6;                     // 绑定的推理预设 ID
+  optional double center_lon = 7;                      // FuXi 区域填；GIS 查询锚点
+  optional double center_lat = 8;
 }
 message CreateRegionrsp {
   anemos.common.v1.Region region = 1;                  // 创建后的区域信息
@@ -339,6 +346,9 @@ message UpdateRegionreq {
   double min_altitude = 5;                             // 最低管控高度（可选更新）
   double max_altitude = 6;                             // 最高管控高度（可选更新）
   anemos.common.v1.RegionStatus status = 7;            // 区域状态（可选更新）
+  string inference_profile_id = 8;                     // 绑定的推理预设 ID（可选更新）
+  optional double center_lon = 9;                      // FuXi 区域填；GIS 查询锚点
+  optional double center_lat = 10;
 }
 message UpdateRegionrsp {
   anemos.common.v1.Region region = 1;                  // 更新后的区域信息
@@ -381,4 +391,43 @@ message ListUserRegionBindingsreq {
 message ListUserRegionBindingsrsp {
   repeated UserRegionBinding bindings = 1;
   anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+// ===========================
+// 推理预设
+// ===========================
+
+// InferenceProfileSummary 用于前端下拉，只回展示所需三项（不暴露 url/api_key）。
+message InferenceProfileSummary {
+  string profile_id = 1;
+  string name = 2;
+  string backend = 3;                                  // huajian | fuxicfd
+}
+message ListInferenceProfilesreq {}
+message ListInferenceProfilesrsp {
+  repeated InferenceProfileSummary profiles = 1;
+}
+
+message ResolveRegionInferenceProfilereq {
+  string region_id = 1;
+}
+// ResolveRegionInferenceProfilersp 是 worker 建 job 时需要的完整 profile。
+message ResolveRegionInferenceProfilersp {
+  string backend = 1;
+  string url = 2;
+  string model_id = 3;
+  string api_key = 4;
+  int32 grid_resolution = 5;
+  bool has_terrain = 6;                                // fuxicfd 才 true
+  string gis_base_url = 7;
+  double center_lon = 8;
+  double center_lat = 9;
+  double terrain_dx = 10;
+  double terrain_dy = 11;
+  string elevation_source = 12;
+  string roughness_source = 13;
+  bool has_affine = 14;
+  double affine_rotation_deg = 15;
+  double affine_scale_factor = 16;
+  double affine_south_shift_m = 17;
 }

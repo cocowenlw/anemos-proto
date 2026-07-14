@@ -19,25 +19,27 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PlatformService_Authenticate_FullMethodName           = "/anemos.platform.v1.PlatformService/Authenticate"
-	PlatformService_RefreshToken_FullMethodName           = "/anemos.platform.v1.PlatformService/RefreshToken"
-	PlatformService_IntrospectToken_FullMethodName        = "/anemos.platform.v1.PlatformService/IntrospectToken"
-	PlatformService_ListUsers_FullMethodName              = "/anemos.platform.v1.PlatformService/ListUsers"
-	PlatformService_UpsertUserRole_FullMethodName         = "/anemos.platform.v1.PlatformService/UpsertUserRole"
-	PlatformService_ListAlerts_FullMethodName             = "/anemos.platform.v1.PlatformService/ListAlerts"
-	PlatformService_AckAlert_FullMethodName               = "/anemos.platform.v1.PlatformService/AckAlert"
-	PlatformService_ListAlertRules_FullMethodName         = "/anemos.platform.v1.PlatformService/ListAlertRules"
-	PlatformService_UpsertAlertRule_FullMethodName        = "/anemos.platform.v1.PlatformService/UpsertAlertRule"
-	PlatformService_CreateRegion_FullMethodName           = "/anemos.platform.v1.PlatformService/CreateRegion"
-	PlatformService_GetRegion_FullMethodName              = "/anemos.platform.v1.PlatformService/GetRegion"
-	PlatformService_ListRegions_FullMethodName            = "/anemos.platform.v1.PlatformService/ListRegions"
-	PlatformService_UpdateRegion_FullMethodName           = "/anemos.platform.v1.PlatformService/UpdateRegion"
-	PlatformService_DeleteRegion_FullMethodName           = "/anemos.platform.v1.PlatformService/DeleteRegion"
-	PlatformService_BindUserRegion_FullMethodName         = "/anemos.platform.v1.PlatformService/BindUserRegion"
-	PlatformService_UnbindUserRegion_FullMethodName       = "/anemos.platform.v1.PlatformService/UnbindUserRegion"
-	PlatformService_ListUserRegionBindings_FullMethodName = "/anemos.platform.v1.PlatformService/ListUserRegionBindings"
-	PlatformService_ExportReport_FullMethodName           = "/anemos.platform.v1.PlatformService/ExportReport"
-	PlatformService_GetExportJob_FullMethodName           = "/anemos.platform.v1.PlatformService/GetExportJob"
+	PlatformService_Authenticate_FullMethodName                  = "/anemos.platform.v1.PlatformService/Authenticate"
+	PlatformService_RefreshToken_FullMethodName                  = "/anemos.platform.v1.PlatformService/RefreshToken"
+	PlatformService_IntrospectToken_FullMethodName               = "/anemos.platform.v1.PlatformService/IntrospectToken"
+	PlatformService_ListUsers_FullMethodName                     = "/anemos.platform.v1.PlatformService/ListUsers"
+	PlatformService_UpsertUserRole_FullMethodName                = "/anemos.platform.v1.PlatformService/UpsertUserRole"
+	PlatformService_ListAlerts_FullMethodName                    = "/anemos.platform.v1.PlatformService/ListAlerts"
+	PlatformService_AckAlert_FullMethodName                      = "/anemos.platform.v1.PlatformService/AckAlert"
+	PlatformService_ListAlertRules_FullMethodName                = "/anemos.platform.v1.PlatformService/ListAlertRules"
+	PlatformService_UpsertAlertRule_FullMethodName               = "/anemos.platform.v1.PlatformService/UpsertAlertRule"
+	PlatformService_CreateRegion_FullMethodName                  = "/anemos.platform.v1.PlatformService/CreateRegion"
+	PlatformService_GetRegion_FullMethodName                     = "/anemos.platform.v1.PlatformService/GetRegion"
+	PlatformService_ListRegions_FullMethodName                   = "/anemos.platform.v1.PlatformService/ListRegions"
+	PlatformService_UpdateRegion_FullMethodName                  = "/anemos.platform.v1.PlatformService/UpdateRegion"
+	PlatformService_DeleteRegion_FullMethodName                  = "/anemos.platform.v1.PlatformService/DeleteRegion"
+	PlatformService_ListInferenceProfiles_FullMethodName         = "/anemos.platform.v1.PlatformService/ListInferenceProfiles"
+	PlatformService_ResolveRegionInferenceProfile_FullMethodName = "/anemos.platform.v1.PlatformService/ResolveRegionInferenceProfile"
+	PlatformService_BindUserRegion_FullMethodName                = "/anemos.platform.v1.PlatformService/BindUserRegion"
+	PlatformService_UnbindUserRegion_FullMethodName              = "/anemos.platform.v1.PlatformService/UnbindUserRegion"
+	PlatformService_ListUserRegionBindings_FullMethodName        = "/anemos.platform.v1.PlatformService/ListUserRegionBindings"
+	PlatformService_ExportReport_FullMethodName                  = "/anemos.platform.v1.PlatformService/ExportReport"
+	PlatformService_GetExportJob_FullMethodName                  = "/anemos.platform.v1.PlatformService/GetExportJob"
 )
 
 // PlatformServiceClient is the client API for PlatformService service.
@@ -63,6 +65,9 @@ type PlatformServiceClient interface {
 	ListRegions(ctx context.Context, in *ListRegionsreq, opts ...grpc.CallOption) (*ListRegionsrsp, error)
 	UpdateRegion(ctx context.Context, in *UpdateRegionreq, opts ...grpc.CallOption) (*UpdateRegionrsp, error)
 	DeleteRegion(ctx context.Context, in *DeleteRegionreq, opts ...grpc.CallOption) (*DeleteRegionrsp, error)
+	// 推理预设
+	ListInferenceProfiles(ctx context.Context, in *ListInferenceProfilesreq, opts ...grpc.CallOption) (*ListInferenceProfilesrsp, error)
+	ResolveRegionInferenceProfile(ctx context.Context, in *ResolveRegionInferenceProfilereq, opts ...grpc.CallOption) (*ResolveRegionInferenceProfilersp, error)
 	// ----- 区域权限管理 -----
 	BindUserRegion(ctx context.Context, in *BindUserRegionreq, opts ...grpc.CallOption) (*BindUserRegionrsp, error)
 	UnbindUserRegion(ctx context.Context, in *UnbindUserRegionreq, opts ...grpc.CallOption) (*UnbindUserRegionrsp, error)
@@ -220,6 +225,26 @@ func (c *platformServiceClient) DeleteRegion(ctx context.Context, in *DeleteRegi
 	return out, nil
 }
 
+func (c *platformServiceClient) ListInferenceProfiles(ctx context.Context, in *ListInferenceProfilesreq, opts ...grpc.CallOption) (*ListInferenceProfilesrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListInferenceProfilesrsp)
+	err := c.cc.Invoke(ctx, PlatformService_ListInferenceProfiles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platformServiceClient) ResolveRegionInferenceProfile(ctx context.Context, in *ResolveRegionInferenceProfilereq, opts ...grpc.CallOption) (*ResolveRegionInferenceProfilersp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResolveRegionInferenceProfilersp)
+	err := c.cc.Invoke(ctx, PlatformService_ResolveRegionInferenceProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *platformServiceClient) BindUserRegion(ctx context.Context, in *BindUserRegionreq, opts ...grpc.CallOption) (*BindUserRegionrsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(BindUserRegionrsp)
@@ -293,6 +318,9 @@ type PlatformServiceServer interface {
 	ListRegions(context.Context, *ListRegionsreq) (*ListRegionsrsp, error)
 	UpdateRegion(context.Context, *UpdateRegionreq) (*UpdateRegionrsp, error)
 	DeleteRegion(context.Context, *DeleteRegionreq) (*DeleteRegionrsp, error)
+	// 推理预设
+	ListInferenceProfiles(context.Context, *ListInferenceProfilesreq) (*ListInferenceProfilesrsp, error)
+	ResolveRegionInferenceProfile(context.Context, *ResolveRegionInferenceProfilereq) (*ResolveRegionInferenceProfilersp, error)
 	// ----- 区域权限管理 -----
 	BindUserRegion(context.Context, *BindUserRegionreq) (*BindUserRegionrsp, error)
 	UnbindUserRegion(context.Context, *UnbindUserRegionreq) (*UnbindUserRegionrsp, error)
@@ -351,6 +379,12 @@ func (UnimplementedPlatformServiceServer) UpdateRegion(context.Context, *UpdateR
 }
 func (UnimplementedPlatformServiceServer) DeleteRegion(context.Context, *DeleteRegionreq) (*DeleteRegionrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteRegion not implemented")
+}
+func (UnimplementedPlatformServiceServer) ListInferenceProfiles(context.Context, *ListInferenceProfilesreq) (*ListInferenceProfilesrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListInferenceProfiles not implemented")
+}
+func (UnimplementedPlatformServiceServer) ResolveRegionInferenceProfile(context.Context, *ResolveRegionInferenceProfilereq) (*ResolveRegionInferenceProfilersp, error) {
+	return nil, status.Error(codes.Unimplemented, "method ResolveRegionInferenceProfile not implemented")
 }
 func (UnimplementedPlatformServiceServer) BindUserRegion(context.Context, *BindUserRegionreq) (*BindUserRegionrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method BindUserRegion not implemented")
@@ -640,6 +674,42 @@ func _PlatformService_DeleteRegion_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlatformService_ListInferenceProfiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListInferenceProfilesreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServiceServer).ListInferenceProfiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PlatformService_ListInferenceProfiles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServiceServer).ListInferenceProfiles(ctx, req.(*ListInferenceProfilesreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PlatformService_ResolveRegionInferenceProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResolveRegionInferenceProfilereq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatformServiceServer).ResolveRegionInferenceProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PlatformService_ResolveRegionInferenceProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatformServiceServer).ResolveRegionInferenceProfile(ctx, req.(*ResolveRegionInferenceProfilereq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _PlatformService_BindUserRegion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(BindUserRegionreq)
 	if err := dec(in); err != nil {
@@ -792,6 +862,14 @@ var PlatformService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteRegion",
 			Handler:    _PlatformService_DeleteRegion_Handler,
+		},
+		{
+			MethodName: "ListInferenceProfiles",
+			Handler:    _PlatformService_ListInferenceProfiles_Handler,
+		},
+		{
+			MethodName: "ResolveRegionInferenceProfile",
+			Handler:    _PlatformService_ResolveRegionInferenceProfile_Handler,
 		},
 		{
 			MethodName: "BindUserRegion",

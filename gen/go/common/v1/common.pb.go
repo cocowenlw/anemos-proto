@@ -841,18 +841,21 @@ func (*AreaOfInterest_Polygon) isAreaOfInterest_Geometry() {}
 
 // 受管区域 — 全系统一等实体，以 region_id 作为全链路主查询键
 type Region struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	RegionId      string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                 // 区域唯一标识（UUID）
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                         // 区域名称（如"深圳南山科技园片区"）
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`                           // 区域描述
-	Boundary      *AreaOfInterest        `protobuf:"bytes,4,opt,name=boundary,proto3" json:"boundary,omitempty"`                                 // 区域边界（AOI），定义空间范围
-	MinAltitude   float64                `protobuf:"fixed64,5,opt,name=min_altitude,json=minAltitude,proto3" json:"min_altitude,omitempty"`      // 最低管控高度 (米 AGL)
-	MaxAltitude   float64                `protobuf:"fixed64,6,opt,name=max_altitude,json=maxAltitude,proto3" json:"max_altitude,omitempty"`      // 最高管控高度 (米 AGL)
-	Status        RegionStatus           `protobuf:"varint,7,opt,name=status,proto3,enum=anemos.common.v1.RegionStatus" json:"status,omitempty"` // 区域状态
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	RegionId           string                 `protobuf:"bytes,1,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                 // 区域唯一标识（UUID）
+	Name               string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                         // 区域名称（如"深圳南山科技园片区"）
+	Description        string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`                           // 区域描述
+	Boundary           *AreaOfInterest        `protobuf:"bytes,4,opt,name=boundary,proto3" json:"boundary,omitempty"`                                 // 区域边界（AOI），定义空间范围
+	MinAltitude        float64                `protobuf:"fixed64,5,opt,name=min_altitude,json=minAltitude,proto3" json:"min_altitude,omitempty"`      // 最低管控高度 (米 AGL)
+	MaxAltitude        float64                `protobuf:"fixed64,6,opt,name=max_altitude,json=maxAltitude,proto3" json:"max_altitude,omitempty"`      // 最高管控高度 (米 AGL)
+	Status             RegionStatus           `protobuf:"varint,7,opt,name=status,proto3,enum=anemos.common.v1.RegionStatus" json:"status,omitempty"` // 区域状态
+	CreatedAt          *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt          *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	InferenceProfileId string                 `protobuf:"bytes,10,opt,name=inference_profile_id,json=inferenceProfileId,proto3" json:"inference_profile_id,omitempty"` // 绑定的推理预设 ID（空=用默认）
+	CenterLon          *float64               `protobuf:"fixed64,11,opt,name=center_lon,json=centerLon,proto3,oneof" json:"center_lon,omitempty"`                      // FuXi 区域填；GIS 查询锚点
+	CenterLat          *float64               `protobuf:"fixed64,12,opt,name=center_lat,json=centerLat,proto3,oneof" json:"center_lat,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Region) Reset() {
@@ -946,6 +949,27 @@ func (x *Region) GetUpdatedAt() *timestamppb.Timestamp {
 		return x.UpdatedAt
 	}
 	return nil
+}
+
+func (x *Region) GetInferenceProfileId() string {
+	if x != nil {
+		return x.InferenceProfileId
+	}
+	return ""
+}
+
+func (x *Region) GetCenterLon() float64 {
+	if x != nil && x.CenterLon != nil {
+		return *x.CenterLon
+	}
+	return 0
+}
+
+func (x *Region) GetCenterLat() float64 {
+	if x != nil && x.CenterLat != nil {
+		return *x.CenterLat
+	}
+	return 0
 }
 
 type TimeRange struct {
@@ -1170,7 +1194,7 @@ const file_common_v1_common_proto_rawDesc = "" +
 	"\x04bbox\x18\x02 \x01(\v2\x1d.anemos.common.v1.BoundingBoxH\x00R\x04bbox\x125\n" +
 	"\apolygon\x18\x03 \x01(\v2\x19.anemos.common.v1.PolygonH\x00R\apolygonB\n" +
 	"\n" +
-	"\bgeometry\"\x8d\x03\n" +
+	"\bgeometry\"\xa5\x04\n" +
 	"\x06Region\x12\x1b\n" +
 	"\tregion_id\x18\x01 \x01(\tR\bregionId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -1182,7 +1206,15 @@ const file_common_v1_common_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"k\n" +
+	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x120\n" +
+	"\x14inference_profile_id\x18\n" +
+	" \x01(\tR\x12inferenceProfileId\x12\"\n" +
+	"\n" +
+	"center_lon\x18\v \x01(\x01H\x00R\tcenterLon\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"center_lat\x18\f \x01(\x01H\x01R\tcenterLat\x88\x01\x01B\r\n" +
+	"\v_center_lonB\r\n" +
+	"\v_center_lat\"k\n" +
 	"\tTimeRange\x120\n" +
 	"\x05start\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x05start\x12,\n" +
 	"\x03end\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x03end\"`\n" +
@@ -1303,6 +1335,7 @@ func file_common_v1_common_proto_init() {
 		(*AreaOfInterest_Bbox)(nil),
 		(*AreaOfInterest_Polygon)(nil),
 	}
+	file_common_v1_common_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
