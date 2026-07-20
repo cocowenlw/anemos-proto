@@ -270,6 +270,7 @@ message WindFieldGridLayer {
   repeated double u = 2;                                 // U 分量，row-major
   repeated double v = 3;                                 // V 分量，row-major
   repeated double w = 4;                                 // W 分量，row-major
+  repeated double k = 5;                                 // 湍动能 TKE，可为空（后端未产出时）
 }
 
 // ===========================

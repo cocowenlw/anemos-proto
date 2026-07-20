@@ -1858,6 +1858,7 @@ type WindFieldGridLayer struct {
 	U             []float64              `protobuf:"fixed64,2,rep,packed,name=u,proto3" json:"u,omitempty"`    // U 分量，row-major
 	V             []float64              `protobuf:"fixed64,3,rep,packed,name=v,proto3" json:"v,omitempty"`    // V 分量，row-major
 	W             []float64              `protobuf:"fixed64,4,rep,packed,name=w,proto3" json:"w,omitempty"`    // W 分量，row-major
+	K             []float64              `protobuf:"fixed64,5,rep,packed,name=k,proto3" json:"k,omitempty"`    // 湍动能 TKE，可为空（后端未产出时）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1916,6 +1917,13 @@ func (x *WindFieldGridLayer) GetV() []float64 {
 func (x *WindFieldGridLayer) GetW() []float64 {
 	if x != nil {
 		return x.W
+	}
+	return nil
+}
+
+func (x *WindFieldGridLayer) GetK() []float64 {
+	if x != nil {
+		return x.K
 	}
 	return nil
 }
@@ -3912,12 +3920,13 @@ const file_wind_v1_wind_proto_rawDesc = "" +
 	"\x06height\x18\x02 \x01(\x05R\x06height\x121\n" +
 	"\x04bbox\x18\x03 \x01(\v2\x1d.anemos.common.v1.BoundingBoxR\x04bbox\x12\x11\n" +
 	"\x04dx_m\x18\x04 \x01(\x01R\x03dxM\x12\x11\n" +
-	"\x04dy_m\x18\x05 \x01(\x01R\x03dyM\"V\n" +
+	"\x04dy_m\x18\x05 \x01(\x01R\x03dyM\"d\n" +
 	"\x12WindFieldGridLayer\x12\x16\n" +
 	"\x06height\x18\x01 \x01(\x01R\x06height\x12\f\n" +
 	"\x01u\x18\x02 \x03(\x01R\x01u\x12\f\n" +
 	"\x01v\x18\x03 \x03(\x01R\x01v\x12\f\n" +
-	"\x01w\x18\x04 \x03(\x01R\x01w\"\x9a\x01\n" +
+	"\x01w\x18\x04 \x03(\x01R\x01w\x12\f\n" +
+	"\x01k\x18\x05 \x03(\x01R\x01k\"\x9a\x01\n" +
 	"\x16GetWindFieldSubGridreq\x12\x1b\n" +
 	"\tresult_id\x18\x01 \x01(\tR\bresultId\x121\n" +
 	"\x04bbox\x18\x02 \x01(\v2\x1d.anemos.common.v1.BoundingBoxR\x04bbox\x12\x17\n" +
