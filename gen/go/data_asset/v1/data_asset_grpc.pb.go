@@ -45,6 +45,8 @@ const (
 	DataAssetService_IngestObservation_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/IngestObservation"
 	DataAssetService_QueryObservations_FullMethodName        = "/anemos.data_asset.v1.DataAssetService/QueryObservations"
 	DataAssetService_GetLatestObsByStation_FullMethodName    = "/anemos.data_asset.v1.DataAssetService/GetLatestObsByStation"
+	DataAssetService_ListObservationStations_FullMethodName  = "/anemos.data_asset.v1.DataAssetService/ListObservationStations"
+	DataAssetService_UpsertObservationStation_FullMethodName = "/anemos.data_asset.v1.DataAssetService/UpsertObservationStation"
 )
 
 // DataAssetServiceClient is the client API for DataAssetService service.
@@ -85,6 +87,8 @@ type DataAssetServiceClient interface {
 	IngestObservation(ctx context.Context, in *IngestObservationreq, opts ...grpc.CallOption) (*IngestObservationrsp, error)
 	QueryObservations(ctx context.Context, in *QueryObservationsreq, opts ...grpc.CallOption) (*QueryObservationsrsp, error)
 	GetLatestObsByStation(ctx context.Context, in *GetLatestObsByStationreq, opts ...grpc.CallOption) (*GetLatestObsByStationrsp, error)
+	ListObservationStations(ctx context.Context, in *ListObservationStationsreq, opts ...grpc.CallOption) (*ListObservationStationsrsp, error)
+	UpsertObservationStation(ctx context.Context, in *UpsertObservationStationreq, opts ...grpc.CallOption) (*UpsertObservationStationrsp, error)
 }
 
 type dataAssetServiceClient struct {
@@ -355,6 +359,26 @@ func (c *dataAssetServiceClient) GetLatestObsByStation(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *dataAssetServiceClient) ListObservationStations(ctx context.Context, in *ListObservationStationsreq, opts ...grpc.CallOption) (*ListObservationStationsrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListObservationStationsrsp)
+	err := c.cc.Invoke(ctx, DataAssetService_ListObservationStations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dataAssetServiceClient) UpsertObservationStation(ctx context.Context, in *UpsertObservationStationreq, opts ...grpc.CallOption) (*UpsertObservationStationrsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpsertObservationStationrsp)
+	err := c.cc.Invoke(ctx, DataAssetService_UpsertObservationStation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataAssetServiceServer is the server API for DataAssetService service.
 // All implementations must embed UnimplementedDataAssetServiceServer
 // for forward compatibility.
@@ -393,6 +417,8 @@ type DataAssetServiceServer interface {
 	IngestObservation(context.Context, *IngestObservationreq) (*IngestObservationrsp, error)
 	QueryObservations(context.Context, *QueryObservationsreq) (*QueryObservationsrsp, error)
 	GetLatestObsByStation(context.Context, *GetLatestObsByStationreq) (*GetLatestObsByStationrsp, error)
+	ListObservationStations(context.Context, *ListObservationStationsreq) (*ListObservationStationsrsp, error)
+	UpsertObservationStation(context.Context, *UpsertObservationStationreq) (*UpsertObservationStationrsp, error)
 	mustEmbedUnimplementedDataAssetServiceServer()
 }
 
@@ -480,6 +506,12 @@ func (UnimplementedDataAssetServiceServer) QueryObservations(context.Context, *Q
 }
 func (UnimplementedDataAssetServiceServer) GetLatestObsByStation(context.Context, *GetLatestObsByStationreq) (*GetLatestObsByStationrsp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetLatestObsByStation not implemented")
+}
+func (UnimplementedDataAssetServiceServer) ListObservationStations(context.Context, *ListObservationStationsreq) (*ListObservationStationsrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListObservationStations not implemented")
+}
+func (UnimplementedDataAssetServiceServer) UpsertObservationStation(context.Context, *UpsertObservationStationreq) (*UpsertObservationStationrsp, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpsertObservationStation not implemented")
 }
 func (UnimplementedDataAssetServiceServer) mustEmbedUnimplementedDataAssetServiceServer() {}
 func (UnimplementedDataAssetServiceServer) testEmbeddedByValue()                          {}
@@ -970,6 +1002,42 @@ func _DataAssetService_GetLatestObsByStation_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataAssetService_ListObservationStations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListObservationStationsreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataAssetServiceServer).ListObservationStations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataAssetService_ListObservationStations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataAssetServiceServer).ListObservationStations(ctx, req.(*ListObservationStationsreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DataAssetService_UpsertObservationStation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpsertObservationStationreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataAssetServiceServer).UpsertObservationStation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataAssetService_UpsertObservationStation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataAssetServiceServer).UpsertObservationStation(ctx, req.(*UpsertObservationStationreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataAssetService_ServiceDesc is the grpc.ServiceDesc for DataAssetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1080,6 +1148,14 @@ var DataAssetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLatestObsByStation",
 			Handler:    _DataAssetService_GetLatestObsByStation_Handler,
+		},
+		{
+			MethodName: "ListObservationStations",
+			Handler:    _DataAssetService_ListObservationStations_Handler,
+		},
+		{
+			MethodName: "UpsertObservationStation",
+			Handler:    _DataAssetService_UpsertObservationStation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

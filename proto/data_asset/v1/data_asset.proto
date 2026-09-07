@@ -53,6 +53,8 @@ service DataAssetService {
   rpc IngestObservation(IngestObservationreq) returns (IngestObservationrsp);         // 接收观测数据
   rpc QueryObservations(QueryObservationsreq) returns (QueryObservationsrsp);         // 查询观测记录
   rpc GetLatestObsByStation(GetLatestObsByStationreq) returns (GetLatestObsByStationrsp); // 获取每个站点最新观测
+  rpc ListObservationStations(ListObservationStationsreq) returns (ListObservationStationsrsp);  // 观测站点列表
+  rpc UpsertObservationStation(UpsertObservationStationreq) returns (UpsertObservationStationrsp); // 新建/更新观测站点
 }
 
 // ===========================
@@ -456,10 +458,24 @@ message Observation {
 }
 
 message ObservationMeasurements {
-  double wind_speed = 1;                              // 风速 (m/s)
-  double wind_dir = 2;                                // 风向 (°)
+  double wind_speed = 1;                              // 风速 (m/s)；有廓线时 = wind_profile[0] 的风速
+  double wind_dir = 2;                                // 风向 (°)；有廓线时 = wind_profile[0] 的风向
   double temperature = 3;                             // 温度 (°C)
   double pressure = 4;                                // 气压 (hPa)
+  repeated ObservationLevel wind_profile = 5;         // 风廓线（按 height_m 升序，可为空；激光雷达 60~600m）
+}
+
+// 观测廓线的单个高度层。约定与 MeteoWindLevel 一致。
+// 缺测的距离门整个不出现在数组里，不使用哨兵值占位。
+// 解析侧必须防御式处理：windnum 与三个数组长度不一致时取最短者、记 warn，不得 panic。
+message ObservationLevel {
+  double height_m = 1;                                // 离地高度 AGL (m)
+  double speed = 2;                                   // 风速 (m/s)
+  double direction_deg = 3;                           // 气象学风向（来向，0=北 90=东，真北）
+
+  // ── 向雷达厂商预留，当前 payload 未提供 ──
+  // optional 表示显式存在性：缺省 = 对方未提供，与"值为 0"严格区分
+  optional double vertical_speed = 4;                 // 垂直风速 w (m/s，正=向上)
 }
 
 message IngestObservationreq {
@@ -483,7 +499,7 @@ message IngestObservationrsp {
 message AssimilationTrigger {
   bool triggered = 1;
   string job_id = 2;
-  string status = 3;                                  // queued / skipped
+  string status = 3;                                  // queued / skipped / throttled
 }
 
 message QueryObservationsreq {
@@ -492,6 +508,8 @@ message QueryObservationsreq {
   anemos.common.v1.TimeRange time_range = 3;
   ObservationSourceType source_type = 4;              // 来源过滤（可选）
   anemos.common.v1.Paginationreq pagination = 5;
+  bool include_profile = 6;                           // 是否返回 wind_profile，默认 false
+  int32 sample_interval_s = 7;                        // >0 时按间隔抽样（每桶取最近一帧），0=不抽样
 }
 message QueryObservationsrsp {
   repeated Observation observations = 1;
@@ -505,4 +523,48 @@ message GetLatestObsByStationreq {
 message GetLatestObsByStationrsp {
   repeated Observation observations = 1;              // 每个站点最新的一条观测
   int32 station_count = 2;                            // 返回的站点数量
+}
+
+// ===========================
+// 观测站点注册表
+// ===========================
+
+// 观测站点。站点是数据资产实体，与它产出的观测记录分离。
+message ObservationStation {
+  string station_id = 1;                              // 业务主键，人可读（sz-lidar-01）
+  string region_id = 2;                               // 所属受管区域
+  string name = 3;                                    // 显示名
+  ObservationSourceType source_type = 4;              // lidar / anemometer / uav
+  anemos.common.v1.Coordinate3D location = 5;         // 站点当前位置（alt = 站基海拔 m）
+  string device_id = 6;                               // 厂商设备号（MQTT deviceid，如 lidar370101）
+  string status = 7;                                  // provisional / active / maintenance / decommissioned
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+
+  google.protobuf.Timestamp last_observed_at = 10;    // 【派生，只读】最近一条观测时间；无观测时为空
+
+  // ── 资产元数据，预留 ──
+  string vendor = 11;                                 // 厂商
+  string model = 12;                                  // 设备型号
+  optional int32 sampling_interval_s = 13;            // 标称上报间隔 (s)，实测 lidar370101 ≈ 3.64
+  google.protobuf.Timestamp installed_at = 14;        // 安装/投运时间
+}
+
+message ListObservationStationsreq {
+  string region_id = 1;                               // 区域过滤（可选）
+  ObservationSourceType source_type = 2;              // 类型过滤（可选）
+  string status = 3;                                  // 状态过滤（可选）
+  anemos.common.v1.Paginationreq pagination = 4;
+}
+message ListObservationStationsrsp {
+  repeated ObservationStation stations = 1;
+  anemos.common.v1.Paginationrsp pagination = 2;
+}
+
+message UpsertObservationStationreq {
+  ObservationStation station = 1;                     // station_id 为空时创建，否则按 station_id 更新
+}
+message UpsertObservationStationrsp {
+  string station_id = 1;
+  bool created = 2;                                   // true=新建，false=更新
 }
